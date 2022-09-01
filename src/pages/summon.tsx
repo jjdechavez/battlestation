@@ -4,6 +4,7 @@ import { DefaultValues, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import clsx from "clsx";
+import { trpc } from "../utils/trpc";
 
 const SummonSchema = z
   .object({
@@ -32,6 +33,7 @@ const defaultValues: DefaultValues<SummonSchemaType> = {
 };
 
 const SummonPage: NextPage = () => {
+  const summonUser = trpc.useMutation(["user.summonUser"]);
   const methods = useForm<SummonSchemaType>({
     resolver: zodResolver(SummonSchema),
     defaultValues,
@@ -40,7 +42,9 @@ const SummonPage: NextPage = () => {
   const { handleSubmit, register, formState } = methods;
   const { errors } = formState;
 
-  const onSubmit: SubmitHandler<SummonSchemaType> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<SummonSchemaType> = (data) => {
+    summonUser.mutate(data);
+  };
 
   return (
     <>
