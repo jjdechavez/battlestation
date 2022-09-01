@@ -84,7 +84,7 @@ const SummonPage: NextPage = () => {
                       <input
                         type="password"
                         id="code"
-                        {...register("code", { required: true })}
+                        {...register("code")}
                         className={clsx(
                           errors?.code
                             ? "border-red-500 text-red-600 focus:border-red-500 focus:ring-red-500"
@@ -132,7 +132,7 @@ const SummonPage: NextPage = () => {
                       <input
                         type="email"
                         id="email"
-                        {...register("email", { required: true })}
+                        {...register("email")}
                         className={clsx(
                           errors?.email
                             ? "border-red-500 text-red-600 focus:border-red-500 focus:ring-red-500"
@@ -180,7 +180,7 @@ const SummonPage: NextPage = () => {
                       <input
                         type="password"
                         id="password"
-                        {...register("password", { required: true })}
+                        {...register("password")}
                         className={clsx(
                           errors?.password
                             ? "border-red-500 text-red-600 focus:border-red-500 focus:ring-red-500"
@@ -227,7 +227,7 @@ const SummonPage: NextPage = () => {
                   <div>
                     <label
                       htmlFor="confirm-password"
-                      className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm mb-2"
+                      className="block text-sm mb-2"
                     >
                       Confirm Password
                     </label>
@@ -235,7 +235,7 @@ const SummonPage: NextPage = () => {
                       <input
                         type="password"
                         id="confirm-password"
-                        {...register("confirmPassword", { required: true })}
+                        {...register("confirmPassword")}
                         className={clsx(
                           errors?.confirmPassword
                             ? "border-red-500 text-red-600 focus:border-red-500 focus:ring-red-500"
