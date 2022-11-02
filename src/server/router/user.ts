@@ -1,10 +1,11 @@
-import * as trpc from "@trpc/server";
-import { createRouter } from "./context";
-import { z } from "zod";
-import { env } from "../../env/server.mjs";
-import { hashPassword } from "../../utils/auth";
+import * as trpc from '@trpc/server';
+import { createRouter } from './context';
+import { z } from 'zod';
+import { env } from 'env/server.mjs';
+import { hashPassword } from 'utils/auth';
+import messages from 'constants/messages/auth';
 
-export const userRouter = createRouter().mutation("summonUser", {
+export const userRouter = createRouter().mutation('summon', {
   input: z.object({
     code: z.string(),
     email: z.string(),
@@ -12,7 +13,10 @@ export const userRouter = createRouter().mutation("summonUser", {
   }),
   async resolve({ input, ctx }) {
     if (input.code !== env.SUMMON_SECRET) {
-      throw new trpc.TRPCError({ code: "FORBIDDEN" });
+      throw new trpc.TRPCError({
+        code: 'FORBIDDEN',
+        message: messages.summonForbidden,
+      });
     }
 
     const { email, password } = input;
@@ -22,8 +26,8 @@ export const userRouter = createRouter().mutation("summonUser", {
 
     if (existingUser) {
       throw new trpc.TRPCError({
-        code: "CONFLICT",
-        message: "User already exist",
+        code: 'CONFLICT',
+        message: messages.summonForbidden,
       });
     }
 
