@@ -34,7 +34,7 @@ const defaultValues: DefaultValues<SummonSchemaType> = {
 };
 
 const SummonPage: NextPage = () => {
-  const summonUser = trpc.useMutation(['user.summonUser']);
+  const summonUser = trpc.useMutation(['user.summon']);
   const methods = useForm<SummonSchemaType>({
     resolver: zodResolver(SummonSchema),
     defaultValues,
@@ -72,6 +72,12 @@ const SummonPage: NextPage = () => {
                 Sign in here
               </a>
             </p>
+
+            {summonUser.isError ? (
+              <p className='text-red-600 text font-semibold'>
+                {summonUser.error.message}
+              </p>
+            ) : null}
           </div>
 
           <div className='mt-5'>
