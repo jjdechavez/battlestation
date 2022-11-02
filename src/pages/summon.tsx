@@ -1,5 +1,7 @@
+import React from 'react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
+import Link from 'next/link';
 import { DefaultValues, SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -64,13 +66,31 @@ const SummonPage: NextPage = () => {
           <div className='text-center'>
             <h1 className='block text-2xl font-bold text-gray-800'>Summon</h1>
             <p className='mt-2 text-sm text-gray-600'>
-              Already have an account?{' '}
-              <a
-                className='text-blue-600 decoration-2 hover:underline font-medium'
-                href='../../examples/html/signin.html'
-              >
-                Sign in here
-              </a>
+              {summonUser.isSuccess ? (
+                <>
+                  You're already setup! Time to move{' '}
+                  <Link href='/'>
+                    <a
+                      className='text-blue-600 decoration-2 hover:underline font-medium'
+                      href='#'
+                    >
+                      here
+                    </a>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  Already have an account?{' '}
+                  <Link href='/'>
+                    <a
+                      className='text-blue-600 decoration-2 hover:underline font-medium'
+                      href='#'
+                    >
+                      Sign in here
+                    </a>
+                  </Link>
+                </>
+              )}
             </p>
 
             {summonUser.isError ? (
@@ -80,7 +100,7 @@ const SummonPage: NextPage = () => {
             ) : null}
           </div>
 
-          <div className='mt-5'>
+          <div className={clsx(summonUser.isSuccess && 'hidden', 'mt-5')}>
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className='grid gap-y-4'>
                 <div>
