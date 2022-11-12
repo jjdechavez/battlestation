@@ -52,7 +52,7 @@ const SigninPage: NextPage = () => {
       if (query?.from) {
         router.push(query.from as string);
       }
-      router.push('/');
+      router.push('/dashboard');
     }
   };
 
