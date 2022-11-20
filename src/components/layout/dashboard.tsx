@@ -1,13 +1,13 @@
 import { Fragment, ReactNode, MouseEvent, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
-/* import { XMarkIcon, Bars3Icon } from '@heroicons/react/24/outline'; */
+import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
 import { IconName } from '../../types/Icon';
 import HeroIcon from '../base/HeroIcon';
-import { signOut } from 'next-auth/react';
+import { trpc } from '../../utils/trpc';
 
-const user = {
+const userPlaceholder = {
   name: 'Tom Cook',
   email: 'tom@example.com',
   imageUrl:
@@ -102,7 +102,14 @@ export default function DashboardLayout({
   children?: ReactNode;
 }) {
   const router = useRouter();
+  const currentSession = trpc.useQuery(['auth.getSession']);
   const [sidebarActive, setSidebarActive] = useState(false);
+
+  const user = {
+    name: currentSession?.data?.user?.name || userPlaceholder.name,
+    email: currentSession?.data?.user?.email || userPlaceholder.email,
+    image: currentSession?.data?.user?.image || userPlaceholder.imageUrl,
+  };
 
   return (
     <>
@@ -180,11 +187,17 @@ export default function DashboardLayout({
                     aria-haspopup='true'
                   >
                     <span className='sr-only'>Open user menu</span>
-                    <img
-                      className='w-8 h-8 rounded-full'
-                      src={user.imageUrl}
-                      alt=''
-                    />
+                    {currentSession.isLoading ? (
+                      <div className='animate-pulse'>
+                        <div className='w-8 h-8 rounded-full bg-slate-700'></div>
+                      </div>
+                    ) : (
+                      <img
+                        className='w-8 h-8 rounded-full'
+                        src={user.image}
+                        alt={user.name}
+                      />
+                    )}
                   </Menu.Button>
                 </div>
                 <Transition
