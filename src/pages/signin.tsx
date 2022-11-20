@@ -2,7 +2,7 @@ import React from 'react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import { DefaultValues, SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -24,6 +24,7 @@ const defaultValues: DefaultValues<SigninSchemaType> = {
 
 const SigninPage: NextPage = () => {
   const router = useRouter();
+  const session = useSession();
   const [error, setError] = React.useState<null | string>(null);
   const methods = useForm<SigninSchemaType>({
     resolver: zodResolver(SigninSchema),
@@ -55,6 +56,13 @@ const SigninPage: NextPage = () => {
       router.push('/dashboard');
     }
   };
+
+  if (session.status === 'loading') {
+    return <PulseLoading />;
+  } else if (session.status === 'authenticated') {
+    router.push('/dashboard');
+    return <PulseLoading />;
+  }
 
   return (
     <>
@@ -258,6 +266,14 @@ const SigninPage: NextPage = () => {
         </Card>
       </main>
     </>
+  );
+};
+
+const PulseLoading = () => {
+  return (
+    <div className='animate-pulse flex justify-center items-center h-screen'>
+      <div className='rounded-full bg-slate-500 h-10 w-10'></div>
+    </div>
   );
 };
 
