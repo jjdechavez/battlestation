@@ -1,25 +1,17 @@
-import NextAuth, { type NextAuthOptions } from "next-auth";
-import DiscordProvider from "next-auth/providers/discord";
-import CredentialsProvider from "next-auth/providers/credentials";
+import NextAuth, { type NextAuthOptions } from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import DiscordProvider from 'next-auth/providers/discord';
 
 // Prisma adapter for NextAuth, optional and can be removed
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { prisma } from "../../../server/db/client";
-import { env } from "../../../env/server.mjs";
-import { verifyPassword } from "../../../utils/auth";
+import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import { prisma } from '../../../server/db/client';
+import { env } from '../../../env/server.mjs';
+import { verifyPassword } from '../../../utils/auth';
 
 export const authOptions: NextAuthOptions = {
-  // Include user.id on session
-  callbacks: {
-    session({ session, user }) {
-      if (session.user) {
-        session.user.id = user.id;
-      }
-      return session;
-    },
-  },
   // Configure one or more authentication providers
   adapter: PrismaAdapter(prisma),
+  secret: env.NEXTAUTH_SECRET,
   providers: [
     DiscordProvider({
       clientId: env.DISCORD_CLIENT_ID,
@@ -28,13 +20,13 @@ export const authOptions: NextAuthOptions = {
     CredentialsProvider({
       credentials: {
         email: {
-          label: "Email",
-          type: "email",
-          placeholder: "john.doe@test.com",
+          label: 'Email',
+          type: 'email',
+          placeholder: 'john.doe@test.com',
         },
         password: {
-          label: "Password",
-          type: "password",
+          label: 'Password',
+          type: 'password',
         },
       },
       async authorize(credentials, _req) {
@@ -68,6 +60,16 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
+  // Include user.id on session
+  callbacks: {
+    async session({ session, user }) {
+      console.log(user);
+      if (session.user) {
+        session.user.id = user.id;
+      }
+      return session;
+    },
+  },
 };
 
 export default NextAuth(authOptions);
