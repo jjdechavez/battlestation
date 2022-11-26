@@ -235,6 +235,7 @@ const defaultValues: DefaultValues<WorkspaceSchemaType> = {
   type: 'PERSONAL',
 };
 
+// TODO: Add loading state on Listbox component
 const WorkspaceForm = () => {
   const methods = useForm<WorkspaceSchemaType>({
     resolver: zodResolver(WorkspaceSchema),
@@ -303,14 +304,18 @@ const WorkspaceForm = () => {
             control={control}
             name='type'
             render={({ field }) => (
-              <Listbox value={field.value} onChange={field.onChange}>
+              <Listbox
+                value={field.value}
+                onChange={field.onChange}
+                disabled={isSubmitting}
+              >
                 {({ open }) => (
                   <>
                     <Listbox.Label className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm capitalize font-medium text-gray-700">
                       {field.name}
                     </Listbox.Label>
                     <div className='relative mt-1'>
-                      <Listbox.Button className='relative w-full cursor-default rounded-md border border-gray-300 bg-white py-3 px-4 text-left shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm'>
+                      <Listbox.Button className='disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none relative w-full cursor-default rounded-md border border-gray-300 bg-white py-3 px-4 text-left shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm'>
                         <span className='block truncate capitalize'>
                           {field.value.toLowerCase()}
                         </span>
