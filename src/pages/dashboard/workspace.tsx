@@ -1,10 +1,18 @@
 import React, { ReactElement } from 'react';
 import Link from 'next/link';
-import { Dialog, Transition } from '@headlessui/react';
+import { Dialog, Listbox, Transition } from '@headlessui/react';
 import clsx from 'clsx';
 import DashboardLayout from 'components/layout/dashboard';
 import HeroIcon from 'components/base/HeroIcon';
 import { NextPageWithLayout } from 'pages/_app';
+import { z } from 'zod';
+import {
+  Controller,
+  DefaultValues,
+  SubmitHandler,
+  useForm,
+} from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 const workspaces = [
   {
@@ -63,7 +71,7 @@ const WorkspacePage: NextPageWithLayout = () => {
             />
           </svg>
           <input
-            className='focus:ring-1 focus:ring-blue-500 focus:outline-none appearance-none w-full text-sm leading-6 text-slate-900 placeholder-slate-400 rounded-md py-2 pl-10 ring-1 ring-slate-200 shadow-sm'
+            className='focus:ring-1 focus:ring-blue-500 focus:outline-none appearance-none w-full text-sm leading-6 text-slate-900 placeholder-slate-400 border border-gray-200 rounded-md py-2 pl-10 ring-1 ring-slate-200 shadow-sm'
             type='text'
             aria-label='Filter projects'
             placeholder='Filter projects...'
@@ -190,14 +198,7 @@ const WorkspaceSlideOver = ({ show, handleShow }: WorkspaceSlideOverType) => {
                       </Dialog.Title>
                     </div>
                     <div className='relative mt-6 flex-1 px-4 sm:px-6'>
-                      {/* Replace with your content */}
-                      <div className='absolute inset-0 px-4 sm:px-6'>
-                        <div
-                          className='h-full border-2 border-dashed border-gray-200'
-                          aria-hidden='true'
-                        />
-                      </div>
-                      {/* /End replace */}
+                      <WorkspaceForm />
                     </div>
                   </div>
                 </Dialog.Panel>
@@ -207,6 +208,227 @@ const WorkspaceSlideOver = ({ show, handleShow }: WorkspaceSlideOverType) => {
         </div>
       </Dialog>
     </Transition.Root>
+  );
+};
+
+interface WorkspaceTypes {
+  Personal: 'PERSONAL';
+  Work: 'WORK';
+}
+
+type WorkspaceTypeKey = keyof WorkspaceTypes;
+
+const WORKSPACE_TYPES = {
+  Personal: 'PERSONAL',
+  Work: 'WORK',
+};
+
+const WorkspaceSchema = z.object({
+  title: z.string(),
+  type: z.enum(['PERSONAL', 'WORK']),
+});
+
+type WorkspaceSchemaType = z.infer<typeof WorkspaceSchema>;
+
+const defaultValues: DefaultValues<WorkspaceSchemaType> = {
+  title: '',
+  type: 'PERSONAL',
+};
+
+const WorkspaceForm = () => {
+  const methods = useForm<WorkspaceSchemaType>({
+    resolver: zodResolver(WorkspaceSchema),
+    defaultValues,
+  });
+
+  const { handleSubmit, register, formState, control } = methods;
+  const { errors, isSubmitting } = formState;
+  const onSubmit: SubmitHandler<WorkspaceSchemaType> = async (data) => {
+    console.log(data);
+  };
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div className='grid gap-y-4'>
+        <div>
+          <label
+            htmlFor='title'
+            className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm mb-2"
+          >
+            Title
+          </label>
+          <div className='relative'>
+            <input
+              id='title'
+              {...register('title')}
+              className={clsx(
+                errors?.title
+                  ? 'border-red-500 text-red-600 focus:border-red-500 focus:ring-red-500'
+                  : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500',
+                'py-3 px-4 block w-full border rounded-md text-sm disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none'
+              )}
+              disabled={isSubmitting}
+              aria-describedby='title-error'
+            />
+            <div
+              className={clsx(
+                errors?.title ? 'flex items-start' : 'hidden',
+                'absolute inset-y-0 right-0 flex items-center pointer-events-none pr-3'
+              )}
+            >
+              <svg
+                className='h-5 w-5 text-red-500'
+                width='16'
+                height='16'
+                fill='currentColor'
+                viewBox='0 0 16 16'
+                aria-hidden='true'
+              >
+                <path d='M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z' />
+              </svg>
+            </div>
+          </div>
+          <p
+            className={clsx(
+              errors?.title ? '' : 'hidden',
+              'text-xs text-red-600 mt-2'
+            )}
+            id='title-error'
+          >
+            {errors?.title?.message}
+          </p>
+        </div>
+        <div className='relative'>
+          <Controller
+            control={control}
+            name='type'
+            render={({ field }) => (
+              <Listbox value={field.value} onChange={field.onChange}>
+                {({ open }) => (
+                  <>
+                    <Listbox.Label className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm capitalize font-medium text-gray-700">
+                      {field.name}
+                    </Listbox.Label>
+                    <div className='relative mt-1'>
+                      <Listbox.Button className='relative w-full cursor-default rounded-md border border-gray-300 bg-white py-3 px-4 text-left shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 sm:text-sm'>
+                        <span className='block truncate capitalize'>
+                          {field.value.toLowerCase()}
+                        </span>
+                        <span className='pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2'>
+                          <HeroIcon
+                            name='ChevronUpDownIcon'
+                            className='h-5 w-5 text-gray-400'
+                            aria-hidden='true'
+                          />
+                        </span>
+                      </Listbox.Button>
+
+                      <Transition
+                        show={open}
+                        as={React.Fragment}
+                        leave='transition ease-in duration-100'
+                        leaveFrom='opacity-100'
+                        leaveTo='opacity-0'
+                      >
+                        <Listbox.Options className='absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm'>
+                          {Object.keys(WORKSPACE_TYPES).map((type) => (
+                            <Listbox.Option
+                              key={type}
+                              className={({ active }) =>
+                                clsx(
+                                  active
+                                    ? 'text-white bg-blue-600'
+                                    : 'text-gray-900',
+                                  'relative cursor-default select-none py-2 pl-3 pr-9'
+                                )
+                              }
+                              value={WORKSPACE_TYPES[type as WorkspaceTypeKey]}
+                            >
+                              {({ selected, active }) => (
+                                <>
+                                  <div className='flex items-center'>
+                                    <span
+                                      className={clsx(
+                                        selected
+                                          ? 'font-semibold'
+                                          : 'font-normal',
+                                        'ml-3 block truncate'
+                                      )}
+                                    >
+                                      {type}
+                                    </span>
+                                  </div>
+
+                                  {selected ? (
+                                    <span
+                                      className={clsx(
+                                        active ? 'text-white' : 'text-blue-600',
+                                        'absolute inset-y-0 right-0 flex items-center pr-4'
+                                      )}
+                                    >
+                                      <HeroIcon
+                                        name='CheckIcon'
+                                        className='h-5 w-5'
+                                        aria-hidden='true'
+                                      />
+                                    </span>
+                                  ) : null}
+                                </>
+                              )}
+                            </Listbox.Option>
+                          ))}
+                        </Listbox.Options>
+                      </Transition>
+                    </div>
+                  </>
+                )}
+              </Listbox>
+            )}
+          />
+          <p
+            className={clsx(
+              errors?.type ? '' : 'hidden',
+              'text-xs text-red-600 mt-2'
+            )}
+            id='type-error'
+          >
+            {errors?.type?.message}
+          </p>
+        </div>
+        <button
+          type='submit'
+          className={clsx(
+            isSubmitting ? 'cursor-not-allowed hover:bg-blue-400' : '',
+            'py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm'
+          )}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            <svg
+              className='w-5 h-5 mr-3 -ml-1 text-white animate-spin'
+              xmlns='http://www.w3.org/2000/svg'
+              fill='none'
+              viewBox='0 0 24 24'
+            >
+              <circle
+                className='opacity-25'
+                cx='12'
+                cy='12'
+                r='10'
+                stroke='currentColor'
+                strokeWidth='4'
+              ></circle>
+              <path
+                className='opacity-75'
+                fill='currentColor'
+                d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
+              ></path>
+            </svg>
+          ) : null}
+          {isSubmitting ? 'Saving ...' : 'Save'}
+        </button>
+      </div>
+    </form>
   );
 };
 
