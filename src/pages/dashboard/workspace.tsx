@@ -82,14 +82,18 @@ const WorkspacePage: NextPageWithLayout = () => {
                     </div>
                     <div>
                       <dt className='sr-only'>Category</dt>
-                      <dd className='group-hover:text-blue-200'>
-                        {workspace.type}
+                      <dd className='group-hover:text-blue-200 capitalize'>
+                        {workspace.type.toLowerCase()}
                       </dd>
                     </div>
                     <div className='col-start-2 row-start-1 row-end-3 sm:mt-4 lg:mt-0 xl:mt-4'>
                       <dt className='sr-only'>Created At</dt>
                       <dd className='group-hover:text-blue-200 text-slate-500'>
-                        {workspace.createdAt.toString()}
+                        {workspace.updatedAt.toLocaleString('default', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                        })}
                       </dd>
                     </div>
                   </dl>
