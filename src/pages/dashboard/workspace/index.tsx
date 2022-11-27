@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import Link from 'next/link';
-import { Dialog, Listbox, Transition } from '@headlessui/react';
+import { Listbox, Transition } from '@headlessui/react';
 import clsx from 'clsx';
 import { z } from 'zod';
 import {
