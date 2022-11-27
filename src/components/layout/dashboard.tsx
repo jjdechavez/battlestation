@@ -1,11 +1,10 @@
 import { Fragment, ReactNode, MouseEvent, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import clsx from 'clsx';
 import { IconName } from '../../types/Icon';
 import HeroIcon from '../base/HeroIcon';
-import { trpc } from '../../utils/trpc';
 
 const userPlaceholder = {
   name: 'Tom Cook',
@@ -102,7 +101,9 @@ export default function DashboardLayout({
   children?: ReactNode;
 }) {
   const router = useRouter();
-  const currentSession = trpc.useQuery(['auth.getSession']);
+  const currentSession = useSession({
+    required: true,
+  });
   const [sidebarActive, setSidebarActive] = useState(false);
 
   const user = {
@@ -187,7 +188,7 @@ export default function DashboardLayout({
                     aria-haspopup='true'
                   >
                     <span className='sr-only'>Open user menu</span>
-                    {currentSession.isLoading ? (
+                    {currentSession.status === 'loading' ? (
                       <div className='animate-pulse'>
                         <div className='w-8 h-8 rounded-full bg-slate-700'></div>
                       </div>
