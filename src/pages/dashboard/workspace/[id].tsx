@@ -1,7 +1,12 @@
 import React, { ReactElement } from 'react';
 import { useRouter } from 'next/router';
-import { NextPageWithLayout } from 'pages/_app';
+import { z } from 'zod';
 import { trpc } from 'utils/trpc';
+import clsx from 'clsx';
+import { DefaultValues, SubmitHandler, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useQueryClient } from 'react-query';
+import { NextPageWithLayout } from 'pages/_app';
 
 import HeroIcon from 'components/base/HeroIcon';
 import DashboardLayout from 'components/layout/dashboard';
@@ -43,7 +48,11 @@ const WorkspacePage: NextPageWithLayout = () => {
         show={showSlideOver}
         handleShow={setShowSlideOver}
       >
-        <div>Form</div>
+        <WorkspaceSectionForm
+          workspaceId={workspaceId}
+          currentPosition={0}
+          handleShowSlideOver={setShowSlideOver}
+        />
       </SlideOver>
       <ul className='bg-slate-50 p-4 sm:px-8 sm:pt-6 sm:pb-8 lg:p-4 xl:px-8 xl:pt-6 xl:pb-8 gap-4 text-sm leading-6'>
         <li className='flex'>
@@ -65,6 +74,141 @@ const WorkspacePage: NextPageWithLayout = () => {
         </li>
       </ul>
     </section>
+  );
+};
+
+const WorkspaceSectionSchema = z.object({
+  title: z.string().min(1, { message: 'Title is required' }),
+  position: z.number().positive(),
+  workspaceId: z.string(),
+});
+
+type WorkspaceSectionSchemaType = z.infer<typeof WorkspaceSectionSchema>;
+
+const WorkspaceSectionForm = ({
+  handleShowSlideOver,
+  currentPosition,
+  workspaceId,
+}: {
+  handleShowSlideOver: (state: boolean) => void;
+  currentPosition: number;
+  workspaceId: string;
+}) => {
+  const defaultValues: DefaultValues<WorkspaceSectionSchemaType> = {
+    title: '',
+    position: currentPosition + 1,
+    workspaceId,
+  };
+  /* const qc = useQueryClient(); */
+  /* const createWorkspace = trpc.useMutation(['workspace.createWorkspace'], { */
+  /*   onSuccess: () => { */
+  /*     qc.invalidateQueries('workspace.getWorkspaces'); */
+  /*     handleShowSlideOver(false); */
+  /*   }, */
+  /* }); */
+  const methods = useForm<WorkspaceSectionSchemaType>({
+    resolver: zodResolver(WorkspaceSectionSchema),
+    defaultValues,
+  });
+
+  const { handleSubmit, register, formState } = methods;
+  const { errors, isSubmitting } = formState;
+  const onSubmit: SubmitHandler<WorkspaceSectionSchemaType> = async (data) => {
+    console.log({
+      ...data,
+      position: currentPosition + 1,
+      workspaceId,
+    });
+    handleShowSlideOver(false);
+  };
+
+  console.log(errors);
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <div className='grid gap-y-4'>
+        <div>
+          <label
+            htmlFor='title'
+            className="after:content-['*'] after:ml-0.5 after:text-red-500 block text-sm mb-2"
+          >
+            Title
+          </label>
+          <div className='relative'>
+            <input
+              id='title'
+              {...register('title')}
+              className={clsx(
+                errors?.title
+                  ? 'border-red-500 text-red-600 focus:border-red-500 focus:ring-red-500'
+                  : 'border-gray-200 focus:border-blue-500 focus:ring-blue-500',
+                'py-3 px-4 block w-full border rounded-md text-sm disabled:bg-slate-50 disabled:text-slate-500 disabled:border-slate-200 disabled:shadow-none'
+              )}
+              disabled={isSubmitting}
+              aria-describedby='title-error'
+            />
+            <div
+              className={clsx(
+                errors?.title ? 'flex items-start' : 'hidden',
+                'absolute inset-y-0 right-0 flex items-center pointer-events-none pr-3'
+              )}
+            >
+              <svg
+                className='h-5 w-5 text-red-500'
+                width='16'
+                height='16'
+                fill='currentColor'
+                viewBox='0 0 16 16'
+                aria-hidden='true'
+              >
+                <path d='M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8 4a.905.905 0 0 0-.9.995l.35 3.507a.552.552 0 0 0 1.1 0l.35-3.507A.905.905 0 0 0 8 4zm.002 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z' />
+              </svg>
+            </div>
+          </div>
+          <p
+            className={clsx(
+              errors?.title ? '' : 'hidden',
+              'text-xs text-red-600 mt-2'
+            )}
+            id='title-error'
+          >
+            {errors?.title?.message}
+          </p>
+        </div>
+        <button
+          type='submit'
+          className={clsx(
+            isSubmitting ? 'cursor-not-allowed hover:bg-blue-400' : '',
+            'py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all text-sm'
+          )}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? (
+            <svg
+              className='w-5 h-5 mr-3 -ml-1 text-white animate-spin'
+              xmlns='http://www.w3.org/2000/svg'
+              fill='none'
+              viewBox='0 0 24 24'
+            >
+              <circle
+                className='opacity-25'
+                cx='12'
+                cy='12'
+                r='10'
+                stroke='currentColor'
+                strokeWidth='4'
+              ></circle>
+              <path
+                className='opacity-75'
+                fill='currentColor'
+                d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'
+              ></path>
+            </svg>
+          ) : null}
+          {isSubmitting ? 'Saving ...' : 'Save'}
+        </button>
+      </div>
+    </form>
   );
 };
 
