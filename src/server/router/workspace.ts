@@ -1,4 +1,6 @@
+import * as trpc from '@trpc/server';
 import { z } from 'zod';
+import messages from 'constants/messages/workspace';
 import { createProtectedRouter } from './protected-router';
 
 export const workspaceRouter = createProtectedRouter()
@@ -10,6 +12,27 @@ export const workspaceRouter = createProtectedRouter()
         where: { authorId: userId },
       });
       return workspaces;
+    },
+  })
+  .query('getWorkspace', {
+    input: z.object({
+      id: z.string(),
+    }),
+    async resolve({ ctx, input }) {
+      const userId = ctx.session.user.id;
+
+      const workspace = await ctx.prisma.workspace.findFirst({
+        where: { id: input.id, authorId: userId },
+      });
+
+      if (!workspace) {
+        throw new trpc.TRPCError({
+          code: 'NOT_FOUND',
+          message: messages.workspaceNotFound,
+        });
+      }
+
+      return workspace;
     },
   })
   .mutation('createWorkspace', {
