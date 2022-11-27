@@ -2,9 +2,6 @@ import React, { ReactElement } from 'react';
 import Link from 'next/link';
 import { Dialog, Listbox, Transition } from '@headlessui/react';
 import clsx from 'clsx';
-import DashboardLayout from 'components/layout/dashboard';
-import HeroIcon from 'components/base/HeroIcon';
-import { NextPageWithLayout } from 'pages/_app';
 import { z } from 'zod';
 import {
   Controller,
@@ -13,27 +10,15 @@ import {
   useForm,
 } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-
-const workspaces = [
-  {
-    name: 'API Integration',
-    category: 'Engineering',
-    createdAt: new Date(),
-  },
-  {
-    name: 'New Benefits Plan',
-    category: 'Human Resources',
-    createdAt: new Date(),
-  },
-  {
-    name: 'Onboarding Emails',
-    category: 'Customer Success',
-    createdAt: new Date(),
-  },
-];
+import DashboardLayout from 'components/layout/dashboard';
+import HeroIcon from 'components/base/HeroIcon';
+import { NextPageWithLayout } from 'pages/_app';
+import { trpc } from 'utils/trpc';
+import { useQueryClient } from 'react-query';
 
 const WorkspacePage: NextPageWithLayout = () => {
   const [showSlideOver, setShowSlideOver] = React.useState(false);
+  const workspaces = trpc.useQuery(['workspace.getWorkspaces']);
 
   return (
     <section>
@@ -79,56 +64,65 @@ const WorkspacePage: NextPageWithLayout = () => {
         </form>
       </header>
       <WorkspaceSlideOver show={showSlideOver} handleShow={setShowSlideOver} />
-      <ul className='bg-slate-50 p-4 sm:px-8 sm:pt-6 sm:pb-8 lg:p-4 xl:px-8 xl:pt-6 xl:pb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4 text-sm leading-6'>
-        {workspaces.map((workspace) => (
-          <li
-            key={workspace.name}
-            className='group cursor-pointer rounded-md p-3 bg-white ring-1 ring-slate-200 shadow-sm hover:bg-blue-500 hover:ring-blue-500 hover:shadow-md'
-          >
-            <Link href='#'>
-              <a className='hover:bg-blue-500 hover:shadow-md group rounded-md bg-white shadow-sm'>
-                <dl className='grid sm:block lg:grid xl:block grid-cols-2 grid-rows-2 items-center'>
-                  <div>
-                    <dt className='sr-only'>Title</dt>
-                    <dd className='group-hover:text-white font-semibold text-slate-900'>
-                      {workspace.name}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt className='sr-only'>Category</dt>
-                    <dd className='group-hover:text-blue-200'>
-                      {workspace.category}
-                    </dd>
-                  </div>
-                  <div className='col-start-2 row-start-1 row-end-3 sm:mt-4 lg:mt-0 xl:mt-4'>
-                    <dt className='sr-only'>Created At</dt>
-                    <dd className='group-hover:text-blue-200 text-slate-500'>
-                      {workspace.createdAt.toString()}
-                    </dd>
-                  </div>
-                </dl>
-              </a>
-            </Link>
-          </li>
-        ))}
-        <li className={clsx('flex', !!!workspaces.length ? 'col-span-2' : '')}>
-          <button
-            className='hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500 group w-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-slate-300 text-sm leading-6 text-slate-900 font-medium py-3'
-            onClick={() => setShowSlideOver(true)}
-          >
-            <svg
-              className='group-hover:text-blue-500 mb-1 text-slate-400'
-              width='20'
-              height='20'
-              fill='currentColor'
-              aria-hidden='true'
+      {!workspaces.isLoading && workspaces.data ? (
+        <ul className='bg-slate-50 p-4 sm:px-8 sm:pt-6 sm:pb-8 lg:p-4 xl:px-8 xl:pt-6 xl:pb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4 text-sm leading-6'>
+          {workspaces.data?.map((workspace) => (
+            <li
+              key={workspace.title}
+              className='group cursor-pointer rounded-md p-3 bg-white ring-1 ring-slate-200 shadow-sm hover:bg-blue-500 hover:ring-blue-500 hover:shadow-md'
             >
-              <path d='M10 5a1 1 0 0 1 1 1v3h3a1 1 0 1 1 0 2h-3v3a1 1 0 1 1-2 0v-3H6a1 1 0 1 1 0-2h3V6a1 1 0 0 1 1-1Z' />
-            </svg>
-            New workspace
-          </button>
-        </li>
-      </ul>
+              <Link href='#'>
+                <a className='hover:bg-blue-500 hover:shadow-md group rounded-md bg-white shadow-sm'>
+                  <dl className='grid sm:block lg:grid xl:block grid-cols-2 grid-rows-2 items-center'>
+                    <div>
+                      <dt className='sr-only'>Title</dt>
+                      <dd className='group-hover:text-white font-semibold text-slate-900'>
+                        {workspace.title}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt className='sr-only'>Category</dt>
+                      <dd className='group-hover:text-blue-200'>
+                        {workspace.type}
+                      </dd>
+                    </div>
+                    <div className='col-start-2 row-start-1 row-end-3 sm:mt-4 lg:mt-0 xl:mt-4'>
+                      <dt className='sr-only'>Created At</dt>
+                      <dd className='group-hover:text-blue-200 text-slate-500'>
+                        {workspace.createdAt.toString()}
+                      </dd>
+                    </div>
+                  </dl>
+                </a>
+              </Link>
+            </li>
+          ))}
+          <li
+            className={clsx(
+              'flex',
+              !!!workspaces.data.length ? 'col-span-2' : ''
+            )}
+          >
+            <button
+              className='hover:border-blue-500 hover:border-solid hover:bg-white hover:text-blue-500 group w-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-slate-300 text-sm leading-6 text-slate-900 font-medium py-3'
+              onClick={() => setShowSlideOver(true)}
+            >
+              <svg
+                className='group-hover:text-blue-500 mb-1 text-slate-400'
+                width='20'
+                height='20'
+                fill='currentColor'
+                aria-hidden='true'
+              >
+                <path d='M10 5a1 1 0 0 1 1 1v3h3a1 1 0 1 1 0 2h-3v3a1 1 0 1 1-2 0v-3H6a1 1 0 1 1 0-2h3V6a1 1 0 0 1 1-1Z' />
+              </svg>
+              New workspace
+            </button>
+          </li>
+        </ul>
+      ) : (
+        <div>Loading...</div>
+      )}
     </section>
   );
 };
@@ -198,7 +192,7 @@ const WorkspaceSlideOver = ({ show, handleShow }: WorkspaceSlideOverType) => {
                       </Dialog.Title>
                     </div>
                     <div className='relative mt-6 flex-1 px-4 sm:px-6'>
-                      <WorkspaceForm />
+                      <WorkspaceForm handleShowSlideOver={handleShow} />
                     </div>
                   </div>
                 </Dialog.Panel>
@@ -224,7 +218,7 @@ const WORKSPACE_TYPES = {
 };
 
 const WorkspaceSchema = z.object({
-  title: z.string(),
+  title: z.string().min(1, { message: 'Title is required' }),
   type: z.enum(['PERSONAL', 'WORK']),
 });
 
@@ -235,8 +229,18 @@ const defaultValues: DefaultValues<WorkspaceSchemaType> = {
   type: 'PERSONAL',
 };
 
-// TODO: Add loading state on Listbox component
-const WorkspaceForm = () => {
+const WorkspaceForm = ({
+  handleShowSlideOver,
+}: {
+  handleShowSlideOver: (state: boolean) => void;
+}) => {
+  const qc = useQueryClient();
+  const createWorkspace = trpc.useMutation(['workspace.createWorkspace'], {
+    onSuccess: () => {
+      qc.invalidateQueries('workspace.getWorkspaces');
+      handleShowSlideOver(false);
+    },
+  });
   const methods = useForm<WorkspaceSchemaType>({
     resolver: zodResolver(WorkspaceSchema),
     defaultValues,
@@ -244,8 +248,8 @@ const WorkspaceForm = () => {
 
   const { handleSubmit, register, formState, control } = methods;
   const { errors, isSubmitting } = formState;
-  const onSubmit: SubmitHandler<WorkspaceSchemaType> = async (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<WorkspaceSchemaType> = (data) => {
+    createWorkspace.mutate(data);
   };
 
   return (
