@@ -50,7 +50,7 @@ const WorkspacePage: NextPageWithLayout = () => {
       >
         <WorkspaceSectionForm
           workspaceId={workspaceId}
-          currentPosition={0}
+          currentPosition={workspace.data?.workspaceSection.length ?? 0}
           handleShowSlideOver={setShowSlideOver}
         />
       </SlideOver>
@@ -99,13 +99,16 @@ const WorkspaceSectionForm = ({
     position: currentPosition + 1,
     workspaceId,
   };
-  /* const qc = useQueryClient(); */
-  /* const createWorkspace = trpc.useMutation(['workspace.createWorkspace'], { */
-  /*   onSuccess: () => { */
-  /*     qc.invalidateQueries('workspace.getWorkspaces'); */
-  /*     handleShowSlideOver(false); */
-  /*   }, */
-  /* }); */
+  const qc = useQueryClient();
+  const createWorkspaceSection = trpc.useMutation(
+    ['workspace.section.createSection'],
+    {
+      onSuccess: () => {
+        qc.invalidateQueries('workspace.getWorkspace');
+        handleShowSlideOver(false);
+      },
+    }
+  );
   const methods = useForm<WorkspaceSectionSchemaType>({
     resolver: zodResolver(WorkspaceSectionSchema),
     defaultValues,
@@ -114,15 +117,8 @@ const WorkspaceSectionForm = ({
   const { handleSubmit, register, formState } = methods;
   const { errors, isSubmitting } = formState;
   const onSubmit: SubmitHandler<WorkspaceSectionSchemaType> = async (data) => {
-    console.log({
-      ...data,
-      position: currentPosition + 1,
-      workspaceId,
-    });
-    handleShowSlideOver(false);
+    await createWorkspaceSection.mutateAsync(data);
   };
-
-  console.log(errors);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
