@@ -5,6 +5,7 @@ import { trpc } from 'utils/trpc';
 import clsx from 'clsx';
 import { DefaultValues, SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Disclosure } from '@headlessui/react';
 import { useQueryClient } from 'react-query';
 import { NextPageWithLayout } from 'pages/_app';
 
@@ -54,6 +55,63 @@ const WorkspacePage: NextPageWithLayout = () => {
           handleShowSlideOver={setShowSlideOver}
         />
       </SlideOver>
+      {workspace.data?.workspaceSection.map((section) => (
+        <Disclosure>
+          {({ open }) => (
+            <>
+              <Disclosure.Button
+                key={section.id}
+                className='border divide-gray-200 flex justify-between py-2 sm:px-8 sm:py-6 lg:p-2 xl:px-8 w-full text-left text-sm font-bold text-gray-900'
+              >
+                {section.title}
+                <HeroIcon
+                  name='ChevronUpIcon'
+                  className={clsx(
+                    open ? 'rotate-180 transform' : '',
+                    'h-5 w-5'
+                  )}
+                />
+              </Disclosure.Button>
+              <Disclosure.Panel className='bg-white'>
+                <div className='overflow-x-auto border border-gray-200'>
+                  <table className='min-w-full divide-y divide-gray-200 text-sm'>
+                    <tbody className='divide-y divide-gray-200'>
+                      <tr>
+                        <td className='whitespace-nowrap px-8 py-2 font-medium text-gray-900'>
+                          John Doe
+                        </td>
+                        <td className='whitespace-nowrap px-8 py-2 text-gray-700'>
+                          24/05/1995
+                        </td>
+                        <td className='whitespace-nowrap px-8 py-2 text-gray-700'>
+                          Web Developer
+                        </td>
+                        <td className='whitespace-nowrap px-8 py-2 text-gray-700'>
+                          $120,000
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className='whitespace-nowrap px-8 py-2 font-medium text-gray-900'>
+                          John Doe
+                        </td>
+                        <td className='whitespace-nowrap px-8 py-2 text-gray-700'>
+                          24/05/1995
+                        </td>
+                        <td className='whitespace-nowrap px-8 py-2 text-gray-700'>
+                          Web Developer
+                        </td>
+                        <td className='whitespace-nowrap px-8 py-2 text-gray-700'>
+                          $120,000
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </Disclosure.Panel>
+            </>
+          )}
+        </Disclosure>
+      ))}
       <ul className='bg-slate-50 p-4 sm:px-8 sm:pt-6 sm:pb-8 lg:p-4 xl:px-8 xl:pt-6 xl:pb-8 gap-4 text-sm leading-6'>
         <li className='flex'>
           <button
