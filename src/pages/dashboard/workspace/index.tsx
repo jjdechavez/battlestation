@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react';
 import Link from 'next/link';
-import { Dialog, Listbox, Transition } from '@headlessui/react';
+import { Listbox, Transition } from '@headlessui/react';
 import clsx from 'clsx';
 import { z } from 'zod';
 import {
@@ -12,6 +12,7 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import DashboardLayout from 'components/layout/dashboard';
 import HeroIcon from 'components/base/HeroIcon';
+import SlideOver from 'components/base/SlideOver';
 import { NextPageWithLayout } from 'pages/_app';
 import { trpc } from 'utils/trpc';
 import { useQueryClient } from 'react-query';
@@ -63,7 +64,13 @@ const WorkspacePage: NextPageWithLayout = () => {
           />
         </form>
       </header>
-      <WorkspaceSlideOver show={showSlideOver} handleShow={setShowSlideOver} />
+      <SlideOver
+        name='New Workspace'
+        show={showSlideOver}
+        handleShow={setShowSlideOver}
+      >
+        <WorkspaceForm handleShowSlideOver={setShowSlideOver} />
+      </SlideOver>
       {!workspaces.isLoading && workspaces.data ? (
         <ul className='bg-slate-50 p-4 sm:px-8 sm:pt-6 sm:pb-8 lg:p-4 xl:px-8 xl:pt-6 xl:pb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-4 text-sm leading-6'>
           {workspaces.data?.map((workspace) => (
@@ -131,84 +138,6 @@ const WorkspacePage: NextPageWithLayout = () => {
   );
 };
 
-type WorkspaceSlideOverType = {
-  show: boolean;
-  handleShow: (state: boolean) => void;
-};
-
-const WorkspaceSlideOver = ({ show, handleShow }: WorkspaceSlideOverType) => {
-  return (
-    <Transition.Root show={show} as={React.Fragment}>
-      <Dialog as='div' className='relative z-10' onClose={handleShow}>
-        <Transition.Child
-          as={React.Fragment}
-          enter='ease-in-out duration-500'
-          enterFrom='opacity-0'
-          enterTo='opacity-100'
-          leave='ease-in-out duration-500'
-          leaveFrom='opacity-100'
-          leaveTo='opacity-0'
-        >
-          <div className='fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity' />
-        </Transition.Child>
-
-        <div className='fixed inset-0 overflow-hidden'>
-          <div className='absolute inset-0 overflow-hidden'>
-            <div className='pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10'>
-              <Transition.Child
-                as={React.Fragment}
-                enter='transform transition ease-in-out duration-500 sm:duration-700'
-                enterFrom='translate-x-full'
-                enterTo='translate-x-0'
-                leave='transform transition ease-in-out duration-500 sm:duration-700'
-                leaveFrom='translate-x-0'
-                leaveTo='translate-x-full'
-              >
-                <Dialog.Panel className='pointer-events-auto relative w-screen max-w-md'>
-                  <Transition.Child
-                    as={React.Fragment}
-                    enter='ease-in-out duration-500'
-                    enterFrom='opacity-0'
-                    enterTo='opacity-100'
-                    leave='ease-in-out duration-500'
-                    leaveFrom='opacity-100'
-                    leaveTo='opacity-0'
-                  >
-                    <div className='absolute top-0 left-0 -ml-8 flex pt-4 pr-2 sm:-ml-10 sm:pr-4'>
-                      <button
-                        type='button'
-                        className='rounded-md text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-white'
-                        onClick={() => handleShow(false)}
-                      >
-                        <span className='sr-only'>Close panel</span>
-                        <HeroIcon
-                          name='XMarkIcon'
-                          className='h-6 w-6'
-                          aria-hidden='true'
-                        />
-                      </button>
-                    </div>
-                  </Transition.Child>
-                  <div className='flex h-full flex-col overflow-y-scroll bg-white py-6 shadow-xl'>
-                    <div className='px-4 sm:px-6'>
-                      <Dialog.Title className='text-lg font-medium text-gray-900'>
-                        New Workspace
-                      </Dialog.Title>
-                    </div>
-                    <div className='relative mt-6 flex-1 px-4 sm:px-6'>
-                      <WorkspaceForm handleShowSlideOver={handleShow} />
-                    </div>
-                  </div>
-                </Dialog.Panel>
-              </Transition.Child>
-            </div>
-          </div>
-        </div>
-      </Dialog>
-    </Transition.Root>
-  );
-};
-
 interface WorkspaceTypes {
   Personal: 'PERSONAL';
   Work: 'WORK';
@@ -252,8 +181,8 @@ const WorkspaceForm = ({
 
   const { handleSubmit, register, formState, control } = methods;
   const { errors, isSubmitting } = formState;
-  const onSubmit: SubmitHandler<WorkspaceSchemaType> = (data) => {
-    createWorkspace.mutate(data);
+  const onSubmit: SubmitHandler<WorkspaceSchemaType> = async (data) => {
+    await createWorkspace.mutateAsync(data);
   };
 
   return (

@@ -23,6 +23,9 @@ export const workspaceRouter = createProtectedRouter()
 
       const workspace = await ctx.prisma.workspace.findFirst({
         where: { id: input.id, authorId: userId },
+        include: {
+          workspaceSection: true,
+        },
       });
 
       if (!workspace) {
