@@ -181,8 +181,8 @@ const WorkspaceForm = ({
 
   const { handleSubmit, register, formState, control } = methods;
   const { errors, isSubmitting } = formState;
-  const onSubmit: SubmitHandler<WorkspaceSchemaType> = (data) => {
-    createWorkspace.mutate(data);
+  const onSubmit: SubmitHandler<WorkspaceSchemaType> = async (data) => {
+    await createWorkspace.mutateAsync(data);
   };
 
   return (
