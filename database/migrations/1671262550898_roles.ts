@@ -18,6 +18,19 @@ export default class extends BaseSchema {
       table.timestamp('created_at', { useTz: true });
       table.timestamp('updated_at', { useTz: true });
     });
+
+    this.defer(async (db) => {
+      await db.table(this.tableName).multiInsert([
+        {
+          alias: 'ADMIN',
+          name: 'Admin',
+        },
+        {
+          alias: 'MEMBER',
+          name: 'Member',
+        },
+      ]);
+    });
   }
 
   public async down() {
