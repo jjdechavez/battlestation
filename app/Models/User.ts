@@ -30,6 +30,9 @@ export default class User extends BaseModel {
   public status: UserStatus;
 
   @column()
+  public roleAlias: string;
+
+  @column()
   public email: string;
 
   @column({ serializeAs: null })
@@ -50,7 +53,9 @@ export default class User extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime;
 
-  @belongsTo(() => Role)
+  @belongsTo(() => Role, {
+    foreignKey: 'roleAlias',
+  })
   public role: BelongsTo<typeof Role>;
 
   @beforeSave()

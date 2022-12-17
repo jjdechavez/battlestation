@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,11 +8,100 @@
   @entryPointStyles('app')
   @entryPointScripts('app')
 </head>
+
 <body>
 
   <main>
+    @if (!auth.user)
     <div>
-      <h1 class="title"> It Works! </h1>
+      {{ inspect(flashMessages) }}
+      <form method="POST" action="{{ route('auth.register') }}" style="margin-bottom: 3rem;">
+        <h2>Register Form</h2>
+        <label for="firstName">
+          First Name
+          <input type="text" name="firstName" value="{{ flashMessages.get('firstName', '') }}" placeholder="FirstName">
+          @if (flashMessages.has('errors.firstName'))
+          <small style="color: red;">
+            {{ flashMessages.get('errors.firstName') }}
+          </small>
+          @endif
+        </label>
+        <label for="lastName">
+          Last Name
+          <input type="text" name="lastName" value="{{ flashMessages.get('lastName', '') }}" placeholder="LastName">
+          @if (flashMessages.has('errors.lastName'))
+          <small style="color: red;">
+            {{ flashMessages.get('errors.lastName') }}
+          </small>
+          @endif
+        </label>
+        <label for="email">
+          Email
+          <input type="email" name="email" value="{{ flashMessages.get('email', '') }}" placeholder="Email Address">
+          @if (flashMessages.has('errors.email'))
+          <small style="color: red;">
+            {{ flashMessages.get('errors.email') }}
+          </small>
+          @endif
+        </label>
+        <label for="role">
+          Role
+          <select name="roleAlias">
+            @each(role in roles)
+            <option value="{{ role.alias }}">{{ role.name }}</option>
+            @endeach
+          </select>
+          @if (flashMessages.has('errors.role'))
+          <small style="color: red;">
+            {{ flashMessages.get('errors.role') }}
+          </small>
+          @endif
+        </label>
+        <label for="password">
+          Password
+          <input type="password" name="password" placeholder="Password">
+          @if (flashMessages.has('errors.password'))
+          <small style="color: red;">
+            {{ flashMessages.get('errors.password') }}
+          </small>
+          @endif
+        </label>
+        <label for="password_confirmation">
+          Password Confirmation
+          <input type="password" name="password_confirmation" placeholder="Password Confirmation">
+          @if (flashMessages.has('errors.password_confirmation'))
+          <small style="color: red;">
+            {{ flashMessages.get('errors.password_confirmation') }}
+          </small>
+          @endif
+        </label>
+        <button type="submit">Register</button>
+      </form>
+
+      <form method="POST" action="{{ route('auth.login') }}">
+        <h2>Login Form</h2>
+        @if (flashMessages.has('errors'))
+        <small style="color: red;">
+          {{ flashMessages.get('errors') }}
+        </small>
+        @endif
+        <label for="email">
+          Email
+          <input type="email" name="email" value="{{ flashMessages.get('email', '') }}" placeholder="Email Address">
+        </label>
+        <label for="password">
+          Password
+          <input type="password" name="password" placeholder="Password">
+        </label>
+        <button type="submit">Login</button>
+      </form>
+    </div>
+    @else
+    <div>
+      @if(flashMessages.has('success'))
+      <p>{{ flashMessages.get('success') }}</p>
+      @endif
+      <h1 class="title"> It Works! {{ auth.user.email }}</h1>
       <p class="subtitle">
         Congratulations, you have just created your first AdonisJS app.
       </p>
@@ -26,10 +116,14 @@
         </li>
 
         <li>
-          If you run into problems, you can reach us on <a href="https://discord.gg/vDcEjq6?">Discord</a> or the <a href="https://forum.adonisjs.com/">Forum</a>.
+          If you run into problems, you can reach us on <a href="https://discord.gg/vDcEjq6?">Discord</a> or the <a
+            href="https://forum.adonisjs.com/">Forum</a>.
         </li>
       </ul>
+      <a href="{{ route('auth.logout') }}">Logout</a>
     </div>
+    @endif
   </main>
 </body>
+
 </html>
