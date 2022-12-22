@@ -14,7 +14,7 @@
     <tbody>
       @each (user in users)
       <tr>
-        <td>{{ user.email }}</td>
+        <td>{{ user.email }} {{ auth.user.id === user.id ? '(you)' : '' }}</td>
         <td style="text-transform: capitalize;">
           <!-- I can use unpoly to get rid the form submission -->
           <form method="POST" action="{{ route('users.role', { id: user.id }, { qs: {_method: 'PATCH'} }) }}">
@@ -28,6 +28,12 @@
           </form>
         </td>
         <td>{{ user.createdAt.toLocaleString() }}</td>
+        <td>
+          <form method="POST" action="{{ route('users.destroy', { id: user.id }, { qs: { _method: 'DELETE' } }) }}">
+            <button type="button"
+              onclick="confirm('Are you sure you want to delete this user?') && this.parentElement.submit()">Delete</button>
+          </form>
+        </td>
       </tr>
       @endeach
     </tbody>

@@ -10,6 +10,17 @@
 </head>
 
 <body>
+  @if(auth.user)
+  <nav class="header">
+    <ul>
+      <li><a href="{{ route('/dashboard') }}">Home</a></li>
+
+      @if(auth.user?.roleAlias === 'ADMIN')
+      <li><a href="{{ route('users.manage') }}">Users</a></li>
+      @endif
+    </ul>
+  </nav>
+  @endif
 
   <main>
     @!section('content')

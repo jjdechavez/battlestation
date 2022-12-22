@@ -29,4 +29,15 @@ export default class UsersController {
       ? response.redirect().toPath('/dashboard')
       : response.redirect().back();
   }
+
+  public async destroy({ response, params, auth }: HttpContextContract) {
+    const user = await User.findOrFail(params.id);
+    const isAuthUser = user.id === auth.user?.id;
+
+    await user.delete();
+
+    return isAuthUser
+      ? response.redirect().toPath('/')
+      : response.redirect().back();
+  }
 }

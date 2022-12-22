@@ -46,6 +46,7 @@ Route.group(() => {
   Route.group(() => {
     Route.get('/manage', 'UsersController.manage').as('manage');
     Route.patch('/:id/role', 'UsersController.role').as('role');
+    Route.delete('/:id', 'UsersController.destroy').as('destroy');
   })
     .prefix('users')
     .as('users')
