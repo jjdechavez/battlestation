@@ -23,9 +23,12 @@ import Role from 'App/Models/Role';
 import User from 'App/Models/User';
 
 Route.get('/', async ({ view }) => {
-  const roles = await Role.query().orderBy('name');
+  return view.render('welcome');
+});
 
-  return view.render('welcome', { roles });
+Route.get('register', async ({ view }) => {
+  const roles = await Role.query().orderBy('name');
+  return view.render('register', { roles });
 });
 
 Route.post('/auth/register', 'AuthController.register').as('auth.register');

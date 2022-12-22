@@ -1,0 +1,78 @@
+@layout('layouts/app')
+
+@section('content')
+
+<div>
+  {{ inspect(flashMessages) }}
+  <form method="POST" action="{{ route('auth.register') }}" style="margin-bottom: 3rem;">
+    <h2>Register Form</h2>
+
+    <label for="firstName">
+      First Name
+      <input type="text" name="firstName" value="{{ flashMessages.get('firstName', '') }}" placeholder="FirstName">
+      @if (flashMessages.has('errors.firstName'))
+      <small style="color: red;">
+        {{ flashMessages.get('errors.firstName') }}
+      </small>
+      @endif
+    </label>
+
+    <label for="lastName">
+      Last Name
+      <input type="text" name="lastName" value="{{ flashMessages.get('lastName', '') }}" placeholder="LastName">
+      @if (flashMessages.has('errors.lastName'))
+      <small style="color: red;">
+        {{ flashMessages.get('errors.lastName') }}
+      </small>
+      @endif
+    </label>
+
+    <label for="email">
+      Email
+      <input type="email" name="email" value="{{ flashMessages.get('email', '') }}" placeholder="Email Address">
+      @if (flashMessages.has('errors.email'))
+      <small style="color: red;">
+        {{ flashMessages.get('errors.email') }}
+      </small>
+      @endif
+    </label>
+
+    <label for="role">
+      Role
+      <select name="roleAlias">
+        @each(role in roles)
+        <option value="{{ role.alias }}">{{ role.name }}</option>
+        @endeach
+      </select>
+      @if (flashMessages.has('errors.role'))
+      <small style="color: red;">
+        {{ flashMessages.get('errors.role') }}
+      </small>
+      @endif
+    </label>
+
+    <label for="password">
+      Password
+      <input type="password" name="password" placeholder="Password">
+      @if (flashMessages.has('errors.password'))
+      <small style="color: red;">
+        {{ flashMessages.get('errors.password') }}
+      </small>
+      @endif
+    </label>
+
+    <label for="password_confirmation">
+      Password Confirmation
+      <input type="password" name="password_confirmation" placeholder="Password Confirmation">
+      @if (flashMessages.has('errors.password_confirmation'))
+      <small style="color: red;">
+        {{ flashMessages.get('errors.password_confirmation') }}
+      </small>
+      @endif
+    </label>
+
+    <button type="submit">Register</button>
+  </form>
+</div>
+
+@endsection
