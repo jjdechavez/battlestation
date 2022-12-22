@@ -4,7 +4,9 @@
 
 <div>
   {{ inspect(flashMessages) }}
-  <form method="POST" action="{{ route('auth.register') }}" style="margin-bottom: 3rem;">
+  <p>If you have already account you can <a href="{{ route('/') }}">login</a></p>
+
+  <form method="POST" action="{{ route('auth.register') }}" style="margin-top: 2rem;">
     <h2>Register Form</h2>
 
     <label for="firstName">
