@@ -1,5 +1,6 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import { schema, rules } from '@ioc:Adonis/Core/Validator';
+import ROLE_ALIAS from 'App/Constants/RoleAlias';
 import Role from 'App/Models/Role';
 import User from 'App/Models/User';
 
@@ -11,7 +12,7 @@ export default class UsersController {
     return view.render('dashboard/users/manage', { users, roles });
   }
 
-  public async role({ request, response, params }: HttpContextContract) {
+  public async role({ request, response, params, auth }: HttpContextContract) {
     const roleSchema = schema.create({
       roleAlias: schema.string([
         rules.exists({ table: 'roles', column: 'alias' }),
@@ -20,9 +21,12 @@ export default class UsersController {
 
     const payload = await request.validate({ schema: roleSchema });
     const user = await User.findOrFail(params.id);
+    const isAuthUser = user.id === auth.user?.id;
 
     await user.merge(payload).save();
 
-    return response.redirect().back();
+    return isAuthUser && user.roleAlias !== ROLE_ALIAS.ADMIN
+      ? response.redirect().toPath('/dashboard')
+      : response.redirect().back();
   }
 }
