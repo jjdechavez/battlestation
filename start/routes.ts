@@ -48,5 +48,8 @@ Route.group(() => {
     Route.patch('/:id/role', 'UsersController.role').as('role');
   })
     .prefix('users')
-    .as('users');
-}).prefix('dashboard');
+    .as('users')
+    .middleware(['auth', 'role:admin']);
+})
+  .prefix('dashboard')
+  .middleware('auth');
