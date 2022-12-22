@@ -1,0 +1,37 @@
+@layout('layouts/app')
+
+@section('content')
+
+<div>
+  <h1>User Management</h1>
+
+  <table>
+    <thead>
+      <th>Email</th>
+      <th>Role</th>
+      <th>Joined</th>
+    </thead>
+    <tbody>
+      @each (user in users)
+      <tr>
+        <td>{{ user.email }}</td>
+        <td style="text-transform: capitalize;">
+          <!-- I can use unpoly to get rid the form submission -->
+          <form method="POST" action="{{ route('users.role', { id: user.id }, { qs: {_method: 'PATCH'} }) }}">
+            <select name="roleAlias" onchange="this.parentElement.submit()">
+              @each (role in roles)
+              <option value="{{ role.alias }}" {{ role.alias===user.roleAlias ? 'selected' : '' }}>
+                {{ role.name }}
+              </option>
+              @endeach
+            </select>
+          </form>
+        </td>
+        <td>{{ user.createdAt.toLocaleString() }}</td>
+      </tr>
+      @endeach
+    </tbody>
+  </table>
+</div>
+
+@endsection

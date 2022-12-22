@@ -42,4 +42,11 @@ Route.group(() => {
 
     return view.render('dashboard/index', { user: user.toJSON() });
   });
+
+  Route.group(() => {
+    Route.get('/manage', 'UsersController.manage').as('manage');
+    Route.patch('/:id/role', 'UsersController.role').as('role');
+  })
+    .prefix('users')
+    .as('users');
 }).prefix('dashboard');
