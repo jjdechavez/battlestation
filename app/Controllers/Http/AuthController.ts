@@ -37,18 +37,15 @@ export default class AuthController {
   }: HttpContextContract) {
     const { email, password } = request.only(['email', 'password']);
 
-    let role = '';
     try {
-      const result = await auth.attempt(email, password);
-      role = result.roleAlias;
-    } catch (error) {
+      await auth.attempt(email, password);
+    } catch {
       session.flash('errors', 'Email or Password invalid');
+      session.flash('email', email);
       return response.redirect().back();
     }
 
-    return role === 'ADMIN'
-      ? response.redirect().toPath('/dashboard')
-      : response.redirect().toPath('/');
+    return response.redirect().toPath('/dashboard');
   }
 
   public async logout({ response, auth }: HttpContextContract) {
