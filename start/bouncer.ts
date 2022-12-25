@@ -7,7 +7,6 @@
 
 import Bouncer from '@ioc:Adonis/Addons/Bouncer';
 import Logger from '@ioc:Adonis/Core/Logger';
-import ROLE_ALIAS from 'App/Constants/RoleAlias';
 import User from 'App/Models/User';
 
 /*
