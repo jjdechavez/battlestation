@@ -16,8 +16,10 @@
       <li><a href="{{ route('/dashboard') }}">Home</a></li>
 
       @if(auth.user?.roleAlias === 'ADMIN')
-      <li><a href="{{ route('users.manage') }}">Users</a></li>
+        <li><a href="{{ route('users.manage') }}">Users</a></li>
       @endif
+
+      <li><a href="{{ route('auth.logout') }}">Logout</a></li>
     </ul>
   </nav>
   @endif

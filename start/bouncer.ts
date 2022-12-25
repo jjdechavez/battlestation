@@ -5,7 +5,9 @@
  * file.
  */
 
-import Bouncer from '@ioc:Adonis/Addons/Bouncer'
+import Bouncer from '@ioc:Adonis/Addons/Bouncer';
+import ROLE_ALIAS from 'App/Constants/RoleAlias';
+import User from 'App/Models/User';
 
 /*
 |--------------------------------------------------------------------------
@@ -29,7 +31,15 @@ import Bouncer from '@ioc:Adonis/Addons/Bouncer'
 | NOTE: Always export the "actions" const from this file
 |****************************************************************
 */
-export const { actions } = Bouncer
+export const { actions } = Bouncer;
+
+Bouncer.before((user: User | null) => {
+  if (user?.roleAlias === ROLE_ALIAS.ADMIN) {
+    return true;
+  }
+}).define('manageUsers', (user: User) => {
+  return user.roleAlias === ROLE_ALIAS.ADMIN;
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -54,4 +64,4 @@ export const { actions } = Bouncer
 | NOTE: Always export the "policies" const from this file
 |****************************************************************
 */
-export const { policies } = Bouncer.registerPolicies({})
+export const { policies } = Bouncer.registerPolicies({});

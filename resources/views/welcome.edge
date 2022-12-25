@@ -1,28 +1,33 @@
 @layout('layouts/app')
 
 @section('content')
+  <div>
+    {{ inspect(flashMessages) }}
+    <form method="POST" action="{{ route('auth.login') }}">
+      <h2>Login Form</h2>
+      @if (flashMessages.has('errors'))
+        <small style="color: red;">
+          {{ flashMessages.get('errors') }}
+        </small>
+      @endif
 
-<div>
-  {{ inspect(flashMessages) }}
-  <form method="POST" action="{{ route('auth.login') }}">
-    <h2>Login Form</h2>
-    @if (flashMessages.has('errors'))
-    <small style="color: red;">
-      {{ flashMessages.get('errors') }}
-    </small>
-    @endif
-    <label for="email">
-      Email
-      <input type="email" name="email" value="{{ flashMessages.get('email', '') }}" placeholder="Email Address">
-    </label>
-    <label for="password">
-      Password
-      <input type="password" name="password" placeholder="Password">
-    </label>
-    <button type="submit">Login</button>
-  </form>
+      @if (flashMessages.has('values.auth'))
+        <small style="color: red;">
+          {{ flashMessages.get('values.auth.error') }}
+        </small>
+      @endif
 
-  <p style="margin-top: 2rem;">If you dont have an account you can <a href="{{ route('/register') }}">register</a></p>
-</div>
+      <label for="email">
+        Email
+        <input type="email" name="email" value="{{ flashMessages.get('email', '') }}" placeholder="Email Address">
+      </label>
+      <label for="password">
+        Password
+        <input type="password" name="password" placeholder="Password">
+      </label>
+      <button type="submit">Login</button>
+    </form>
 
+    <p style="margin-top: 2rem;">If you dont have an account you can <a href="{{ route('/register') }}">register</a></p>
+  </div>
 @endsection

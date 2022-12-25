@@ -1,25 +1,21 @@
 @layout('layouts/app')
 
 @section('content')
-
-<div>
-  {{ inspect(user) }}
-
-  @if(flashMessages.has('success'))
-  <p>{{ flashMessages.get('success') }}</p>
-  @endif
-
-  <h1 class="title"> Welcome to Dashboard! {{ auth.user.email }}</h1>
-  <p class="subtitle">
-    Congratulations, you have just created your first AdonisJS app.
-  </p>
-
   <div>
-    @if(auth.user.roleAlias === 'ADMIN')
-    <a href="{{ route('users.manage') }}">Manage Users</a>
+    {{ inspect(user) }}
+    @if (flashMessages.has('success'))
+      <p>{{ flashMessages.get('success') }}</p>
     @endif
-    <a href="{{ route('auth.logout') }}">Logout</a>
-  </div>
-</div>
 
+    <h1 class="title"> Welcome to Dashboard! {{ auth.user.email }}</h1>
+    <p class="subtitle">
+      Congratulations, you have just created your first AdonisJS app.
+    </p>
+
+    <div>
+      @if (auth.user.roleAlias === 'ADMIN')
+        <a href="{{ route('users.manage') }}">Manage Users</a>
+      @endif
+    </div>
+  </div>
 @endsection

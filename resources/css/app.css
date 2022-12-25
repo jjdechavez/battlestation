@@ -83,6 +83,10 @@ nav.header {
 
 nav.header > ul {
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
   list-style: none;
+}
+
+nav.header > ul > li {
+  margin-right: 3rem;
 }

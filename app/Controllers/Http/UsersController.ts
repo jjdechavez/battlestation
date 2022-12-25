@@ -5,7 +5,11 @@ import Role from 'App/Models/Role';
 import User from 'App/Models/User';
 
 export default class UsersController {
-  public async manage({ view }: HttpContextContract) {
+  public async manage({ response, view, bouncer }: HttpContextContract) {
+    if (await bouncer.denies('manageUsers')) {
+      return response.redirect().toPath('/dashboard');
+    }
+
     const users = await User.query().orderBy('email');
     const roles = await Role.query().orderBy('name');
 

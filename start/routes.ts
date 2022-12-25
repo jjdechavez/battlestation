@@ -49,8 +49,7 @@ Route.group(() => {
     Route.delete('/:id', 'UsersController.destroy').as('destroy');
   })
     .prefix('users')
-    .as('users')
-    .middleware(['auth', 'role:admin']);
+    .as('users');
 })
   .prefix('dashboard')
   .middleware('auth');
