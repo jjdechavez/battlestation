@@ -6,6 +6,7 @@
  */
 
 import Bouncer from '@ioc:Adonis/Addons/Bouncer';
+import Logger from '@ioc:Adonis/Core/Logger';
 import ROLE_ALIAS from 'App/Constants/RoleAlias';
 import User from 'App/Models/User';
 
@@ -33,12 +34,14 @@ import User from 'App/Models/User';
 */
 export const { actions } = Bouncer;
 
-Bouncer.before((user: User | null) => {
-  if (user?.roleAlias === ROLE_ALIAS.ADMIN) {
-    return true;
-  }
-}).define('manageUsers', (user: User) => {
-  return user.roleAlias === ROLE_ALIAS.ADMIN;
+Bouncer.after((user: User | null, actionName, actionResult) => {
+  const userType = user ? 'Member' : 'Guest';
+
+  actionResult.authorized
+    ? Logger.info(`${userType} was authorized to ${actionName}`)
+    : Logger.info(
+        `${userType} was denied to ${actionName} for ${actionResult.errorResponse}`
+      );
 });
 
 /*
@@ -64,4 +67,6 @@ Bouncer.before((user: User | null) => {
 | NOTE: Always export the "policies" const from this file
 |****************************************************************
 */
-export const { policies } = Bouncer.registerPolicies({});
+export const { policies } = Bouncer.registerPolicies({
+  UserPolicy: () => import('App/Policies/UserPolicy'),
+});

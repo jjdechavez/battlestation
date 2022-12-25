@@ -15,9 +15,9 @@
     <ul>
       <li><a href="{{ route('/dashboard') }}">Home</a></li>
 
-      @if(auth.user?.roleAlias === 'ADMIN')
+      @can('UserPolicy.viewList')
         <li><a href="{{ route('users.manage') }}">Users</a></li>
-      @endif
+      @end
 
       <li><a href="{{ route('auth.logout') }}">Logout</a></li>
     </ul>

@@ -6,7 +6,7 @@ import User from 'App/Models/User';
 
 export default class UsersController {
   public async manage({ response, view, bouncer }: HttpContextContract) {
-    if (await bouncer.denies('manageUsers')) {
+    if (await bouncer.with('UserPolicy').denies('viewList')) {
       return response.redirect().toPath('/dashboard');
     }
 

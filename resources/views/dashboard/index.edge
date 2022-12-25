@@ -11,11 +11,5 @@
     <p class="subtitle">
       Congratulations, you have just created your first AdonisJS app.
     </p>
-
-    <div>
-      @if (auth.user.roleAlias === 'ADMIN')
-        <a href="{{ route('users.manage') }}">Manage Users</a>
-      @endif
-    </div>
   </div>
 @endsection
