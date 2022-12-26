@@ -9,24 +9,30 @@
 </head>
 <body>
 
-  <div class='flex min-h-screen bg-gray-100'>
+  <div
+    x-data="{ sidebarActive: false }"
+    class='flex min-h-screen bg-gray-100'
+  >
+    {{-- Start Sidebar Overlay --}}
     <div
-      class='fixed inset-0 z-40 {{ !sidebarActive ? "hidden": "" }} lg:hidden'
+      x-show="sidebarActive"
+      x-bind:class="!sidebarActive ? 'hidden' : '' "
+      class='fixed inset-0 z-40 lg:hidden'
     >
       <div
-        {{-- onClick={() => setSidebarActive(false)} --}}
+        @click="sidebarActive = false"
         class='absolute inset-0 bg-gray-500 opacity-75'
       ></div>
     </div>
+    {{-- End Sidebar Overlay --}}
 
     <aside
-      class='fixed top-0 z-50 flex flex-col flex-shrink-0 w-64 h-screen overflow-y-hidden transition duration-150 ease-in-out transform bg-gray-800 lg:translate-x-0 lg:sticky {{
-        sidebarActive ? "translate-x-0" : "-translate-x-full"
-      }}'
+      x-bind:class="sidebarActive ? 'translate-x-0' : '-translate-x-full'"
+      class='fixed top-0 z-50 flex flex-col flex-shrink-0 w-64 h-screen overflow-y-hidden transition duration-150 ease-in-out transform bg-gray-800 lg:translate-x-0 lg:sticky'
     >
       {{-- Start Brand --}}
       <div class="flex items-center justify-between flex-shrink-0 h-16 px-4 bg-gray-900">
-        <a href="#" class="text-xl font-bold text-white flex">
+        <a href="route('/dashboard')" class="text-xl font-bold text-white flex">
           <img
             src='https://tailwindui.com/img/logos/workflow-mark-indigo-500.svg'
             alt='Company logo'
@@ -36,7 +42,7 @@
         </a>
         {{-- Close side button --}}
         <button
-          {{-- onClick={() => setSidebarActive(false)} --}}
+          @click="sidebarActive = false"
           class='inline-flex items-center justify-center p-2 -mr-2 text-gray-300 transition duration-150 ease-in-out rounded-md hover:text-gray-100 hover:bg-gray-800 focus:outline-none focus:bg-gray-800  focus:text-gray-100 lg:hidden'
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="block w-6 h-6">
@@ -51,7 +57,7 @@
         <nav class="px-2 mt-4 space-y-1 font-medium">
 
           {{-- Start ActiveLink --}}
-          <a href="route('/dashboard')" class="flex items-center p-2 rounded-md group {{ isActive ? 'bg-gray-900 transtion duration-150 ease-in-out' : 'hover:bg-gray-700 hover:text-white' }}">
+          <a href="{{ route('/dashboard') }}" class="flex items-center p-2 rounded-md group {{ isActive ? 'bg-gray-900 transtion duration-150 ease-in-out' : 'hover:bg-gray-700 hover:text-white' }}">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 transition duration-150 ease-in-out group-hover:text-gray-300 {{ isActive ? 'text-gray-300' : 'text-gray-400' }}">
               <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
             </svg>
@@ -68,12 +74,13 @@
     </aside>
 
     <div class='flex flex-col flex-1'>
-      <header class='px-4 bg-white shadow'>
+      <header x-data="{ settingsOpen: false }" class='px-4 bg-white shadow'>
         <div class='flex items-center justify-between h-16'>
           {{-- Open sidebar button --}}
           <div class='flex items-center flex-1'>
             <button
               {{-- onClick={() => setSidebarActive(true)} --}}
+              @click="sidebarActive = true"
               class='inline-flex items-center justify-center p-2 -ml-2 text-gray-700 transition duration-150 ease-in-out rounded-md lg:hidden hover:text-gray-800 hover:bg-gray-200 focus:outline-none focus:bg-gray-200 focus:text-gray-800'
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -110,6 +117,8 @@
           <div class='relative ml-6'>
             <div>
               <button
+                @click="settingsOpen = ! settingsOpen"
+                type="button"
                 class='max-w-xs bg-gray-800 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white'
                 id='user-menu'
                 aria-label='User menu'
@@ -131,7 +140,11 @@
             </div>
 
             {{-- Start Dropdown --}}
-            <div class='origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none'>
+            <div 
+              x-show="settingsOpen" 
+              @click.outside="settingsOpen = false"
+              class='origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none'
+            >
               <div class="px-1 py-1" role="none">
                 <button
                   type="button"
