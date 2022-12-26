@@ -8,7 +8,6 @@
   @entryPointScripts('app')
 </head>
 <body>
-
   <div
     x-data="{ sidebarActive: false }"
     class='flex min-h-screen bg-gray-100'
@@ -51,21 +50,20 @@
         </button>
       </div>
       {{-- End Brand --}}
+
       <div class='flex-1 overflow-y-auto'>
 
         {{-- Start Navlink --}}
         <nav class="px-2 mt-4 space-y-1 font-medium">
 
-          {{-- Start ActiveLink --}}
-          <a href="{{ route('/dashboard') }}" class="flex items-center p-2 rounded-md group {{ isActive ? 'bg-gray-900 transtion duration-150 ease-in-out' : 'hover:bg-gray-700 hover:text-white' }}">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 transition duration-150 ease-in-out group-hover:text-gray-300 {{ isActive ? 'text-gray-300' : 'text-gray-400' }}">
+          @component('components/navlink', {
+            href: '/dashboard',
+            name: 'Dashboard'
+          })
+            @slot('icon')
               <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-            </svg>
-            <span class="{{ isActive ? 'text-gray-200' : 'text-gray-400' }} pl-3 leading-5 transtion duration-150 ease-in-out group-hover:text-gray-200">
-              Dashboard
-            </span>
-          </a>
-          {{-- End ActiveLink --}}
+            @end 
+          @end
 
         </nav>
         {{-- End NavLink --}}
