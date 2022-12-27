@@ -1,5 +1,6 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import { schema, rules } from '@ioc:Adonis/Core/Validator';
+import ROLE_ALIAS from 'App/Constants/RoleAlias';
 import Role from 'App/Models/Role';
 import User from 'App/Models/User';
 
@@ -20,19 +21,22 @@ export default class AuthController {
       password: schema.string([rules.minLength(8), rules.confirmed()]),
       firstName: schema.string([rules.minLength(2), rules.trim()]),
       lastName: schema.string([rules.minLength(2), rules.trim()]),
-      roleAlias: schema.string(),
     });
 
     const payload = await request.validate({ schema: userSchema });
     const user = await User.create({
       ...payload,
       fullName: `${payload.firstName} ${payload.lastName}`,
+      roleAlias: ROLE_ALIAS.MEMBER,
     });
 
     await auth.login(user);
 
-    session.flash('success', 'Account created successfully');
-    return response.redirect().toPath('/');
+    session.flash({
+      message: 'Account created successfully',
+      status: 'success',
+    });
+    return response.redirect().back();
   }
 
   public async viewLogin({ view }: HttpContextContract) {
