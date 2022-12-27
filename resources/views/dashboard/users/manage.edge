@@ -1,9 +1,10 @@
-@layout('layouts/app')
+@layout('layouts/dashboard')
 
 @section('content')
 
-<div>
-  <h1>User Management</h1>
+  <header class="mb-3">
+    <h1 class="text-2xl font-bold tracking-tight text-gray-900">User Management</h1>
+  </header>
 
   <table>
     <thead>
@@ -38,6 +39,5 @@
       @endeach
     </tbody>
   </table>
-</div>
 
 @endsection
