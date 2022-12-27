@@ -8,7 +8,7 @@
       <h1 class="block text-2xl font-bold text-gray-800">Login</h1>
 
       @if (flashMessages.has('errors.message'))
-        <p class="text-red-600 text font-semibold">
+        <p class="text-red-600 text font-semibold mb-3">
           {{ flashMessages.get('errors.message') }}
         </p>
       @endif
@@ -17,6 +17,7 @@
     <div class="mt-2 w-full">
       <div>
         <form method="POST" action="{{ route('auth.login') }}">
+          {{ csrfField() }}
           <div class='grid gap-y-4'>
             <div
               x-data="{ 
