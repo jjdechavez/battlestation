@@ -1,8 +1,14 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import { schema, rules } from '@ioc:Adonis/Core/Validator';
+import Role from 'App/Models/Role';
 import User from 'App/Models/User';
 
 export default class AuthController {
+  public async viewRegister({ view }: HttpContextContract) {
+    const roles = await Role.query().orderBy('name');
+    return view.render('register', { roles });
+  }
+
   public async register({
     request,
     response,
@@ -29,6 +35,10 @@ export default class AuthController {
     return response.redirect().toPath('/');
   }
 
+  public async viewLogin({ view }: HttpContextContract) {
+    return view.render('login');
+  }
+
   public async login({
     request,
     response,
@@ -36,12 +46,19 @@ export default class AuthController {
     session,
   }: HttpContextContract) {
     const { email, password } = request.only(['email', 'password']);
+    console.log(email, password);
 
     try {
       await auth.attempt(email, password);
     } catch {
-      session.flash('errors', 'Email or Password invalid');
-      session.flash('email', email);
+      session.flash({
+        errors: {
+          message: 'Email or Password invalid',
+        },
+        fields: {
+          email,
+        },
+      });
       return response.redirect().back();
     }
 
@@ -50,6 +67,6 @@ export default class AuthController {
 
   public async logout({ response, auth }: HttpContextContract) {
     await auth.logout();
-    return response.redirect().toPath('/');
+    return response.redirect().toPath('/login');
   }
 }

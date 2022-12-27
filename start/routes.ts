@@ -19,21 +19,22 @@
 */
 
 import Route from '@ioc:Adonis/Core/Route';
-import Role from 'App/Models/Role';
 import User from 'App/Models/User';
 
 Route.get('/', async ({ view }) => {
   return view.render('welcome');
 });
 
-Route.get('register', async ({ view }) => {
-  const roles = await Role.query().orderBy('name');
-  return view.render('register', { roles });
-});
+Route.get('/register', 'AuthController.viewRegister').as('view.register');
+Route.get('/login', 'AuthController.viewLogin').as('view.login');
 
-Route.post('/auth/register', 'AuthController.register').as('auth.register');
-Route.post('/auth/login', 'AuthController.login').as('auth.login');
-Route.get('/auth/logout', 'AuthController.logout').as('auth.logout');
+Route.group(() => {
+  Route.post('/register', 'AuthController.register').as('register');
+  Route.post('/login', 'AuthController.login').as('login');
+  Route.get('/logout', 'AuthController.logout').as('logout');
+})
+  .prefix('auth')
+  .as('auth');
 
 Route.group(() => {
   Route.get('/', async ({ view, auth }) => {
