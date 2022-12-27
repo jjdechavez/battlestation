@@ -2,36 +2,6 @@
 
 @section('content')
   <div>
-    {{ inspect(flashMessages) }}
-    <form method="POST" action="{{ route('auth.login') }}">
-      <h2>Login Form</h2>
-      @if (flashMessages.has('errors'))
-        <small style="color: red;">
-          {{ flashMessages.get('errors') }}
-        </small>
-      @endif
-
-      @if (flashMessages.has('values.auth'))
-        <small style="color: red;">
-          {{ flashMessages.get('values.auth.error') }}
-        </small>
-      @endif
-
-      <label for="email">
-        Email
-        <input type="email" name="email" value="{{ flashMessages.get('email', '') }}" placeholder="Email Address">
-      </label>
-      <label for="password">
-        Password
-        <input type="password" name="password" placeholder="Password">
-      </label>
-      <button type="submit">Login</button>
-    </form>
-
-    <p style="margin-top: 2rem;">If you dont have an account you can <a href="{{ route('/register') }}">register</a></p>
-  </div>
-
-  <div>
     <h1 class="title"> Welcome to AdonisJs!</h1>
     <p class="subtitle">
       Congratulations, you have just created your first AdonisJS app.
