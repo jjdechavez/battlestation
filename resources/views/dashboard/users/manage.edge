@@ -15,7 +15,7 @@
     </a>
   </header>
 
-  <div class="border border-gray-300 rounded-lg  bg-white shadow-sm">
+  <div class="border border-gray-300 rounded-lg bg-white shadow-sm">
     <table class="min-w-full divide-y divide-gray-200 text-sm">
       <thead class="bg-gray-100">
         <tr>
@@ -57,7 +57,7 @@
               {{ user.email }}
             </td>
             <td class="whitespace-nowrap px-4 py-3 text-gray-500">
-              <span class="{{ user.status === 'ACTIVE' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700' }} whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-medium">
+              <span class="{{ user.status === 'ACTIVE' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700' }} whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-bold">
                 {{ capitalCase(user.status) }} 
               </span>
             </td>
@@ -68,7 +68,7 @@
               })
                 <select 
                   name="roleAlias" 
-                  class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
+                  class="border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
                   onchange="this.parentElement.submit()"
                 >
                   @each (role in roles)
