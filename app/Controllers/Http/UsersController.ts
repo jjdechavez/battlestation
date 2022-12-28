@@ -54,6 +54,16 @@ export default class UsersController {
     return response.redirect().toPath('/dashboard/users');
   }
 
+  public async view({ view, response, bouncer, params }: HttpContextContract) {
+    if (await bouncer.with('UserPolicy').denies('view')) {
+      return response.redirect().toPath('/dashboard');
+    }
+
+    const user = await User.findOrFail(params.id);
+
+    return view.render('dashboard/users/view', { user: user.serialize() });
+  }
+
   public async role({ request, response, params, auth }: HttpContextContract) {
     const roleSchema = schema.create({
       roleAlias: schema.string([

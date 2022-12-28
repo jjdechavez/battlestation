@@ -7,6 +7,10 @@ export default class UserPolicy extends BasePolicy {
     return user.roleAlias === ROLE_ALIAS.ADMIN;
   }
 
+  public async view(user: User) {
+    return user.roleAlias === ROLE_ALIAS.ADMIN;
+  }
+
   public async create(user: User) {
     return user.roleAlias === ROLE_ALIAS.ADMIN;
   }
