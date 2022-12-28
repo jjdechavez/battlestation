@@ -1,4 +1,10 @@
-<form action="{{action}}" method="{{method}}" class="{{classNames}}">
+<form 
+  action="{{action}}"
+  method="{{method}}"
+  @if(classNames)
+    class="{{classNames}}"
+  @end
+>
   {{ csrfField() }}
 
   {{{ await $slots.main() }}}
