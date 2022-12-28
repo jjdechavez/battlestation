@@ -11,7 +11,7 @@
     <header class="mb-8 flex items-center justify-between">
       <div>
         <h1 class="text-2xl font-bold tracking-tight text-gray-900">Create a new user</h1>
-        <p class="text-sm text-gray-700 mt-1">A list of all the users in your account including their name, email, status and role.</p>
+        <p class="text-sm text-gray-700 mt-1">Let's get started by filling in the information below to create a new user</p>
       </div>
 
       <div>
@@ -32,12 +32,11 @@
       </div>
     </header>
     
-    @component('components/card')
 
       <section
         x-data="{ loading: false }"
         @submit-event="loading = true"
-        class="grid gap-y-4"
+        class="grid gap-y-4 w-4/6 mx-auto lg:w-1/2"
       >
 
         @!component('components/form/text-field', {
@@ -77,8 +76,6 @@
 
     </section>
       
-    @end
-
 
   @end
 
