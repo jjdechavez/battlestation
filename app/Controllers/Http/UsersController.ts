@@ -71,6 +71,53 @@ export default class UsersController {
     return view.render('dashboard/users/view', { user: user.serialize() });
   }
 
+  public async edit({ response, view, bouncer, params }: HttpContextContract) {
+    if (await bouncer.with('UserPolicy').denies('update')) {
+      return response.redirect().toPath('/dashboard');
+    }
+
+    const user = await User.findOrFail(params.id);
+    const roles = await Role.query().orderBy('name');
+
+    return view.render('dashboard/users/update', { user, roles });
+  }
+
+  public async update({
+    request,
+    response,
+    bouncer,
+    session,
+    params,
+  }: HttpContextContract) {
+    if (await bouncer.with('UserPolicy').denies('update')) {
+      return response.redirect().toPath('/dashboard');
+    }
+
+    const user = await User.findOrFail(params.id);
+
+    const userSchema = schema.create({
+      email: schema.string([rules.email(), rules.trim()]),
+      firstName: schema.string([rules.minLength(2), rules.trim()]),
+      lastName: schema.string([rules.minLength(2), rules.trim()]),
+      roleAlias: schema.enum([ROLE_ALIAS.ADMIN, ROLE_ALIAS.MEMBER] as const),
+    });
+
+    const payload = await request.validate({ schema: userSchema });
+    await user
+      .merge({
+        ...payload,
+        fullName: `${payload.firstName} ${payload.lastName}`,
+      })
+      .save();
+
+    session.flash({
+      message: 'User updated successfully!',
+      status: 'success',
+    });
+
+    return response.redirect().toPath(`/dashboard/users/${user.id}`);
+  }
+
   public async role({ request, response, params, auth }: HttpContextContract) {
     const roleSchema = schema.create({
       roleAlias: schema.string([

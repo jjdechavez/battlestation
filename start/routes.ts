@@ -49,6 +49,8 @@ Route.group(() => {
     Route.get('/create', 'UsersController.create').as('create');
     Route.post('/create', 'UsersController.store').as('store');
     Route.get('/:id', 'UsersController.view').as('view');
+    Route.get('/:id/edit', 'UsersController.edit').as('edit');
+    Route.patch('/:id', 'UsersController.update').as('update');
     Route.patch('/:id/role', 'UsersController.role').as('role');
     Route.delete('/:id', 'UsersController.destroy').as('destroy');
   })
