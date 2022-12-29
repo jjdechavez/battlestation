@@ -5,12 +5,12 @@
   @component('components/card')
 
     <div class="text-center">
-      <h1 class="block text-2xl font-bold text-gray-800">Login</h1>
+      <h1 class="block text-2xl font-bold text-gray-800 mb-3">Login</h1>
 
       @if (flashMessages.has('errors.message'))
-        <p class="text-red-600 text-sm text font-semibold mb-3">
-          {{ flashMessages.get('errors.message') }}
-        </p>
+        @!alert.error({
+          message:  flashMessages.get('errors.message') 
+        })
       @endif
     </div>
 

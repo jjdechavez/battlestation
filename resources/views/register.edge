@@ -17,9 +17,9 @@
       </p>
 
       @if(flashMessages.has('errors.message'))
-        <p class="text-red-600 text font-semibold mb-3">
-          {{ flashMessages.get('errors.message') }}
-        </p>
+        @!alert.error({
+          message:  flashMessages.get('errors.message') 
+        })
       @end
     </div>
     
