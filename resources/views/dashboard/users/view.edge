@@ -2,6 +2,11 @@
 
 @section('content')
 
+    @if (flashMessages.get('status') === 'success')
+      @!alert.success({
+        message:flashMessages.get('message', "User created successfully!")
+      })
+    @endif
 
 
     <header class="mb-8 flex items-center justify-between">

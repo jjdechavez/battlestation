@@ -27,7 +27,12 @@ export default class UsersController {
     return view.render('dashboard/users/create', { roles });
   }
 
-  public async store({ request, response, bouncer }: HttpContextContract) {
+  public async store({
+    request,
+    response,
+    bouncer,
+    session,
+  }: HttpContextContract) {
     if (await bouncer.with('UserPolicy').denies('create')) {
       return response.redirect().toPath('/dashboard');
     }
@@ -48,10 +53,12 @@ export default class UsersController {
     });
 
     console.log('password: ', password);
-    console.log(user);
+    session.flash({
+      message: 'User created successfully!',
+      status: 'success',
+    });
 
-    // TODO: redirect to the created user
-    return response.redirect().toPath('/dashboard/users');
+    return response.redirect().toPath(`/dashboard/users/${user.id}`);
   }
 
   public async view({ view, response, bouncer, params }: HttpContextContract) {
