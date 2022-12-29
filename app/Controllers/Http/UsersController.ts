@@ -88,6 +88,7 @@ export default class UsersController {
     bouncer,
     session,
     params,
+    auth,
   }: HttpContextContract) {
     if (await bouncer.with('UserPolicy').denies('update')) {
       return response.redirect().toPath('/dashboard');
@@ -110,12 +111,16 @@ export default class UsersController {
       })
       .save();
 
+    const isAuthUser = user.id === auth.user?.id;
+
     session.flash({
       message: 'User updated successfully!',
       status: 'success',
     });
 
-    return response.redirect().toPath(`/dashboard/users/${user.id}`);
+    return isAuthUser && user.roleAlias !== ROLE_ALIAS.ADMIN
+      ? response.redirect().toPath('/dashboard')
+      : response.redirect().toPath(`/dashboard/users/${user.id}`);
   }
 
   public async role({ request, response, params, auth }: HttpContextContract) {
