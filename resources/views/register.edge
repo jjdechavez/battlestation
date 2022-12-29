@@ -29,11 +29,7 @@
         method: "POST"
       })
 
-        <section 
-          x-data="{ loading: false }"
-          @submit-event="loading = true"
-          class="grid gap-y-4"
-        >
+        <section class="grid gap-y-4">
           @!component('components/form/text-field', {
             label: 'First Name',
             name: 'firstName',
