@@ -1,3 +1,8 @@
+@set('defaultValue', value ?? '')
+@set('value', flashMessages.get('name') ?? defaultValue)
+@set('errors', flashMessages.get(`errors.${name}`) ?? errors)
+@set('isError', flashMessages.has(`errors.${name}`) ?? false)
+
 <div>
   <label
     for="{{ name }}"
@@ -17,12 +22,12 @@
       @if(placeholder)
         placeholder="{{ placeholder }}"
       @endif
-      value="{{ flashMessages.get(name, '') || '' }}"
-      class="{{ flashMessages.has(`errors.${name}`) ? 'border-red-500 text-red-600 focus:border-red-500 focus:ring-red-500' : 'border-gray-200 focus:border-indigo-500 focus:ring-indigo-500' }} border-gray-300 bg-gray-50 py-3 px-4 block w-full rounded-md text-sm read-only:bg-slate-50 read-only:text-slate-500 read-only:border-slate-200 read-only:shadow-none"
+      value="{{ value }}"
+      class="{{ isError ? 'border-red-500 text-red-600 focus:border-red-500 focus:ring-red-500' : 'border-gray-200 focus:border-indigo-500 focus:ring-indigo-500' }} border-gray-300 bg-gray-50 py-3 px-4 block w-full rounded-md text-sm read-only:bg-slate-50 read-only:text-slate-500 read-only:border-slate-200 read-only:shadow-none"
       :readonly="loading"
     />
 
-    @if(flashMessages.has(`errors.${name}`))
+    @if(isError)
       <div class="absolute inset-y-0 right-0 flex items-center pointer-events-none pr-3">
         <svg
           class='h-5 w-5 text-red-500'
@@ -38,9 +43,9 @@
     @end
   </div>
 
-  @if(flashMessages.has(`errors.${name}`))
+  @if(isError)
     <p class="text-xs text-red-600 mt-2">
-      {{ flashMessages.get(`errors.${name}`) }}
+      {{ errors.join(', ') }}
     </p>
   @end
 </div>
