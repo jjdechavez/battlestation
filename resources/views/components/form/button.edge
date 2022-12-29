@@ -2,17 +2,17 @@
   @click="$dispatch('{{event}}')"
   type="{{ type }}"
   :disabled="loading"
-  :class="loading ? 'cursor-not-allowed hover:bg-indigo-400' : ''"
+  :class="loading ? 'cursor-not-allowed border-indigo-500 bg-indigo-400 hover:bg-indigo-400' : 'bg-indigo-500 hover:bg-indigo-600'"
   @if(classes)
     class="{{ classes }} transition-all"
   @else
-    class="py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold bg-indigo-500 text-white hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all text-sm"
+    class="py-3 px-4 inline-flex justify-center items-center gap-2 rounded-md border border-transparent font-semibold text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all text-sm"
   @end
 >
   <svg 
     x-show="loading"
     style="display: none;"
-    class="w-5 h-5 mr-3 -ml-1 text-white animate-spin"
+    class="w-5 h-5 -ml-1 text-white animate-spin"
     xmlns='http://www.w3.org/2000/svg'
     fill='none'
     viewBox='0 0 24 24'
