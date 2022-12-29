@@ -16,7 +16,7 @@
     @end
   >
     @each (option in options)
-      <option value="{{ option[`${optionValue}`] }}" {{ option[`${optionValue}`] === 9 ? 'selected' : '' }}>
+      <option value="{{ option[`${optionValue}`] }}" {{ option[`${optionValue}`] === selected ? 'selected' : '' }}>
         {{ option[`${optionLabel}`] }}
       </option>
     @endeach
