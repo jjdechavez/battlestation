@@ -58,9 +58,9 @@ Route.group(() => {
     .as('users');
 
   Route.group(() => {
-    Route.get('/', async ({ view }) => {
-      return view.render('pages/dashboard/workspaces/manage');
-    }).as('manage');
+    Route.get('/', 'WorkspacesController.index').as('manage');
+    Route.get('/create', 'WorkspacesController.create').as('create');
+    Route.post('/create', 'WorkspacesController.store').as('store');
   })
     .prefix('workspaces')
     .as('workspaces');
