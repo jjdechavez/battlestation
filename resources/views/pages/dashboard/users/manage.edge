@@ -51,7 +51,7 @@
         @each(user in users)
           <tr>
             <td class="whitespace-nowrap px-4 py-3 font-medium text-gray-900">
-              {{ user.fullName }}
+              {{ user.full_name }}
             </td>
             <td class="whitespace-nowrap px-4 py-3 text-gray-700">
               {{ user.email }}
@@ -72,7 +72,7 @@
                   onchange="this.parentElement.submit()"
                 >
                   @each (role in roles)
-                    <option value="{{ role.alias }}" {{ role.alias === user.roleAlias ? 'selected' : '' }}>
+                    <option value="{{ role.alias }}" {{ role.alias === user.role_alias ? 'selected' : '' }}>
                       {{ role.name }}
                     </option>
                   @endeach
@@ -104,5 +104,10 @@
       </tbody>
     </table>
   </div>
+
+
+  @!pagination.base({
+    pagination: users
+  })
 
 @endsection

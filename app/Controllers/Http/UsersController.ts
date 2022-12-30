@@ -1,4 +1,5 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
+import Database from '@ioc:Adonis/Lucid/Database';
 import { schema, rules } from '@ioc:Adonis/Core/Validator';
 import { string } from '@ioc:Adonis/Core/Helpers';
 import ROLE_ALIAS from 'App/Constants/RoleAlias';
@@ -6,12 +7,25 @@ import Role from 'App/Models/Role';
 import User from 'App/Models/User';
 
 export default class UsersController {
-  public async manage({ response, view, bouncer }: HttpContextContract) {
+  public async manage({
+    request,
+    response,
+    view,
+    bouncer,
+  }: HttpContextContract) {
     if (await bouncer.with('UserPolicy').denies('viewList')) {
       return response.redirect().toPath('/dashboard');
     }
 
-    const users = await User.query().orderBy('email');
+    const page = request.input('page', 1);
+    const limit = request.input('limit', 2);
+
+    const users = await Database.from('users')
+      .orderBy('created_at', 'asc')
+      .paginate(page, limit);
+
+    users.baseUrl('/dashboard/users');
+
     const roles = await Role.query().orderBy('name');
 
     return view.render('pages/dashboard/users/manage', { users, roles });
