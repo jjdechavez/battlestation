@@ -7,7 +7,7 @@ import User from 'App/Models/User';
 export default class AuthController {
   public async viewRegister({ view }: HttpContextContract) {
     const roles = await Role.query().orderBy('name');
-    return view.render('register', { roles });
+    return view.render('pages/auth/register', { roles });
   }
 
   public async register({
@@ -40,7 +40,7 @@ export default class AuthController {
   }
 
   public async viewLogin({ view }: HttpContextContract) {
-    return view.render('login');
+    return view.render('pages/auth/login');
   }
 
   public async login({
