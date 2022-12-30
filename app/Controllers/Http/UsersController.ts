@@ -14,7 +14,7 @@ export default class UsersController {
     const users = await User.query().orderBy('email');
     const roles = await Role.query().orderBy('name');
 
-    return view.render('dashboard/users/manage', { users, roles });
+    return view.render('pages/dashboard/users/manage', { users, roles });
   }
 
   public async create({ response, view, bouncer }: HttpContextContract) {
@@ -24,7 +24,7 @@ export default class UsersController {
 
     const roles = await Role.query().orderBy('name');
 
-    return view.render('dashboard/users/create', { roles });
+    return view.render('pages/dashboard/users/create', { roles });
   }
 
   public async store({
@@ -68,7 +68,9 @@ export default class UsersController {
 
     const user = await User.findOrFail(params.id);
 
-    return view.render('dashboard/users/view', { user: user.serialize() });
+    return view.render('pages/dashboard/users/view', {
+      user: user.serialize(),
+    });
   }
 
   public async edit({ response, view, bouncer, params }: HttpContextContract) {
@@ -79,7 +81,7 @@ export default class UsersController {
     const user = await User.findOrFail(params.id);
     const roles = await Role.query().orderBy('name');
 
-    return view.render('dashboard/users/update', { user, roles });
+    return view.render('pages/dashboard/users/update', { user, roles });
   }
 
   public async update({

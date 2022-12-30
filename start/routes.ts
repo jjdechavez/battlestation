@@ -41,7 +41,7 @@ Route.group(() => {
     const user = await User.find(auth.user?.id);
     await user.load('role');
 
-    return view.render('dashboard/index', { user: user.toJSON() });
+    return view.render('pages/dashboard/index', { user: user.toJSON() });
   });
 
   Route.group(() => {
@@ -56,6 +56,14 @@ Route.group(() => {
   })
     .prefix('users')
     .as('users');
+
+  Route.group(() => {
+    Route.get('/', async ({ view }) => {
+      return view.render('pages/dashboard/workspaces/manage');
+    }).as('manage');
+  })
+    .prefix('workspaces')
+    .as('workspaces');
 })
   .prefix('dashboard')
   .middleware('auth');
