@@ -11,7 +11,7 @@
     </div>
 
     <div>
-      <a 
+      <a
         :class="loading ? 'cursor-not-allowed border-gray-300 bg-gray-100' : 'bg-gray-50 border-gray-200 '"
         class="text-indigo-600 hover:bg-gray-100 border focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded text-sm px-5 py-2.5 text-center inline-block mr-2"
         href="{{ route('/dashboard/users') }}"
@@ -28,9 +28,10 @@
 
     </div>
   </header>
-  
 
-    <section class="grid gap-y-4 w-4/6 mx-auto lg:w-1/2">
+
+  <section class="grid gap-y-4 w-4/6 mx-auto lg:w-1/2">
+
 
       @!component('components/form/text-field', {
         label: 'First Name',
@@ -69,9 +70,9 @@
         optionLabel: 'name',
         optionValue: 'alias',
       })
-      
+
 
   </section>
-    
+
 
 @end

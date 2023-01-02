@@ -18,7 +18,9 @@ export default class UsersController {
     }
 
     const page = request.input('page', 1);
-    const limit = request.input('limit', 2);
+    // If you want dynamic limit
+    // const limit = request.input('limit', 10);
+    const limit = 10;
 
     const users = await Database.from('users')
       .orderBy('created_at', 'asc')
