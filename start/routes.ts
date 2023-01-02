@@ -61,6 +61,7 @@ Route.group(() => {
     Route.get('/', 'WorkspacesController.index').as('manage');
     Route.get('/create', 'WorkspacesController.create').as('create');
     Route.post('/create', 'WorkspacesController.store').as('store');
+    Route.get('/:id', 'WorkspacesController.show').as('view');
   })
     .prefix('workspaces')
     .as('workspaces');

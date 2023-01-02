@@ -6,7 +6,9 @@ import Workspace from 'App/Models/Workspace';
 import { objectToOption } from '../../../utils/form';
 
 export default class WorkspacesController {
-  public async index({ view, request }: HttpContextContract) {
+  public async index({ view, request, bouncer }: HttpContextContract) {
+    await bouncer.with('WorkspacePolicy').authorize('viewList');
+
     const page = request.input('page', 1);
     const limit = 10;
 
@@ -21,7 +23,9 @@ export default class WorkspacesController {
     });
   }
 
-  public async create({ view }: HttpContextContract) {
+  public async create({ view, bouncer }: HttpContextContract) {
+    await bouncer.with('WorkspacePolicy').authorize('create')
+
     const types = objectToOption(WORKSPACE_TYPE);
 
     return view.render('pages/dashboard/workspaces/create', { types });
@@ -32,7 +36,10 @@ export default class WorkspacesController {
     response,
     session,
     auth,
+    bouncer
   }: HttpContextContract) {
+    await bouncer.with('WorkspacePolicy').authorize('create')
+
     const workspaceSchema = schema.create({
       title: schema.string([rules.minLength(2), rules.maxLength(180)]),
       summary: schema.string.optional(),
@@ -42,6 +49,7 @@ export default class WorkspacesController {
     const payload = await request.validate({ schema: workspaceSchema });
     const workspace = await Workspace.create({
       ...payload,
+      type: WORKSPACE_TYPE[payload.type],
       authorId: auth.user?.id,
     });
 
@@ -50,11 +58,16 @@ export default class WorkspacesController {
       status: 'success',
     });
 
-    // TODO: Redirect to the view page
-    return response.redirect().toPath('/dashboard/workspaces');
+    return response.redirect().toPath(`/dashboard/workspaces/${workspace.id}`);
   }
 
-  public async show({}: HttpContextContract) {}
+  public async show({ view, params, bouncer }: HttpContextContract) {
+    const workspace = await Workspace.findOrFail(params.id)
+
+    await bouncer.with('WorkspacePolicy').authorize('view', workspace)
+
+    return view.render('pages/dashboard/workspaces/view', { workspace })
+  }
 
   public async edit({}: HttpContextContract) {}
 

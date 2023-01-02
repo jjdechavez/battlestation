@@ -68,4 +68,5 @@ Bouncer.after((user: User | null, actionName, actionResult) => {
 */
 export const { policies } = Bouncer.registerPolicies({
   UserPolicy: () => import('App/Policies/UserPolicy'),
+  WorkspacePolicy: () => import('App/Policies/WorkspacePolicy'),
 });

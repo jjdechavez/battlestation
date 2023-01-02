@@ -46,34 +46,35 @@
         <li
           class='group cursor-pointer rounded-md p-3 bg-white ring-1 ring-slate-200 shadow-sm hover:bg-indigo-500 hover:ring-indigo-500 hover:shadow-md'
         >
-          <a href="route('/dashboard/workspaces/:id', { id: workspace.id })">
-            <a class='hover:bg-indigo-500 hover:shadow-md group rounded-md bg-white shadow-sm'>
-              <dl class='grid sm:block lg:grid xl:block grid-cols-2 grid-rows-2 items-center'>
-                <div>
-                  <dt class='sr-only'>Title</dt>
-                  <dd class='group-hover:text-white text-slate-900'>
-                    <span class="font-semibold">{{ workspace.title }}</span>
-                    <span class="text-slate-500 group-hover:text-white">({{ capitalCase(workspace.type) }})</span>
-                  </dd>
-                </div>
-                <div>
-                  <dt class='sr-only'>Category</dt>
-                  <dd class='group-hover:text-indigo-200 truncate'>
-                    {{ workspace.summary }}
-                  </dd>
-                </div>
-                <div class='col-start-2 row-start-1 row-end-3 sm:mt-4 lg:mt-0 xl:mt-4'>
-                  <dt class='sr-only'>Created At</dt>
-                  <dd class='group-hover:text-indigo-200 text-slate-500'>
-                    {{workspace.updated_at.toLocaleString('default', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                    })}}
-                  </dd>
-                </div>
-              </dl>
-            </a>
+          <a
+            href="{{ route('/dashboard/workspaces/:id', { id: workspace.id }) }}"
+            class='hover:bg-indigo-500 hover:shadow-md group rounded-md bg-white shadow-sm'
+          >
+            <dl class='grid sm:block lg:grid xl:block grid-cols-2 grid-rows-2 items-center'>
+              <div>
+                <dt class='sr-only'>Title</dt>
+                <dd class='group-hover:text-white text-slate-900'>
+                  <span class="font-semibold">{{ workspace.title }}</span>
+                  <span class="text-slate-500 group-hover:text-white">({{ capitalCase(workspace.type) }})</span>
+                </dd>
+              </div>
+              <div>
+                <dt class='sr-only'>Category</dt>
+                <dd class='group-hover:text-indigo-200 truncate'>
+                  {{ workspace.summary }}
+                </dd>
+              </div>
+              <div class='col-start-2 row-start-1 row-end-3 sm:mt-4 lg:mt-0 xl:mt-4'>
+                <dt class='sr-only'>Created At</dt>
+                <dd class='group-hover:text-indigo-200 text-slate-500'>
+                  {{workspace.updated_at.toLocaleString('default', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}}
+                </dd>
+              </div>
+            </dl>
           </a>
         </li>
 
