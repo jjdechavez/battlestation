@@ -4,12 +4,14 @@
 @set('isError', flashMessages.has(`errors.${name}`) ?? false)
 
 <div>
-  <label
-    for="{{ name }}"
-    class="{{ required ? `after:content-['*'] after:ml-0.5 after:text-red-500` : '' }} block text-sm font-medium mb-2"
-  >
-    {{ label }}
-  </label>
+  @if(label)
+    <label
+      for="{{ name }}"
+      class="{{ required ? `after:content-['*'] after:ml-0.5 after:text-red-500` : '' }} block text-sm font-medium mb-2"
+    >
+      {{ label }}
+    </label>
+  @end
 
   <div class="relative">
     <input

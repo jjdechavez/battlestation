@@ -63,6 +63,7 @@ export default class WorkspacesController {
 
   public async show({ view, params, bouncer }: HttpContextContract) {
     const workspace = await Workspace.findOrFail(params.id)
+    await workspace.load('sections')
 
     await bouncer.with('WorkspacePolicy').authorize('view', workspace)
 

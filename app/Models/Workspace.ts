@@ -1,7 +1,15 @@
 import { DateTime } from 'luxon';
-import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm';
+import {
+  BaseModel,
+  BelongsTo,
+  belongsTo,
+  column,
+  HasMany,
+  hasMany,
+} from '@ioc:Adonis/Lucid/Orm';
 import { WorkspaceStatus, WorkspaceType } from 'App/Constants/Workspace';
 import User from './User';
+import WorkspaceSection from './WorkspaceSection';
 
 export default class Workspace extends BaseModel {
   @column({ isPrimary: true })
@@ -30,4 +38,7 @@ export default class Workspace extends BaseModel {
 
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   public updatedAt: DateTime;
+
+  @hasMany(() => WorkspaceSection)
+  public sections: HasMany<typeof WorkspaceSection>;
 }
