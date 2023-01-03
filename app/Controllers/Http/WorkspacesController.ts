@@ -1,7 +1,7 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import { schema, rules } from '@ioc:Adonis/Core/Validator';
 import Database from '@ioc:Adonis/Lucid/Database';
-import { WORKSPACE_TYPE } from 'App/Constants/Workspace';
+import { WORKSPACE_TASK_PRIORITY, WORKSPACE_TYPE } from 'App/Constants/Workspace';
 import Workspace from 'App/Models/Workspace';
 import { objectToOption } from '../../../utils/form';
 
@@ -67,7 +67,9 @@ export default class WorkspacesController {
 
     await bouncer.with('WorkspacePolicy').authorize('view', workspace)
 
-    return view.render('pages/dashboard/workspaces/view', { workspace })
+    const priorities = objectToOption(WORKSPACE_TASK_PRIORITY)
+
+    return view.render('pages/dashboard/workspaces/view', { workspace, priorities })
   }
 
   public async edit({}: HttpContextContract) {}
