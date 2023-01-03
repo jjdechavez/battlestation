@@ -1,0 +1,248 @@
+@layout('layouts/dashboard')
+
+@section('content')
+
+
+  @if (flashMessages.get('status') === 'success')
+    @!alert.success({
+      message:flashMessages.get('message', "Workspace created successfully!")
+    })
+  @endif
+
+
+  <header class="mb-8 flex items-center justify-between">
+    <div>
+       <h1 class="text-2xl font-bold tracking-tight text-gray-900">
+         {{ workspace.title }}
+         <small class="font-normal text-sm">{{ capitalCase(workspace.type) }}</small>
+       </h1>
+       <p class="text-sm text-gray-700 mt-1">{{ workspace.summary }}</p>
+     </div>
+
+     <div>
+       <a
+        class="text-indigo-600 bg-gray-50 hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded text-sm px-5 py-2.5 text-center inline-block mr-2"
+        href="{{ route('/dashboard/workspaces') }}"
+       >
+        Redirect to workspaces
+       </a>
+     </div>
+  </header>
+
+
+  <section x-data="{ modal: false }">
+
+    @modal.base()
+      @form.base({
+        action: method === 'PATCH' ? route('users.update', { id: user.id }, { qs: { _method: 'PATCH' } }) : route('workspaces.sections.store', { id: workspace.id }),
+        method: "POST"
+      })
+        <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+          <div class="sm:flex sm:items-start">
+            <div class="mt-3 sm:mt-0 sm:text-left w-full">
+
+              <header class="flex justify-between items-center">
+                <h3 class="text-lg font-medium leading-6 text-gray-900" id="modal-title">New Section</h3>
+
+                <button type="button" @click="modal = false" class="p-1.5">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 hover:cursor-pointer">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </header>
+
+              <div class="mt-2">
+                <p class="text-sm text-gray-500">Kindly fill up the information about the workspace section</p>
+              </div>
+
+              <section class="mt-5 grid gap-y-4 mx-auto md:w-4/6 lg:w-9/12">
+
+                @!component('components/form/text-field', {
+                  name: 'position',
+                  type: 'hidden',
+                  value: workspace.sections.length
+                })
+
+                @!component('components/form/text-field', {
+                  label: 'Title',
+                  name: 'title',
+                  required: true,
+                  value: '',
+                  flashMessages: flashMessages
+                })
+
+              </section>
+
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+
+          @!component('components/form/button', {
+            event: 'submit-event',
+            type: 'submit',
+            text: submitTitle ? submitTitle : 'Save',
+            classes: "inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
+          })
+
+          <button
+            type="button"
+            @click="modal = false"
+            :disabled="loading"
+            :class="loading ? 'cursor-not-allowed bg-gray-100 border-gray-200' : 'bg-white border-gray-300 '"
+            class="mt-3 inline-flex w-full justify-center rounded-md border px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+          >
+            Cancel
+          </button>
+        </div>
+      @end
+    @end
+
+    @each(section in workspace.sections)
+
+      <div x-data="{ open: true }">
+        <div @click="open = !open" class="border divide-gray-200 flex justify-between py-2 sm:px-8 sm:py-6 lg:p-2 xl:px-8 w-full text-left text-sm font-bold text-gray-900 hover:cursor-pointer">
+          {{ section.title }}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="h-5 w-5"
+            :class="open ? 'rotate-180 transform' : ''"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+          </svg>
+        </div>
+
+        <div
+          x-show="open"
+          x-data="{ create: false }"
+          class="bg-white"
+        >
+          <div class='overflow-x-auto border border-gray-200'>
+            <table class='min-w-full divide-y divide-gray-200 text-sm'>
+              <tbody class='divide-y divide-gray-200'>
+                <tr>
+                  <td class='whitespace-nowrap px-8 py-2 font-medium text-gray-900'>
+                    John Doe
+                  </td>
+                  <td class='whitespace-nowrap px-8 py-2 text-gray-700'>
+                    24/05/1995
+                  </td>
+                  <td class='whitespace-nowrap px-8 py-2 text-gray-700'>
+                    Web Developer
+                  </td>
+                  <td class='whitespace-nowrap px-8 py-2 text-gray-700'>
+                    $120,000
+                  </td>
+                </tr>
+                <tr>
+                  <td class='whitespace-nowrap px-8 py-2 font-medium text-gray-900'>
+                    John Doe
+                  </td>
+                  <td class='whitespace-nowrap px-8 py-2 text-gray-700'>
+                    24/05/1995
+                  </td>
+                  <td class='whitespace-nowrap px-8 py-2 text-gray-700'>
+                    Web Developer
+                  </td>
+                  <td class='whitespace-nowrap px-8 py-2 text-gray-700'>
+                    $120,000
+                  </td>
+                </tr>
+                <tr x-show="create" style="display: none">
+                  <td colspan="4" class='whitespace-nowrap px-8 py-2 font-medium text-gray-900'>
+                    @form.base()
+
+                      <section class="grid gap-y-4 w-4/6 mx-auto lg:w-1/2">
+                        @!component('components/form/text-field', {
+                          label: 'Title',
+                          name: 'title',
+                          required: true,
+                          value: '',
+                          flashMessages: flashMessages
+                        })
+
+                        @!component('components/form/select-field', {
+                          label: 'Priority',
+                          name: 'priority',
+                          required: true,
+                          options: priorities,
+                        })
+
+                        @!component('components/form/textarea-field', {
+                          label: 'Content',
+                          name: 'content',
+                          value: '',
+                          flashMessages: flashMessages
+                        })
+
+                        @!component('components/form/button', {
+                          event: 'submit-event',
+                          type: 'submit',
+                          text: 'Save task',
+                          classes: "inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 mb-3 sm:w-auto sm:text-sm"
+                        })
+                      </section>
+                    @end
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="4" class='whitespace-nowrap text-center px-8 py-2 font-medium text-gray-900'>
+                    <button
+                      type="button"
+                      @click="
+                        create = !create
+                        $el.lastElementChild.innerText = create ? 'Cancel' : 'Add Task'
+                      "
+                      class="inline-flex px-4 hover:text-indigo-500 group"
+                    >
+                      <svg
+                        x-show="!create"
+                        class='group-hover:text-indigo-400 mb-1 text-slate-400'
+                        width='20'
+                        height='20'
+                        fill='currentColor'
+                        aria-hidden='true'
+                      >
+                        <path d='M10 5a1 1 0 0 1 1 1v3h3a1 1 0 1 1 0 2h-3v3a1 1 0 1 1-2 0v-3H6a1 1 0 1 1 0-2h3V6a1 1 0 0 1 1-1Z' />
+                      </svg>
+                      <span>Add Task</span>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    @end
+
+    <ul class='bg-slate-50 p-4 sm:px-8 sm:pt-6 sm:pb-8 lg:p-4 xl:px-8 xl:pt-6 xl:pb-8 gap-4 text-sm leading-6'>
+      <li class='flex'>
+        <button
+          class='hover:border-indigo-500 hover:border-solid hover:bg-white hover:text-indigo-500 group w-full flex flex-col items-center justify-center rounded-md border-2 border-dashed border-slate-300 text-sm leading-6 text-slate-900 font-medium py-3'
+          @click="modal = true"
+        >
+          <svg
+            class='group-hover:text-indigo-500 mb-1 text-slate-400'
+            width='20'
+            height='20'
+            fill='currentColor'
+            aria-hidden='true'
+          >
+            <path d='M10 5a1 1 0 0 1 1 1v3h3a1 1 0 1 1 0 2h-3v3a1 1 0 1 1-2 0v-3H6a1 1 0 1 1 0-2h3V6a1 1 0 0 1 1-1Z' />
+          </svg>
+          Add Section
+        </button>
+      </li>
+    </ul>
+
+  </section>
+
+
+@end

@@ -1,0 +1,87 @@
+@layout('layouts/auth')
+
+@section('content')
+
+  @component('components/card')
+
+    <div class="text-center">
+      <h1 class="block text-2xl font-bold text-gray-800">Register</h1>
+      <p class="mt-2 text-sm text-gray-600">
+        @if(flashMessages.get('status') === 'success')
+          You're already setup! Time to move 
+          <a href="{{ route('/login') }}" class="text-indigo-600 decoration-2 hover:underline font-medium">here</a>
+        @else
+          Already have an account? 
+          <a href="{{ route('/login') }}" class="text-indigo-600 decoration-2 hover:underline font-medium">Login in here</a>
+        @end
+      </p>
+
+      @if(flashMessages.has('errors.message'))
+        @!alert.error({
+          message:  flashMessages.get('errors.message') 
+        })
+      @end
+    </div>
+    
+    <div class="{{ flashMessages.get('status') === 'success' ? 'hidden' : '' }} mt-5">
+      @component('components/form/base', {
+        action: route('auth.register'),
+        method: "POST"
+      })
+
+        <section class="grid gap-y-4">
+          @!component('components/form/text-field', {
+            label: 'First Name',
+            name: 'firstName',
+            required: true,
+            flashMessages: flashMessages
+          })
+
+
+          @!component('components/form/text-field', {
+            label: 'Last Name',
+            name: 'lastName',
+            required: true,
+            flashMessages: flashMessages
+          })
+
+
+          @!component('components/form/text-field', {
+            label: 'Email address',
+            name: 'email',
+            type: 'email',
+            required: true,
+            flashMessages: flashMessages
+          })
+          
+
+          @!component('components/form/text-field', {
+            label: 'Password',
+            name: 'password',
+            type: 'password',
+            required: true,
+            flashMessages: flashMessages
+          })
+
+
+          @!component('components/form/text-field', {
+            label: 'Password Confirmation',
+            name: 'password_confirmation',
+            type: 'password',
+            required: true,
+            flashMessages: flashMessages
+          })
+
+
+          @!component('components/form/button', {
+            event: 'submit-event',
+            type: 'submit',
+            text: 'Register',
+          })
+
+        </section>
+      @end
+    </div>
+  @end
+
+@endsection

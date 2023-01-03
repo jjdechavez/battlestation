@@ -1,0 +1,15 @@
+@layout('layouts/dashboard')
+
+@section('content')
+  <header class="mb-3">
+    <h1 class="text-2xl font-bold tracking-tight text-gray-900">Dashboard</h1>
+  </header>
+
+  <div>
+    {{ inspect(user) }}
+    <h1 class="title"> Welcome to Dashboard! {{ auth.user.email }}</h1>
+    <p class="subtitle">
+      Congratulations, you have just created your first AdonisJS app.
+    </p>
+  </div>
+@endsection

@@ -1,0 +1,55 @@
+@layout('layouts/auth')
+
+@section('content')
+
+  @component('components/card')
+
+    <div class="text-center">
+      <h1 class="block text-2xl font-bold text-gray-800 mb-3">Login</h1>
+
+      @if (flashMessages.has('errors.message'))
+        @!alert.error({
+          message:  flashMessages.get('errors.message') 
+        })
+      @endif
+    </div>
+
+    <div class="mt-3 w-full">
+      @component('components/form/base', {
+        action: route('auth.login'),
+        method: "POST"
+      })
+
+        <section class="grid gap-y-4">
+          @!component('components/form/text-field', {
+            label: 'Email address',
+            name: 'email',
+            type: 'email'
+          })
+
+
+          @!component('components/form/text-field', {
+            label: 'Password',
+            name: 'password',
+            type: 'password'
+          })
+
+
+          @!component('components/form/button', {
+            event: 'submit-event',
+            type: 'submit',
+            text: 'Login',
+          })
+
+        </section>
+      @end
+
+      <p class="mt-3 text-sm text-gray-600">
+        Don't have a Battlestation account?
+        <a href="{{ route('/register') }}" class="text-indigo-600 decoration-2 hover:underline font-medium">Register now!</a>
+      </p>
+    </div>
+
+  @end
+
+@end

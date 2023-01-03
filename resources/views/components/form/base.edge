@@ -1,0 +1,13 @@
+<form 
+  action="{{action}}"
+  method="{{method}}"
+  x-data="{ loading: false }"
+  @submit-event="loading = true"
+  @if(classNames)
+    class="{{classNames}}"
+  @end
+>
+  {{ csrfField() }}
+
+  {{{ await $slots.main() }}}
+</form>

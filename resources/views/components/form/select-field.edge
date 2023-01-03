@@ -1,0 +1,30 @@
+@set('optionValue', optionValue ? optionValue : 'value')
+@set('optionLabel', optionLabel ? optionLabel : 'label')
+
+<div>
+  @if(label)
+    <label 
+      for="{{ name }}"
+      class="{{ required ? `after:content-['*'] after:ml-0.5 after:text-red-500` : '' }} block mb-2 text-sm font-medium text-gray-900"
+    >
+      {{ label }}
+    </label>
+  @end
+
+  <select 
+    name="{{ name }}" 
+    class="border border-gray-300 bg-gray-50 text-gray-700 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
+    @if(onchange)
+      onchange="{{ onchange }}"
+    @end
+  >
+    @each (option in options)
+      <option 
+        value="{{ option[`${optionValue}`] }}"
+        {{ option[`${optionValue}`] === selected ? 'selected' : '' }}
+      >
+        {{ option[`${optionLabel}`] }}
+      </option>
+    @endeach
+  </select>
+</div>

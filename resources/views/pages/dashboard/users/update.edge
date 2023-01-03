@@ -1,0 +1,16 @@
+@layout('layouts/dashboard')
+
+@section('content')
+
+
+  @!component('pages/dashboard/users/form', {
+    method: 'PATCH',
+    heading: 'Update user information',
+    detail: "Let's get started by filling in the information below to update user details",
+    submitTitle: 'Update user',
+    user,
+    roles
+  })
+
+
+@end
