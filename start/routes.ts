@@ -66,6 +66,9 @@ Route.group(() => {
     Route.post('/:id/sections', 'WorkspaceSectionsController.store').as(
       'sections.store'
     );
+    Route.post('/:id/sections/:sectionId', 'WorkspaceTasksController.store').as(
+      'tasks.store'
+    );
   })
     .prefix('workspaces')
     .as('workspaces');

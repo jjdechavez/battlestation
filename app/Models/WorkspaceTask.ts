@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon';
 import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm';
 import { slugify } from '@ioc:Adonis/Addons/LucidSlugify';
-import { WorkspaceSectionPriority } from 'App/Constants/Workspace';
+import { WorkspaceTaskPriority } from 'App/Constants/Workspace';
 import WorkspaceSection from './WorkspaceSection';
 
 export default class WorkspaceTask extends BaseModel {
@@ -28,7 +28,7 @@ export default class WorkspaceTask extends BaseModel {
   public position: number;
 
   @column()
-  public priority: WorkspaceSectionPriority | null;
+  public priority: WorkspaceTaskPriority | null;
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime;

@@ -15,10 +15,11 @@ export const WORKSPACE_TYPE = {
 export type WorkspaceType = ObjectValue<typeof WORKSPACE_TYPE>;
 
 export const WORKSPACE_TASK_PRIORITY = {
-  LOW: 'LOW',
-  MEDIUM: 'MEDIUM',
-  HIGH: 'HIGH',
+  NO_PRIORITY: 'NO PRIORITY',
   URGENT: 'URGENT',
+  HIGH: 'HIGH',
+  MEDIUM: 'MEDIUM',
+  LOW: 'LOW',
 } as const;
 
 export type WorkspaceTaskPriority = ObjectValue<

@@ -125,37 +125,34 @@
           <div class='overflow-x-auto border border-gray-200'>
             <table class='min-w-full divide-y divide-gray-200 text-sm'>
               <tbody class='divide-y divide-gray-200'>
-                <tr>
-                  <td class='whitespace-nowrap px-8 py-2 font-medium text-gray-900'>
-                    John Doe
-                  </td>
-                  <td class='whitespace-nowrap px-8 py-2 text-gray-700'>
-                    24/05/1995
-                  </td>
-                  <td class='whitespace-nowrap px-8 py-2 text-gray-700'>
-                    Web Developer
-                  </td>
-                  <td class='whitespace-nowrap px-8 py-2 text-gray-700'>
-                    $120,000
-                  </td>
-                </tr>
-                <tr>
-                  <td class='whitespace-nowrap px-8 py-2 font-medium text-gray-900'>
-                    John Doe
-                  </td>
-                  <td class='whitespace-nowrap px-8 py-2 text-gray-700'>
-                    24/05/1995
-                  </td>
-                  <td class='whitespace-nowrap px-8 py-2 text-gray-700'>
-                    Web Developer
-                  </td>
-                  <td class='whitespace-nowrap px-8 py-2 text-gray-700'>
-                    $120,000
-                  </td>
-                </tr>
+                @each(task in section.tasks)
+                  <tr>
+                    <td class='whitespace-nowrap px-8 py-2 text-gray-900'>
+                      {{ task.priority }}
+                    </td>
+                    <td colspan="2" class='whitespace-nowrap px-8 py-2 font-semibold text-gray-700'>
+                      {{ task.title }}
+                    </td>
+                    <td class='whitespace-nowrap py-2 text-gray-700'>
+                      {{ task.createdAt.toFormat('LLL dd yyyy') }}
+                    </td>
+                    <td class='whitespace-nowrap py-2 text-gray-700'>
+                      Options
+                    </td>
+                  </tr>
+                @end
                 <tr x-show="create" style="display: none">
-                  <td colspan="4" class='whitespace-nowrap px-8 py-2 font-medium text-gray-900'>
-                    @form.base()
+                  <td colspan="5" class='whitespace-nowrap px-8 py-2 font-medium text-gray-900'>
+                    @form.base({
+                      action: route('workspaces.tasks.store', { id: workspace.id, sectionId: section.id }),
+                      method: "POST"
+                    })
+
+                      @!component('components/form/text-field', {
+                        name: 'position',
+                        type: 'hidden',
+                        value: section.tasks.length
+                      })
 
                       <section class="grid gap-y-4 w-4/6 mx-auto lg:w-1/2">
                         @!component('components/form/text-field', {
@@ -191,7 +188,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td colspan="4" class='whitespace-nowrap text-center px-8 py-2 font-medium text-gray-900'>
+                  <td colspan="5" class='whitespace-nowrap text-center px-8 py-2 font-medium text-gray-900'>
                     <button
                       type="button"
                       @click="

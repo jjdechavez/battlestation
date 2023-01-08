@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
-import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, BelongsTo, belongsTo, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
 import Workspace from './Workspace';
+import WorkspaceTask from './WorkspaceTask';
 
 export default class WorkspaceSection extends BaseModel {
   @column({ isPrimary: true })
@@ -23,4 +24,9 @@ export default class WorkspaceSection extends BaseModel {
 
   @belongsTo(() => Workspace)
   public workspace: BelongsTo<typeof Workspace>
+
+  @hasMany(() => WorkspaceTask, {
+    foreignKey: 'sectionId'
+  })
+  public tasks: HasMany<typeof WorkspaceTask>
 }

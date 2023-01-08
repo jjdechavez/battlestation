@@ -3,6 +3,7 @@ import { schema, rules } from '@ioc:Adonis/Core/Validator';
 import Database from '@ioc:Adonis/Lucid/Database';
 import { WORKSPACE_TASK_PRIORITY, WORKSPACE_TYPE } from 'App/Constants/Workspace';
 import Workspace from 'App/Models/Workspace';
+import WorkspaceSection from 'App/Models/WorkspaceSection';
 import { objectToOption } from '../../../utils/form';
 
 export default class WorkspacesController {
@@ -63,7 +64,9 @@ export default class WorkspacesController {
 
   public async show({ view, params, bouncer }: HttpContextContract) {
     const workspace = await Workspace.findOrFail(params.id)
-    await workspace.load('sections')
+    await workspace.load('sections', sectionsQuery => {
+      sectionsQuery.preload('tasks')
+    })
 
     await bouncer.with('WorkspacePolicy').authorize('view', workspace)
 
