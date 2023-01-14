@@ -16,9 +16,7 @@ export default class extends BaseSchema {
       table.string('slug').notNullable().unique();
       table.text('content', 'longtext').nullable();
       table.integer('position').notNullable();
-      table
-        .enum('priority', Object.values(WORKSPACE_TASK_PRIORITY))
-        .nullable();
+      table.string('priority').defaultTo(WORKSPACE_TASK_PRIORITY.NO_PRIORITY)
 
       /**
        * Uses timestamptz for PostgreSQL and DATETIME2 for MSSQL
