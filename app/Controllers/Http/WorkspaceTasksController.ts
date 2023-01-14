@@ -14,7 +14,7 @@ export default class WorkspaceTasksController {
       title: schema.string([rules.minLength(2), rules.maxLength(180)]),
       content: schema.string.optional(),
       position: schema.number([rules.unsigned()]),
-      priority: schema.enum(Object.keys(WORKSPACE_TASK_PRIORITY)),
+      priority: schema.string(),
     });
 
     const payload = await request.validate({ schema: taskSchema });
