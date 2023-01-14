@@ -10,10 +10,9 @@ export default class WorkspaceTasksController {
   }
 
   public async store({request, response, session, params}: HttpContextContract) {
-    console.log("workspacetask store trigerr")
     const taskSchema = schema.create({
       title: schema.string([rules.minLength(2), rules.maxLength(180)]),
-      summary: schema.string.optional(),
+      content: schema.string.optional(),
       position: schema.number([rules.unsigned()]),
       priority: schema.enum(Object.keys(WORKSPACE_TASK_PRIORITY)),
     });
