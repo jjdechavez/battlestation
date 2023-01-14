@@ -9,6 +9,7 @@ import {
 } from '@ioc:Adonis/Lucid/Orm';
 import { UserStatus } from 'App/Constants/UserStatus';
 import Role from './Role';
+import { RoleAlias } from 'App/Constants/RoleAlias';
 
 export default class User extends BaseModel {
   @column({ isPrimary: true })
@@ -30,7 +31,7 @@ export default class User extends BaseModel {
   public status: UserStatus;
 
   @column()
-  public roleAlias: string;
+  public roleAlias: RoleAlias;
 
   @column()
   public email: string;

@@ -15,7 +15,7 @@ export default class WorkspacePolicy extends BasePolicy {
   }
 
   public async create(user: User) {
-    if (user.roleAlias === ROLE_ALIAS.MEMBER) {
+    if (Object.values(ROLE_ALIAS).includes(user.roleAlias)) {
       return true;
     }
   }
