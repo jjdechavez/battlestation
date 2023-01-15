@@ -7,6 +7,11 @@
       "js": [
         "http://localhost:8080/assets/app.js"
       ]
+    },
+    "workspace": {
+      "js": [
+        "http://localhost:8080/assets/workspace.js"
+      ]
     }
   }
 }
