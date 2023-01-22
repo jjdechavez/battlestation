@@ -117,90 +117,88 @@
           class="bg-white"
         >
           <div class='overflow-x-auto border border-gray-200'>
-            <table class='min-w-full divide-y divide-gray-200 text-sm'>
-              <tbody class='divide-y divide-gray-200'>
-                @each(task in section.tasks)
-                  <tr>
-                    <td class='whitespace-nowrap px-8 py-2 text-gray-900'>
-                      {{ task.priority }}
-                    </td>
-                    <td colspan="2" class='whitespace-nowrap px-8 py-2 font-semibold text-gray-700'>
-                      {{ task.title }}
-                    </td>
-                    <td class='whitespace-nowrap py-2 text-gray-700'>
-                      {{ task.createdAt.toFormat('LLL dd yyyy') }}
-                    </td>
-                    <td class='whitespace-nowrap py-2 text-gray-700'>
-                      Options
-                    </td>
-                  </tr>
-                @end
-                <tr x-show="create" style="display: none">
-                  <td colspan="5" class='whitespace-nowrap px-8 py-2 font-medium text-gray-900'>
-                    @form.base({
-                      action: route('workspaces.tasks.store', { id: workspace.id, sectionId: section.id }),
-                      method: "POST"
-                    })
+            @if(!!section.tasks.length)
+              <form>
+                <ul class='workspace-tasks divide-y divide-gray-200 text-sm whitespace-nowrap py-2'>
+                  @each(task in section.tasks)
+                    <li class='whitespace-nowrap px-8 py-2 text-gray-900 flex justify-between'>
+                      <div class="w-22 basis-1/4">
+                        {{ task.priority }}
+                      </div>
+                      <div class="basis-11/12 w-36 font-semibold text-gray-700">
+                        {{ task.title }}
+                      </div>
+                      <div class="basis-1/5 text-center">
+                        {{ task.createdAt.toFormat('LLL dd yyyy') }}
+                      </div>
+                      <div class="basis-1/6 text-center">
+                        Options
+                      </div>
+                    </li>
+                  @end
+                </ul>
+              </form>
+            @end
+            <div x-show="create" style="display: none" class="whitespace-nowrap px-8 py-2 font-medium text-gray-900">
+              @form.base({
+                action: route('workspaces.tasks.store', { id: workspace.id, sectionId: section.id }),
+                method: "POST"
+              })
 
-                      <section class="grid gap-y-4 w-4/6 mx-auto lg:w-1/2">
-                        @!component('components/form/text-field', {
-                          label: 'Title',
-                          name: 'title',
-                          required: true,
-                          value: '',
-                          flashMessages: flashMessages
-                        })
+                <section class="grid gap-y-4 w-4/6 mx-auto lg:w-1/2">
+                  @!component('components/form/text-field', {
+                    label: 'Title',
+                    name: 'title',
+                    required: true,
+                    value: '',
+                    flashMessages: flashMessages
+                  })
 
-                        @!component('components/form/select-field', {
-                          label: 'Priority',
-                          name: 'priority',
-                          required: true,
-                          options: priorities,
-                        })
+                  @!component('components/form/select-field', {
+                    label: 'Priority',
+                    name: 'priority',
+                    required: true,
+                    options: priorities,
+                  })
 
-                        @!component('components/form/textarea-field', {
-                          label: 'Content',
-                          name: 'content',
-                          value: '',
-                          flashMessages: flashMessages
-                        })
+                  @!component('components/form/textarea-field', {
+                    label: 'Content',
+                    name: 'content',
+                    value: '',
+                    flashMessages: flashMessages
+                  })
 
-                        @!component('components/form/button', {
-                          event: 'submit-event',
-                          type: 'submit',
-                          text: 'Save task',
-                          classes: "inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 mb-3 sm:w-auto sm:text-sm"
-                        })
-                      </section>
-                    @end
-                  </td>
-                </tr>
-                <tr>
-                  <td colspan="5" class='whitespace-nowrap text-center px-8 py-2 font-medium text-gray-900'>
-                    <button
-                      type="button"
-                      @click="
-                        create = !create
-                        $el.lastElementChild.innerText = create ? 'Cancel' : 'Add Task'
-                      "
-                      class="inline-flex px-4 hover:text-indigo-500 group"
-                    >
-                      <svg
-                        x-show="!create"
-                        class='group-hover:text-indigo-400 mb-1 text-slate-400'
-                        width='20'
-                        height='20'
-                        fill='currentColor'
-                        aria-hidden='true'
-                      >
-                        <path d='M10 5a1 1 0 0 1 1 1v3h3a1 1 0 1 1 0 2h-3v3a1 1 0 1 1-2 0v-3H6a1 1 0 1 1 0-2h3V6a1 1 0 0 1 1-1Z' />
-                      </svg>
-                      <span>Add Task</span>
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                  @!component('components/form/button', {
+                    event: 'submit-event',
+                    type: 'submit',
+                    text: 'Save task',
+                    classes: "inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 mb-3 sm:w-auto sm:text-sm"
+                  })
+                </section>
+              @end
+            </div>
+            <div class='flex justify-center items-center border-t border-t-gray-200 whitespace-nowrap px-8 py-1.5 text-sm font-medium text-gray-900'>
+              <button
+                type="button"
+                @click="
+                  create = !create
+                  $el.lastElementChild.innerText = create ? 'Cancel' : 'Add Task'
+                "
+                class="inline-flex items-center px-4 hover:text-indigo-500 group"
+              >
+                <svg
+                  x-show="!create"
+                  class='group-hover:text-indigo-400 text-slate-400'
+                  width='20'
+                  height='20'
+                  fill='currentColor'
+                  aria-hidden='true'
+                >
+                  <path d='M10 5a1 1 0 0 1 1 1v3h3a1 1 0 1 1 0 2h-3v3a1 1 0 1 1-2 0v-3H6a1 1 0 1 1 0-2h3V6a1 1 0 0 1 1-1Z' />
+                </svg>
+                <span>Add Task</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
