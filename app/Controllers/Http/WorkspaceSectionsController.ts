@@ -10,18 +10,19 @@ export default class WorkspaceSectionsController {
     session,
     params,
   }: HttpContextContract) {
-    console.log('store trigger');
-    await Workspace.findOrFail(params.id);
+    const workspace = await Workspace.query()
+      .where('id', params.id)
+      .withCount('sections')
+      .firstOrFail();
 
     const workspaceSectionSchema = schema.create({
       title: schema.string([rules.minLength(2)]),
-      position: schema.number([rules.unsigned()]),
     });
 
     const payload = await request.validate({ schema: workspaceSectionSchema });
     await WorkspaceSection.create({
       ...payload,
-      position: payload.position + 1,
+      position: workspace.$extras.sections_count + 1,
       workspaceId: params.id,
     });
 
