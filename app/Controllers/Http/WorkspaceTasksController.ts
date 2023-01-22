@@ -9,11 +9,20 @@ export default class WorkspaceTasksController {
   public async create({}: HttpContextContract) {
   }
 
-  public async store({request, response, session, params}: HttpContextContract) {
+  public async store({
+    request,
+    response,
+    session,
+    params,
+  }: HttpContextContract) {
+    const workspaceSection = await WorkspaceSection.query()
+      .where('id', params.sectionId)
+      .withCount('tasks')
+      .firstOrFail();
+
     const taskSchema = schema.create({
       title: schema.string([rules.minLength(2), rules.maxLength(180)]),
       content: schema.string.optional(),
-      position: schema.number([rules.unsigned()]),
       priority: schema.string(),
     });
 
@@ -21,8 +30,8 @@ export default class WorkspaceTasksController {
     await WorkspaceTask.create({
       ...payload,
       priority: WORKSPACE_TASK_PRIORITY[payload.priority],
-      position: payload.position + 1,
-      sectionId: params.sectionId
+      position: workspaceSection.$extras.tasks_count + 1,
+      sectionId: params.sectionId,
     });
 
     session.flash({
@@ -30,7 +39,7 @@ export default class WorkspaceTasksController {
       status: 'success',
     });
 
-    return response.redirect().back()
+    return response.redirect().back();
   }
 
   public async show({}: HttpContextContract) {}
