@@ -42,6 +42,46 @@ export default class WorkspaceTasksController {
     return response.redirect().back();
   }
 
+  public async position({ request, params, view }: HttpContextContract) {
+    const taskSchema = schema.create({
+      taskIds: schema.array().members(schema.string()),
+    });
+
+    const { taskIds } = await request.validate({ schema: taskSchema });
+    console.log({ taskIds });
+
+    await Promise.all(
+      taskIds.map(async (taskId, index) => {
+        const task = await WorkspaceTask.findOrFail(taskId);
+        task.position = index;
+        await task.save();
+        return task;
+      })
+    );
+
+    const workspaceSection = await WorkspaceSection.query()
+      .where('id', params.sectionId)
+      .preload('tasks', (taskQuery) => {
+        taskQuery.orderBy('position', 'asc');
+      })
+      .firstOrFail();
+
+    console.log(
+      'fetch new tasks',
+      workspaceSection.tasks.map((task) => ({
+        title: task.title,
+        position: task.position,
+      }))
+    );
+
+    // TODO: rerender the all list; or fetch preloaded of workspace, sections, and tasks; render workspace.js
+    return view.render('partials/workspace/task_list', {
+      id: params.id,
+      sectionId: params.sectionId,
+      tasks: workspaceSection.tasks,
+    });
+  }
+
   public async show({}: HttpContextContract) {}
 
   public async edit({}: HttpContextContract) {}

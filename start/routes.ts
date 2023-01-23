@@ -66,9 +66,16 @@ Route.group(() => {
     Route.post('/:id/sections', 'WorkspaceSectionsController.store').as(
       'sections.store'
     );
+    // Route.get('/:id/sections', 'WorkspaceTasksController.create').as(
+    //   'tasks.create'
+    // );
     Route.post('/:id/sections/:sectionId', 'WorkspaceTasksController.store').as(
       'tasks.store'
     );
+    Route.post(
+      '/:id/sections/:sectionId/position',
+      'WorkspaceTasksController.position'
+    ).as('tasks.position');
   })
     .prefix('workspaces')
     .as('workspaces');

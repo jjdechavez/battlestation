@@ -1,0 +1,19 @@
+<ul id="test" class='sortable divide-y divide-gray-200 text-sm whitespace-nowrap py-2'>
+  @each(task in tasks)
+    <li class='whitespace-nowrap px-8 py-2 text-gray-900 flex justify-between'>
+      <div class="w-22 basis-1/4">
+        <input type="hidden" name="taskIds" value="{{ task.id }}">
+        {{ task.priority }}
+      </div>
+      <div class="basis-11/12 w-36 font-semibold text-gray-700">
+        {{ task.title }} - {{ task.position }}
+      </div>
+      <div class="basis-1/5 text-center">
+        {{ task.createdAt.toFormat('LLL dd yyyy') }}
+      </div>
+      <div class="basis-1/6 text-center">
+        Options
+      </div>
+    </li>
+  @end
+</ul>

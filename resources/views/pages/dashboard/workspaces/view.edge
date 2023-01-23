@@ -118,15 +118,17 @@
         >
           <div class='overflow-x-auto border border-gray-200'>
             @if(!!section.tasks.length)
-              <form>
-                <ul class='workspace-tasks divide-y divide-gray-200 text-sm whitespace-nowrap py-2'>
+              <form hx-post="{{ route('workspaces.tasks.position', { id: workspace.id, sectionId: section.id }) }}" hx-trigger="end" hx-target="#test" hx-swap="outerHTML">
+                {{ csrfField() }}
+                <ul id="test" class='sortable divide-y divide-gray-200 text-sm whitespace-nowrap py-2'>
                   @each(task in section.tasks)
                     <li class='whitespace-nowrap px-8 py-2 text-gray-900 flex justify-between'>
                       <div class="w-22 basis-1/4">
+                        <input type="hidden" name="taskIds" value="{{ task.id }}">
                         {{ task.priority }}
                       </div>
                       <div class="basis-11/12 w-36 font-semibold text-gray-700">
-                        {{ task.title }}
+                        {{ task.title }} - {{ task.position }}
                       </div>
                       <div class="basis-1/5 text-center">
                         {{ task.createdAt.toFormat('LLL dd yyyy') }}
