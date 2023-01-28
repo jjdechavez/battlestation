@@ -1,7 +1,10 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import { schema, rules } from '@ioc:Adonis/Core/Validator';
 import Database from '@ioc:Adonis/Lucid/Database';
-import { WORKSPACE_TASK_PRIORITY, WORKSPACE_TYPE } from 'App/Constants/Workspace';
+import {
+  WORKSPACE_TASK_PRIORITY,
+  WORKSPACE_TYPE,
+} from 'App/Constants/Workspace';
 import Workspace from 'App/Models/Workspace';
 import { objectToOption } from '../../../utils/form';
 
@@ -24,7 +27,7 @@ export default class WorkspacesController {
   }
 
   public async create({ view, bouncer }: HttpContextContract) {
-    await bouncer.with('WorkspacePolicy').authorize('create')
+    await bouncer.with('WorkspacePolicy').authorize('create');
 
     const types = objectToOption(WORKSPACE_TYPE);
 
@@ -36,9 +39,9 @@ export default class WorkspacesController {
     response,
     session,
     auth,
-    bouncer
+    bouncer,
   }: HttpContextContract) {
-    await bouncer.with('WorkspacePolicy').authorize('create')
+    await bouncer.with('WorkspacePolicy').authorize('create');
 
     const workspaceSchema = schema.create({
       title: schema.string([rules.minLength(2), rules.maxLength(180)]),
@@ -62,16 +65,21 @@ export default class WorkspacesController {
   }
 
   public async show({ view, params, bouncer }: HttpContextContract) {
-    const workspace = await Workspace.findOrFail(params.id)
-    await workspace.load('sections', sectionsQuery => {
-      sectionsQuery.preload('tasks')
-    })
+    const workspace = await Workspace.findOrFail(params.id);
+    await workspace.load('sections', (sectionsQuery) => {
+      sectionsQuery.preload('tasks', (tasksQuery) => {
+        tasksQuery.orderBy('position', 'asc');
+      });
+    });
 
-    await bouncer.with('WorkspacePolicy').authorize('view', workspace)
+    await bouncer.with('WorkspacePolicy').authorize('view', workspace);
 
-    const priorities = objectToOption(WORKSPACE_TASK_PRIORITY)
+    const priorities = objectToOption(WORKSPACE_TASK_PRIORITY);
 
-    return view.render('pages/dashboard/workspaces/view', { workspace, priorities })
+    return view.render('pages/dashboard/workspaces/view', {
+      workspace,
+      priorities,
+    });
   }
 
   public async edit({}: HttpContextContract) {}

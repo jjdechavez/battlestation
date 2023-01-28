@@ -1,6 +1,6 @@
-<ul id="test" class='sortable divide-y divide-gray-200 text-sm whitespace-nowrap py-2'>
+<ul id="section-{{ sectionId }}" class='sortable sections divide-y divide-gray-200 text-sm whitespace-nowrap'>
   @each(task in tasks)
-    <li class='whitespace-nowrap px-8 py-2 text-gray-900 flex justify-between'>
+    <li class='whitespace-nowrap px-8 py-2 text-gray-900 flex justify-between items-center'>
       <div class="w-22 basis-1/4">
         <input type="hidden" name="taskIds" value="{{ task.id }}">
         {{ task.priority }}
@@ -11,8 +11,19 @@
       <div class="basis-1/5 text-center">
         {{ task.createdAt.toFormat('LLL dd yyyy') }}
       </div>
-      <div class="basis-1/6 text-center">
-        Options
+      <div class="task-option basis-1.5 text-center">
+        <button type="button">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="w-6 h-6"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM18.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+        </svg>
+        </button>
       </div>
     </li>
   @end

@@ -76,6 +76,10 @@ Route.group(() => {
       '/:id/sections/:sectionId/position',
       'WorkspaceTasksController.position'
     ).as('tasks.position');
+    Route.post(
+      '/:id/sections/:sectionId/drag',
+      'WorkspaceTasksController.drag'
+    ).as('tasks.drag');
   })
     .prefix('workspaces')
     .as('workspaces');
