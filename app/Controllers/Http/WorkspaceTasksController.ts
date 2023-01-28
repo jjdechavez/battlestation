@@ -1,6 +1,7 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext';
 import { schema, rules } from '@ioc:Adonis/Core/Validator';
 import { WORKSPACE_TASK_PRIORITY } from 'App/Constants/Workspace';
+import Workspace from 'App/Models/Workspace';
 import WorkspaceSection from 'App/Models/WorkspaceSection';
 import WorkspaceTask from 'App/Models/WorkspaceTask';
 import { objectToOption } from '../../../utils/form';
@@ -64,19 +65,21 @@ export default class WorkspaceTasksController {
 
     const { taskIds } = await request.validate({ schema: taskSchema });
 
-    await this.arrangePosition(taskIds)
+    await this.arrangePosition(taskIds);
 
-    const workspaceSection = await WorkspaceSection.query()
-      .where('id', params.sectionId)
-      .preload('tasks', (taskQuery) => {
-        taskQuery.orderBy('position', 'asc');
+    const workspace = await Workspace.query()
+      .where('id', params.id)
+      .preload('sections', (sectionsQuery) => {
+        sectionsQuery
+          .orderBy('position', 'asc')
+          .preload('tasks', (tasksQuery) => {
+            tasksQuery.orderBy('position', 'asc');
+          });
       })
       .firstOrFail();
 
-    return view.render('partials/workspace/task_list', {
-      id: params.id,
-      sectionId: params.sectionId,
-      tasks: workspaceSection.tasks,
+    return view.render('partials/workspace/section_list', {
+      workspace,
     });
   }
 
@@ -108,14 +111,6 @@ export default class WorkspaceTasksController {
       tasks: workspaceSection.tasks,
     });
   }
-
-  public async show({}: HttpContextContract) {}
-
-  public async edit({}: HttpContextContract) {}
-
-  public async update({}: HttpContextContract) {}
-
-  public async destroy({}: HttpContextContract) {}
 
   private toTaskIds(taskIds: string | string[]): string[] {
     if (typeof taskIds === 'object') return taskIds as string[];

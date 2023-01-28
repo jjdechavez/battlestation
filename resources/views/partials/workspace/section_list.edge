@@ -1,4 +1,4 @@
-<section x-data="{ modal: false }">
+<section id="section-list" x-data="{ modal: false }">
 
   @modal.base()
     @form.base({
@@ -61,46 +61,42 @@
     @end
   @end
 
-  @each(section in workspace.sections)
+  <form data-workspace-id="{{ workspace.id }}">
+    {{ csrfField() }}
 
-    <div x-data="{ open: true }">
-      <div @click="open = !open" class="border divide-gray-200 flex justify-between py-2 sm:px-8 sm:py-6 lg:p-2 xl:px-8 w-full text-left text-sm font-bold text-gray-900 hover:cursor-pointer">
-        {{ section.title }}
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-          class="h-5 w-5"
-          :class="open ? 'rotate-180 transform' : ''"
-        >
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
-        </svg>
-      </div>
+    @each((section, index) in workspace.sections)
 
-      <div
-        x-show="open"
-        x-data="{ create: false }"
-        class="bg-white"
-      >
-        <div class='overflow-x-auto border border-gray-200'>
-          <form
-            hx-post="{{ route('workspaces.tasks.position', { id: workspace.id, sectionId: section.id }) }}"
-            hx-trigger="end, submit"
-            hx-target="#section-{{ section.id }}"
-            hx-swap="outerHTML"
+      <div x-data="{ open: true }">
+        <div @click="open = !open" class="border divide-gray-200 flex justify-between py-2 sm:px-8 sm:py-6 lg:p-2 xl:px-8 w-full text-left text-sm font-bold text-gray-900 hover:cursor-pointer">
+          {{ section.title }}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="h-5 w-5"
+            :class="open ? 'rotate-180 transform' : ''"
           >
-            {{ csrfField() }}
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5" />
+          </svg>
+        </div>
+
+        <div
+          x-show="open"
+          x-data="{ create: false }"
+          class="bg-white"
+        >
+          <div class='overflow-x-auto border border-gray-200'>
             <ul id="section-{{ section.id }}" class='sortable sections divide-y divide-gray-200 text-sm whitespace-nowrap'>
               @each(task in section.tasks)
                 <li class='whitespace-nowrap px-8 py-2 text-gray-900 flex justify-between items-center'>
                   <div class="w-22 basis-1/4">
-                    <input type="hidden" name="taskIds" value="{{ task.id }}">
+                    <input type="hidden" name="sections[section-{{ section.id }}]" value="{{ task.id }}">
                     {{ task.priority }}
                   </div>
                   <div class="basis-11/12 w-36 font-semibold text-gray-700">
-                    {{ task.title }} - {{ task.position }}
+                    (ID: {{ task.id }}) {{ task.title }} - {{ task.position }}
                   </div>
                   <div class="basis-1/5 text-center">
                     {{ task.createdAt.toFormat('LLL dd yyyy') }}
@@ -122,72 +118,36 @@
                 </li>
               @end
             </ul>
-          </form>
-          <div x-show="create" style="display: none" class="whitespace-nowrap px-8 py-2 font-medium text-gray-900">
-            @form.base({
-              action: route('workspaces.tasks.store', { id: workspace.id, sectionId: section.id }),
-              method: "POST"
-            })
 
-              <section class="grid gap-y-4 w-4/6 mx-auto lg:w-1/2">
-                @!component('components/form/text-field', {
-                  label: 'Title',
-                  name: 'title',
-                  required: true,
-                  value: '',
-                  flashMessages: flashMessages
-                })
-
-                @!component('components/form/select-field', {
-                  label: 'Priority',
-                  name: 'priority',
-                  required: true,
-                  options: priorities,
-                })
-
-                @!component('components/form/textarea-field', {
-                  label: 'Content',
-                  name: 'content',
-                  value: '',
-                  flashMessages: flashMessages
-                })
-
-                @!component('components/form/button', {
-                  event: 'submit-event',
-                  type: 'submit',
-                  text: 'Save task',
-                  classes: "inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 mb-3 sm:w-auto sm:text-sm"
-                })
-              </section>
-            @end
-          </div>
-          <div class='flex justify-center items-center border-t border-t-gray-200 whitespace-nowrap px-8 py-1.5 text-sm font-medium text-gray-900'>
-            <button
-              type="button"
-              @click="
-                create = !create
-                $el.lastElementChild.innerText = create ? 'Cancel' : 'Add Task'
-              "
-              class="inline-flex items-center px-4 hover:text-indigo-500 group"
-            >
-              <svg
-                x-show="!create"
-                class='group-hover:text-indigo-400 text-slate-400'
-                width='20'
-                height='20'
-                fill='currentColor'
-                aria-hidden='true'
+            <div class='flex justify-center items-center border-t border-t-gray-200 whitespace-nowrap px-8 py-1.5 text-sm font-medium text-gray-900'>
+              <button
+                type="button"
+                @click="
+                  create = !create
+                  $el.lastElementChild.innerText = create ? 'Cancel' : 'Add Task'
+                "
+                class="inline-flex items-center px-4 hover:text-indigo-500 group"
               >
-                <path d='M10 5a1 1 0 0 1 1 1v3h3a1 1 0 1 1 0 2h-3v3a1 1 0 1 1-2 0v-3H6a1 1 0 1 1 0-2h3V6a1 1 0 0 1 1-1Z' />
-              </svg>
-              <span>Add Task</span>
-            </button>
+                <svg
+                  x-show="!create"
+                  class='group-hover:text-indigo-400 text-slate-400'
+                  width='20'
+                  height='20'
+                  fill='currentColor'
+                  aria-hidden='true'
+                >
+                  <path d='M10 5a1 1 0 0 1 1 1v3h3a1 1 0 1 1 0 2h-3v3a1 1 0 1 1-2 0v-3H6a1 1 0 1 1 0-2h3V6a1 1 0 0 1 1-1Z' />
+                </svg>
+                <span>Add Task</span>
+              </button>
+            </div>
+
           </div>
         </div>
       </div>
-    </div>
+    @end
+  </form>
 
-  @end
 
   <ul class='bg-slate-50 p-4 sm:px-8 sm:pt-6 sm:pb-8 lg:p-4 xl:px-8 xl:pt-6 xl:pb-8 gap-4 text-sm leading-6'>
     <li class='flex'>

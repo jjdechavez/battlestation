@@ -62,6 +62,7 @@ Route.group(() => {
     Route.get('/create', 'WorkspacesController.create').as('create');
     Route.post('/create', 'WorkspacesController.store').as('store');
     Route.get('/:id', 'WorkspacesController.show').as('view');
+    Route.post('/:id/drag', 'WorkspacesController.drag').as('drag');
 
     Route.post('/:id/sections', 'WorkspaceSectionsController.store').as(
       'sections.store'

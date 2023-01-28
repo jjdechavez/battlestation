@@ -12,34 +12,73 @@ htmx.onLoad(function () {
       animation: 150,
       onEnd: (evt) => {
         if (evt.pullMode) {
+          // Dragged item to other list
           const toElement = evt.to;
-          const childrens = Array.from(toElement.children);
-          const ids = childrens.map(
+          const toElementId = toElement.id;
+
+          const fromElement = evt.from;
+          const fromElementId = fromElement.id;
+
+          const fromElementChildren = Array.from(fromElement.children);
+          const fromIds = fromElementChildren.map(
             (child) => child.querySelector('input').value
           );
+
+          const toElementChildren = Array.from(toElement.children);
+          const toIds = toElementChildren.map(
+            (child) => child.querySelector('input').value
+          );
+
           const formElement = toElement.closest('form');
+          const workspaceId = formElement.dataset.workspaceId;
           const csrfToken = formElement
             .querySelector("input[name='_csrf']")
             .attributes.getNamedItem('value').value;
 
-          const htmxPath = formElement.attributes
-            .getNamedItem('hx-post')
-            .value.replace('position', 'drag');
-
-          const htmxTarget =
-            formElement.attributes.getNamedItem('hx-target').value;
-          const htmxSwap = formElement.attributes.getNamedItem('hx-swap').value;
-          const htmxValues = { taskIds: ids, statusCode: 200 };
-
-          htmx.ajax('POST', htmxPath, {
-            target: htmxTarget,
-            swap: htmxSwap,
-            values: htmxValues,
+          htmx.ajax('POST', `/dashboard/workspaces/${workspaceId}/drag`, {
+            target: '#section-list',
+            swap: 'outerHTML',
+            values: {
+              sections: JSON.stringify({
+                [toElementId]: toIds,
+                [fromElementId]: fromIds,
+              }),
+            },
             headers: {
               'x-csrf-token': csrfToken,
             },
           });
+
+          return true;
         }
+
+        const toElement = evt.to;
+        const toElementChildren = Array.from(toElement.children);
+        const toElementIds = toElementChildren.map(
+          (child) => child.querySelector('input').value
+        );
+
+        const workspaceSectionId = toElement.id.replace('section-', '');
+        const formElement = toElement.closest('form');
+        const workspaceId = formElement.dataset.workspaceId;
+        const csrfToken = formElement
+          .querySelector("input[name='_csrf']")
+          .attributes.getNamedItem('value').value;
+
+        htmx.ajax(
+          'POST',
+          `/dashboard/workspaces/${workspaceId}/sections/${workspaceSectionId}/position`,
+          {
+            target: '#section-list',
+            swap: 'outerHTML',
+            values: {
+              taskIds: toElementIds,
+            },
+            headers: {
+              'x-csrf-token': csrfToken,
+            },
+          }
+        );
       },
     });
 

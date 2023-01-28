@@ -6,6 +6,7 @@ import {
   WORKSPACE_TYPE,
 } from 'App/Constants/Workspace';
 import Workspace from 'App/Models/Workspace';
+import WorkspaceTask from 'App/Models/WorkspaceTask';
 import { objectToOption } from '../../../utils/form';
 
 export default class WorkspacesController {
@@ -79,6 +80,42 @@ export default class WorkspacesController {
     return view.render('pages/dashboard/workspaces/view', {
       workspace,
       priorities,
+    });
+  }
+
+  public async drag({ request, params, view }: HttpContextContract) {
+    const sectionSchema = schema.create({
+      sections: schema.string(),
+    });
+
+    const payload = await request.validate({ schema: sectionSchema });
+    const sections: { [key: string]: string[] } = JSON.parse(payload.sections);
+
+    for await (const [key, tasks] of Object.entries(sections)) {
+      await Promise.all(
+        tasks.map(async (item: string, index: number) => {
+          const task = await WorkspaceTask.findOrFail(item);
+          task.position = index;
+          task.sectionId = Number(key.replace('section-', ''));
+          await task.save();
+          return item;
+        })
+      );
+    }
+
+    const workspace = await Workspace.query()
+      .where('id', params.id)
+      .preload('sections', (sectionsQuery) => {
+        sectionsQuery
+          .orderBy('position', 'asc')
+          .preload('tasks', (tasksQuery) => {
+            tasksQuery.orderBy('position', 'asc');
+          });
+      })
+      .firstOrFail();
+
+    return view.render('partials/workspace/section_list', {
+      workspace,
     });
   }
 
