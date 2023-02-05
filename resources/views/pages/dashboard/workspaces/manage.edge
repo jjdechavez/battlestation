@@ -61,7 +61,7 @@
               <div>
                 <dt class='sr-only'>Category</dt>
                 <dd class='group-hover:text-indigo-200 truncate'>
-                  {{ workspace.summary }}
+                  {{ workspace.summary ? workspace.summary : "-" }}
                 </dd>
               </div>
               <div class='col-start-2 row-start-1 row-end-3 sm:mt-4 lg:mt-0 xl:mt-4'>

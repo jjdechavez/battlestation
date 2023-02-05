@@ -16,7 +16,11 @@
          {{ workspace.title }}
          <small class="font-normal text-sm">{{ capitalCase(workspace.type) }}</small>
        </h1>
-       <p class="text-sm text-gray-700 mt-1">{{ workspace.summary }}</p>
+       @if(workspace.summary)
+         <p class="text-sm text-gray-700 mt-1">{{ workspace.summary }}</p>
+       @else
+         <p class="text-sm text-gray-700 mt-1">Add some description about your workspace.</p>
+       @end
      </div>
 
      <div>
