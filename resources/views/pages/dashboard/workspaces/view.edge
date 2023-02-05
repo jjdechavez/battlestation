@@ -9,31 +9,43 @@
     })
   @endif
 
+  <section x-data="{ modal: false, create: '' }" x-init="$watch('create', value => console.log('Create Value: ', value))">
 
-  <header class="mb-8 flex items-center justify-between">
-    <div>
-       <h1 class="text-2xl font-bold tracking-tight text-gray-900">
-         {{ workspace.title }}
-         <small class="font-normal text-sm">{{ capitalCase(workspace.type) }}</small>
-       </h1>
-       @if(workspace.summary)
-         <p class="text-sm text-gray-700 mt-1">{{ workspace.summary }}</p>
-       @else
-         <p class="text-sm text-gray-700 mt-1">Add some description about your workspace.</p>
-       @end
-     </div>
+    <header class="mb-8 flex items-center justify-between">
+      <div>
+         <h1 class="text-2xl font-bold tracking-tight text-gray-900">
+           {{ workspace.title }}
+           <small class="font-normal text-sm">{{ capitalCase(workspace.type) }}</small>
+         </h1>
+         @if(workspace.summary)
+           <p class="text-sm text-gray-700 mt-1">{{ workspace.summary }}</p>
+         @else
+           <p class="text-sm text-gray-700 mt-1">Add some description about your workspace.</p>
+         @end
+       </div>
 
-     <div>
-       <a
-        class="text-indigo-600 bg-gray-50 hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded text-sm px-5 py-2.5 text-center inline-block"
-        href="{{ route('/dashboard/workspaces') }}"
-       >
-        Redirect to workspaces
-       </a>
-     </div>
-  </header>
+       <div>
+         <a
+          class="text-indigo-600 bg-gray-50 hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded text-sm px-5 py-2.5 mr-2 text-center inline-block"
+          href="{{ route('/dashboard/workspaces') }}"
+         >
+          Redirect to workspaces
+         </a>
+          <button
+            class="inline-block rounded border border-indigo-600 bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring active:text-indigo-500"
+            @click="
+              modal = true
+              create = 'task'
+            "
+          >
+            Add task
+          </button>
+       </div>
+    </header>
 
-  @include('partials/workspace/section_list')
+    @include('partials/workspace/section_list')
+
+  </section>
 
   @entryPointScripts('workspace')
 

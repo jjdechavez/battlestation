@@ -24,30 +24,27 @@ export default class WorkspaceTasksController {
     });
   }
 
-  public async store({
-    request,
-    response,
-    session,
-    params,
-  }: HttpContextContract) {
-    const workspaceSection = await WorkspaceSection.query()
-      .where('id', params.sectionId)
-      .withCount('tasks')
-      .firstOrFail();
-
+  public async store({ request, response, session }: HttpContextContract) {
     const taskSchema = schema.create({
       title: schema.string([rules.minLength(2), rules.maxLength(180)]),
       content: schema.string.optional(),
       priority: schema.string(),
+      section_id: schema.string(),
     });
 
     // TODO: reArrange the position of each task
     const payload = await request.validate({ schema: taskSchema });
+
+    const workspaceSection = await WorkspaceSection.query()
+      .where('id', payload.section_id)
+      .withCount('tasks')
+      .firstOrFail();
+
     await WorkspaceTask.create({
       ...payload,
       priority: WORKSPACE_TASK_PRIORITY[payload.priority],
       position: workspaceSection.$extras.tasks_count + 1,
-      sectionId: params.sectionId,
+      sectionId: +payload.section_id,
     });
 
     session.flash({

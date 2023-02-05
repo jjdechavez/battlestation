@@ -1,0 +1,88 @@
+@form.base({
+  action: route('workspaces.tasks.store', { id: workspaceId }),
+  method: "POST"
+})
+  <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+    <div class="sm:flex sm:items-start">
+      <div class="mt-3 sm:mt-0 sm:text-left w-full">
+
+        <header class="flex justify-between items-center">
+          <h3 class="text-lg font-medium leading-6 text-gray-900" id="modal-title">
+            New <span x-text="create" class="capitalize"></span>
+          </h3>
+
+          <button type="button" @click="modal = false" class="p-1.5">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 hover:cursor-pointer">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </header>
+
+        <div class="mt-2">
+          <p class="text-sm text-gray-500">
+            Kindly fill up the information about the workspace <span x-text="create"></span>.
+          </p>
+        </div>
+
+        <section class="mt-5 grid gap-y-4 mx-auto md:w-4/6 lg:w-9/12">
+
+          @!component('components/form/select-field', {
+            label: 'Sections',
+            name: 'section_id',
+            required: true,
+            options: sections,
+            optionLabel: 'title',
+            optionValue: 'id'
+          })
+
+          @!component('components/form/text-field', {
+            label: 'Title',
+            name: 'title',
+            required: true,
+            value: '',
+            flashMessages: flashMessages
+          })
+
+          @!component('components/form/select-field', {
+            label: 'Priority',
+            name: 'priority',
+            required: true,
+            options: priorities,
+          })
+
+          @!component('components/form/textarea-field', {
+            label: 'Content',
+            name: 'content',
+            value: '',
+            flashMessages: flashMessages
+          })
+
+        </section>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+
+    @!component('components/form/button', {
+      event: 'submit-event',
+      type: 'submit',
+      text: submitTitle ? submitTitle : 'Save',
+      classes: "inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
+    })
+
+    <button
+      type="button"
+      @click="
+        modal = false
+        create = ''
+      "
+      :disabled="loading"
+      :class="loading ? 'cursor-not-allowed bg-gray-100 border-gray-200' : 'bg-white border-gray-300 '"
+      class="mt-3 inline-flex w-full justify-center rounded-md border px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
+    >
+      Cancel
+    </button>
+  </div>
+@end
