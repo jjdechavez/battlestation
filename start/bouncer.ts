@@ -70,4 +70,5 @@ export const { policies } = Bouncer.registerPolicies({
   UserPolicy: () => import('App/Policies/UserPolicy'),
   WorkspacePolicy: () => import('App/Policies/WorkspacePolicy'),
   WorkspaceSectionPolicy: () => import('App/Policies/WorkspaceSectionPolicy'),
+  WorkspaceTaskPolicy: () => import('App/Policies/WorkspaceTaskPolicy'),
 });

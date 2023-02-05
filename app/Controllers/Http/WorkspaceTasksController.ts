@@ -7,7 +7,19 @@ import WorkspaceTask from 'App/Models/WorkspaceTask';
 import { objectToOption } from '../../../utils/form';
 
 export default class WorkspaceTasksController {
-  public async index({}: HttpContextContract) {}
+  public async show({ view, params, bouncer }: HttpContextContract) {
+    const workspaceTask = await WorkspaceTask.findOrFail(params.taskId);
+
+    // await bouncer.with('WorkspaceTaskPolicy').authorize('view', workspaceTask);
+
+    const priorities = objectToOption(WORKSPACE_TASK_PRIORITY);
+    console.log(workspaceTask)
+
+    return view.render('pages/dashboard/workspaces/tasks/show', {
+      task: workspaceTask,
+      priorities,
+    });
+  }
 
   public async create({ view, request }: HttpContextContract) {
     const { taskPosition, type } = request.qs();

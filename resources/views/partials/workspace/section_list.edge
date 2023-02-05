@@ -47,7 +47,9 @@
                     {{ task.priority }}
                   </div>
                   <div class="basis-11/12 w-36 font-semibold text-gray-700">
-                    {{ task.title }}
+                    <a href="{{ route('workspaces.tasks.show', { id: workspace.id, taskId: task.id }) }}">
+                      {{ task.title }}
+                    </a>
                   </div>
                   <div class="basis-1/5 text-center">
                     {{ task.createdAt.toFormat('LLL dd yyyy') }}
