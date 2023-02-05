@@ -75,8 +75,11 @@ export default class WorkspaceTasksController {
       })
       .firstOrFail();
 
+    const priorities = objectToOption(WORKSPACE_TASK_PRIORITY);
+
     return view.render('partials/workspace/section_list', {
       workspace,
+      priorities,
     });
   }
 
