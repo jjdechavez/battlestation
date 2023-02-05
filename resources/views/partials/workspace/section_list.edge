@@ -37,11 +37,7 @@
           </svg>
         </div>
 
-        <div
-          x-show="open"
-          x-data="{ create: false }"
-          class="bg-white"
-        >
+        <div x-show="open" class="bg-white">
           <div class='overflow-x-auto border border-gray-200'>
             <ul id="section-{{ section.id }}" class='sortable sections divide-y divide-gray-200 text-sm whitespace-nowrap'>
               @each(task in section.tasks)
@@ -73,30 +69,6 @@
                 </li>
               @end
             </ul>
-
-            <div class='flex justify-center items-center border-t border-t-gray-200 whitespace-nowrap px-8 py-1.5 text-sm font-medium text-gray-900'>
-              <button
-                type="button"
-                @click="
-                  create = !create
-                  $el.lastElementChild.innerText = create ? 'Cancel' : 'Add Task'
-                "
-                class="inline-flex items-center px-4 hover:text-indigo-500 group"
-              >
-                <svg
-                  x-show="!create"
-                  class='group-hover:text-indigo-400 text-slate-400'
-                  width='20'
-                  height='20'
-                  fill='currentColor'
-                  aria-hidden='true'
-                >
-                  <path d='M10 5a1 1 0 0 1 1 1v3h3a1 1 0 1 1 0 2h-3v3a1 1 0 1 1-2 0v-3H6a1 1 0 1 1 0-2h3V6a1 1 0 0 1 1-1Z' />
-                </svg>
-                <span>Add Task</span>
-              </button>
-            </div>
-
           </div>
         </div>
       </div>
