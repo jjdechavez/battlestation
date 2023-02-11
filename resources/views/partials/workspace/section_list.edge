@@ -38,7 +38,7 @@
         </div>
 
         <div x-show="open" class="bg-white">
-          <div class='overflow-x-auto border border-gray-200'>
+          <div class='border border-gray-200'>
             <ul id="section-{{ section.id }}" class='sortable sections divide-y divide-gray-200 text-sm whitespace-nowrap'>
               @each(task in section.tasks)
                 <li class='whitespace-nowrap px-8 py-2 text-gray-900 flex justify-between items-center'>
@@ -54,8 +54,14 @@
                   <div class="basis-1/5 text-center">
                     {{ task.createdAt.toFormat('LLL dd yyyy') }}
                   </div>
-                  <div class="task-option basis-1.5 text-center">
-                    <button type="button">
+                  <div
+                    x-data="{ isActive: false }"
+                    class="task-option basis-1.5 relative"
+                  >
+                    <button
+                      type="button"
+                      @click="isActive = !isActive"
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -65,8 +71,20 @@
                         class="w-6 h-6"
                       >
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM12.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0zM18.75 12a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
-                    </svg>
+                      </svg>
                     </button>
+
+                    <div
+                      class="absolute right-0 z-10 w-44 origin-top-right rounded-md border border-gray-100 bg-white shadow-lg"
+                      role="menu"
+                      x-cloak
+                      x-transition
+                      x-show="isActive"
+                      x-on:click.away="isActive = false"
+                      x-on:keydown.escape.window="isActive = false"
+                    >
+                      @include('partials/workspace/task_action')
+                    </div>
                   </div>
                 </li>
               @end
