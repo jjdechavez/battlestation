@@ -7,13 +7,12 @@ import WorkspaceTask from 'App/Models/WorkspaceTask';
 import { objectToOption } from '../../../utils/form';
 
 export default class WorkspaceTasksController {
-  public async show({ view, params, bouncer }: HttpContextContract) {
+  public async show({ view, params }: HttpContextContract) {
     const workspaceTask = await WorkspaceTask.findOrFail(params.taskId);
 
     // await bouncer.with('WorkspaceTaskPolicy').authorize('view', workspaceTask);
 
     const priorities = objectToOption(WORKSPACE_TASK_PRIORITY);
-    console.log(workspaceTask)
 
     return view.render('pages/dashboard/workspaces/tasks/show', {
       task: workspaceTask,
@@ -44,7 +43,6 @@ export default class WorkspaceTasksController {
       section_id: schema.string(),
     });
 
-    // TODO: reArrange the position of each task
     const payload = await request.validate({ schema: taskSchema });
 
     const workspaceSection = await WorkspaceSection.query()
@@ -58,6 +56,8 @@ export default class WorkspaceTasksController {
       position: workspaceSection.$extras.tasks_count + 1,
       sectionId: +payload.section_id,
     });
+
+    await this.arrangePositionBySectionId(+payload.section_id);
 
     session.flash({
       message: 'Task created successfully!',
@@ -95,41 +95,6 @@ export default class WorkspaceTasksController {
     });
   }
 
-  public async drag({ request, params, view }: HttpContextContract) {
-    const body = request.body();
-    // Weird behaviour when receiving one array it turns to string
-    const isTypeString = typeof body.taskIds === 'string';
-
-    const taskSchema = schema.create({
-      taskIds: isTypeString
-        ? schema.string()
-        : schema.array().members(schema.string()),
-    });
-
-    const payload = await request.validate({ schema: taskSchema });
-    const taskIds = this.toTaskIds(payload.taskIds);
-    await this.arrangePositionAndSectionId(taskIds, params.sectionId);
-
-    const workspaceSection = await WorkspaceSection.query()
-      .where('id', params.sectionId)
-      .preload('tasks', (taskQuery) => {
-        taskQuery.orderBy('position', 'asc');
-      })
-      .firstOrFail();
-
-    return view.render('partials/workspace/task_list', {
-      id: params.id,
-      sectionId: params.sectionId,
-      tasks: workspaceSection.tasks,
-    });
-  }
-
-  private toTaskIds(taskIds: string | string[]): string[] {
-    if (typeof taskIds === 'object') return taskIds as string[];
-
-    return [taskIds];
-  }
-
   private async arrangePosition(taskIds: string[]) {
     await Promise.all(
       taskIds.map(async (taskId, index) => {
@@ -141,10 +106,12 @@ export default class WorkspaceTasksController {
     );
   }
 
-  private async arrangePositionAndSectionId(
-    taskIds: string[],
-    sectionId: number
-  ) {
+  private async arrangePositionBySectionId(sectionId: number) {
+    const workspaceTasks = await WorkspaceTask.query()
+      .where('sectionId', sectionId)
+      .select('id');
+    const taskIds = workspaceTasks.map((task) => task.id);
+
     await Promise.all(
       taskIds.map(async (taskId, index) => {
         const task = await WorkspaceTask.findOrFail(taskId);

@@ -68,9 +68,6 @@ Route.group(() => {
       'sections.store'
     );
 
-    // Route.get('/:id/sections', 'WorkspaceTasksController.create').as(
-    //   'tasks.create'
-    // );
     Route.post('/:id/tasks', 'WorkspaceTasksController.store').as(
       'tasks.store'
     );

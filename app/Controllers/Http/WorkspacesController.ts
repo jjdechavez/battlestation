@@ -121,10 +121,4 @@ export default class WorkspacesController {
       priorities,
     });
   }
-
-  public async edit({}: HttpContextContract) {}
-
-  public async update({}: HttpContextContract) {}
-
-  public async destroy({}: HttpContextContract) {}
 }
