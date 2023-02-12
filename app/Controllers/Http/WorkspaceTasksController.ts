@@ -95,6 +95,11 @@ export default class WorkspaceTasksController {
     });
   }
 
+  public async destroy({ params }: HttpContextContract) {
+    const workspaceTask = await WorkspaceTask.findOrFail(params.taskId);
+    await workspaceTask.delete();
+  }
+
   private async arrangePosition(taskIds: string[]) {
     await Promise.all(
       taskIds.map(async (taskId, index) => {

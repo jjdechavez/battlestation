@@ -74,6 +74,9 @@ Route.group(() => {
     Route.get('/:id/tasks/:taskId', 'WorkspaceTasksController.show').as(
       'tasks.show'
     );
+    Route.delete('/:id/tasks/:taskId', 'WorkspaceTasksController.destroy').as(
+      'tasks.destroy'
+    );
     Route.post(
       '/:id/sections/:sectionId/position',
       'WorkspaceTasksController.position'

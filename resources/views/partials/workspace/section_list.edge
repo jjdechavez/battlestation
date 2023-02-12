@@ -39,7 +39,13 @@
 
         <div x-show="open" class="bg-white">
           <div class='border border-gray-200'>
-            <ul id="section-{{ section.id }}" class='sortable sections divide-y divide-gray-200 text-sm whitespace-nowrap'>
+            <ul
+              id="section-{{ section.id }}"
+              class='sortable sections divide-y divide-gray-200 text-sm whitespace-nowrap'
+              hx-confirm="Are you sure to delete this task?"
+              hx-target="closest li"
+              hx-swap="outerHTML swap:1s"
+            >
               @each(task in section.tasks)
                 <li class='whitespace-nowrap px-8 py-2 text-gray-900 flex justify-between items-center'>
                   <div class="w-22 basis-1/4">

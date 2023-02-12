@@ -8,9 +8,9 @@
   </a>
 
   <button
-    type="submit"
     role="menuitem"
     class="flex w-full items-center gap-2 rounded-lg px-4 py-2 text-sm text-red-700 hover:bg-red-50"
+    hx-delete="{{ route('workspaces.tasks.destroy', { id: workspace.id, taskId: task.id }) }}"
   >
     <svg
       xmlns="http://www.w3.org/2000/svg"
