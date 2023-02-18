@@ -7,7 +7,7 @@
   @entryPointStyles('app')
   @entryPointScripts('app')
 </head>
-<body>
+<body hx-headers='{"x-csrf-token": "{{ csrfToken }}"}'>
   <div
     x-data="{ sidebarActive: false }"
     class='flex min-h-screen bg-gray-100'
@@ -209,6 +209,5 @@
       </main>
     </div>
   </div>
-
 </body>
 </html>

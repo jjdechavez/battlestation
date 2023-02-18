@@ -138,9 +138,14 @@ export default class WorkspaceTasksController {
     });
   }
 
-  public async destroy({ params }: HttpContextContract) {
+  public async destroy({ params, response, request }: HttpContextContract) {
     const workspaceTask = await WorkspaceTask.findOrFail(params.taskId);
     await workspaceTask.delete();
+
+    const qs = request.qs();
+    if (qs.redirect === 'true') {
+      response.header('HX-Redirect', `/dashboard/workspaces/${params.id}`);
+    }
   }
 
   private async arrangePosition(taskIds: string[]) {
