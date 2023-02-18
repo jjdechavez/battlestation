@@ -38,9 +38,10 @@
     <span :class="loading ? 'hidden' : ''">
       {{ text }}
     </span>
+  @else
+    <span>
+      {{ text }}
+    </span>
   @end
 
-  <span>
-    {{ text }}
-  </span>
 </button>

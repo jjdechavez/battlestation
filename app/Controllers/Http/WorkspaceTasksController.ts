@@ -123,7 +123,7 @@ export default class WorkspaceTasksController {
     });
 
     const payload = await request.validate({ schema: taskSchema });
-    const workspaceTask = await WorkspaceTask.findOrFail(params.id);
+    const workspaceTask = await WorkspaceTask.findOrFail(params.taskId);
 
     workspaceTask.merge(payload);
     await workspaceTask.save();
