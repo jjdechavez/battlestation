@@ -74,6 +74,15 @@ Route.group(() => {
     Route.get('/:id/tasks/:taskId', 'WorkspaceTasksController.show').as(
       'tasks.show'
     );
+    Route.get('/:id/tasks/:taskId/detail', 'WorkspaceTasksController.detail').as(
+      'tasks.detail'
+    );
+    Route.get('/:id/tasks/:taskId/edit', 'WorkspaceTasksController.edit').as(
+      'tasks.edit'
+    );
+    Route.patch('/:id/tasks/:taskId', 'WorkspaceTasksController.update').as(
+      'tasks.update'
+    );
     Route.delete('/:id/tasks/:taskId', 'WorkspaceTasksController.destroy').as(
       'tasks.destroy'
     );

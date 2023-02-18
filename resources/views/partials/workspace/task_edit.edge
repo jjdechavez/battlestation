@@ -1,0 +1,64 @@
+<form
+  hx-patch="{{ route('workspaces.tasks.update', { id: request.routeParams.id, taskId: task.id }, { qs: { _method: 'PATCH' } }) }}"
+  hx-target="#task-detail"
+  x-data="{ loading: false }"
+  @submit-event="loading = true"
+>
+  {{ csrfField() }}
+
+  <header class="mb-8 flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold tracking-tight text-gray-900">Task information</h1>
+      <p class="text-sm text-gray-700 mt-1">More details about the task.</p>
+    </div>
+
+    <div>
+      <button
+        class="text-indigo-600 bg-gray-50 hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded text-sm px-5 py-2.5 text-center inline-block mr-2"
+        :disabled="loading"
+        :class="loading ? 'cursor-not-allowed bg-gray-100 border-gray-200' : 'bg-white border-gray-300 '"
+        hx-get="{{ route('workspaces.tasks.detail', { id: request.routeParams.id, taskId: task.id }) }}"
+        hx-target="#task-detail"
+      >
+        Cancel Changes
+      </button>
+
+      @!component('components/form/button', {
+        event: 'submit-event',
+        type: 'submit',
+        text: 'Save Changes',
+        classes: "inline-block rounded border border-indigo-600 bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring active:text-indigo-500",
+        disableLoading: true
+      })
+
+    </div>
+  </header>
+
+  <section class="mt-5 grid gap-y-4 mx-auto md:w-4/6 lg:w-9/12">
+
+    @!component('components/form/text-field', {
+      label: 'Title',
+      name: 'title',
+      required: true,
+      value: task.title,
+      flashMessages: flashMessages
+    })
+
+    @!component('components/form/select-field', {
+      label: 'Priority',
+      name: 'priority',
+      required: true,
+      options: priorities,
+      selected: task.priority
+    })
+
+    @!component('components/form/textarea-field', {
+      label: 'Content',
+      name: 'content',
+      value: task.content,
+      flashMessages: flashMessages
+    })
+
+  </section>
+
+</form>

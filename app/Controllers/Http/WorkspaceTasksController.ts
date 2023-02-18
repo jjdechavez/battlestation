@@ -95,6 +95,49 @@ export default class WorkspaceTasksController {
     });
   }
 
+  public async detail({ view, params }: HttpContextContract) {
+    const workspaceTask = await WorkspaceTask.findOrFail(params.taskId);
+    const priorities = objectToOption(WORKSPACE_TASK_PRIORITY);
+
+    return view.render('partials/workspace/task_show', {
+      task: workspaceTask,
+      priorities,
+    });
+  }
+
+  public async edit({ view, params }: HttpContextContract) {
+    const workspaceTask = await WorkspaceTask.findOrFail(params.taskId);
+    const priorities = objectToOption(WORKSPACE_TASK_PRIORITY);
+
+    return view.render('partials/workspace/task_edit', {
+      task: workspaceTask,
+      priorities,
+    });
+  }
+
+  public async update({ request, params, view }: HttpContextContract) {
+    const taskSchema = schema.create({
+      title: schema.string([rules.minLength(2), rules.maxLength(180)]),
+      content: schema.string.nullable(),
+      priority: schema.enum(Object.values(WORKSPACE_TASK_PRIORITY)),
+    });
+
+    const payload = await request.validate({ schema: taskSchema });
+    const workspaceTask = await WorkspaceTask.findOrFail(params.id);
+
+    workspaceTask.merge(payload);
+    await workspaceTask.save();
+
+    const priorities = objectToOption(WORKSPACE_TASK_PRIORITY);
+
+    return view.render('partials/workspace/task_show', {
+      task: workspaceTask,
+      priorities,
+      message: 'Task updated successfully!',
+      status: 'success',
+    });
+  }
+
   public async destroy({ params }: HttpContextContract) {
     const workspaceTask = await WorkspaceTask.findOrFail(params.taskId);
     await workspaceTask.delete();
