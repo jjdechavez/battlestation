@@ -8,21 +8,21 @@
       <h1 class="block text-2xl font-bold text-gray-800">Register</h1>
       <p class="mt-2 text-sm text-gray-600">
         @if(flashMessages.get('status') === 'success')
-          You're already setup! Time to move 
+          You're already setup! Time to move
           <a href="{{ route('/login') }}" class="text-indigo-600 decoration-2 hover:underline font-medium">here</a>
         @else
-          Already have an account? 
+          Already have an account?
           <a href="{{ route('/login') }}" class="text-indigo-600 decoration-2 hover:underline font-medium">Login in here</a>
         @end
       </p>
 
       @if(flashMessages.has('errors.message'))
         @!alert.error({
-          message:  flashMessages.get('errors.message') 
+          message:  flashMessages.get('errors.message')
         })
       @end
     </div>
-    
+
     <div class="{{ flashMessages.get('status') === 'success' ? 'hidden' : '' }} mt-5">
       @component('components/form/base', {
         action: route('auth.register'),
@@ -53,7 +53,7 @@
             required: true,
             flashMessages: flashMessages
           })
-          
+
 
           @!component('components/form/text-field', {
             label: 'Password',

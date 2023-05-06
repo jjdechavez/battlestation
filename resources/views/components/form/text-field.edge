@@ -1,5 +1,5 @@
 @set('defaultValue', value ?? '')
-@set('value', flashMessages.get('name') ?? defaultValue)
+@set('value', flashMessages.get(`${name}`) ?? defaultValue)
 @set('errors', flashMessages.get(`errors.${name}`) ?? errors)
 @set('isError', flashMessages.has(`errors.${name}`) ?? false)
 

@@ -50,7 +50,6 @@ export default class AuthController {
     session,
   }: HttpContextContract) {
     const { email, password } = request.only(['email', 'password']);
-    console.log(email, password);
 
     try {
       await auth.attempt(email, password);
