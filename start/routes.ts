@@ -39,6 +39,11 @@ Route.group(() => {
 Route.group(() => {
   Route.get('/', async ({ view, auth }) => {
     const user = await User.find(auth.user?.id);
+
+    if (!user) {
+      return view.render('pages/dashboard/index', { user: {} });
+    }
+
     await user.load('role');
 
     return view.render('pages/dashboard/index', { user: user.toJSON() });
