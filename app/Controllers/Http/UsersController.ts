@@ -143,9 +143,7 @@ export default class UsersController {
 
   public async role({ request, response, params, auth }: HttpContextContract) {
     const roleSchema = schema.create({
-      roleAlias: schema.string([
-        rules.exists({ table: 'roles', column: 'alias' }),
-      ]),
+      roleAlias: schema.enum([ROLE_ALIAS.ADMIN, ROLE_ALIAS.MEMBER] as const),
     });
 
     const payload = await request.validate({ schema: roleSchema });
