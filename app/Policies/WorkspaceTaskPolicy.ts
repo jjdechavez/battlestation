@@ -11,7 +11,7 @@ export default class WorkspaceTaskPolicy extends BasePolicy {
       return true;
     }
   }
-	public async create(user: User) {}
-	public async update(user: User, workspaceTask: WorkspaceTask) {}
-	public async delete(user: User, workspaceTask: WorkspaceTask) {}
+	// public async create(user: User) {}
+	// public async update(user: User, workspaceTask: WorkspaceTask) {}
+	// public async delete(user: User, workspaceTask: WorkspaceTask) {}
 }

@@ -11,7 +11,7 @@ export default class WorkspaceSectionPolicy extends BasePolicy {
       return true;
     }
   }
-	public async create(user: User) {}
-	public async update(user: User, workspaceSection: WorkspaceSection) {}
-	public async delete(user: User, workspaceSection: WorkspaceSection) {}
+	// public async create(user: User) {}
+	// public async update(user: User, workspaceSection: WorkspaceSection) {}
+	// public async delete(user: User, workspaceSection: WorkspaceSection) {}
 }
