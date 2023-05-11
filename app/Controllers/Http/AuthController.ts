@@ -50,18 +50,13 @@ export default class AuthController {
     session,
   }: HttpContextContract) {
     const { email, password } = request.only(['email', 'password']);
-    console.log(email, password);
 
     try {
       await auth.attempt(email, password);
     } catch {
       session.flash({
-        errors: {
-          message: 'Email or Password invalid',
-        },
-        fields: {
-          email,
-        },
+        email,
+        error: 'Email or Password invalid',
       });
       return response.redirect().back();
     }

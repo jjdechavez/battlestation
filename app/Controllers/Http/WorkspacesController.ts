@@ -10,13 +10,14 @@ import WorkspaceTask from 'App/Models/WorkspaceTask';
 import { objectToOption } from '../../../utils/form';
 
 export default class WorkspacesController {
-  public async index({ view, request, bouncer }: HttpContextContract) {
+  public async index({ view, request, bouncer, auth }: HttpContextContract) {
     await bouncer.with('WorkspacePolicy').authorize('viewList');
 
     const page = request.input('page', 1);
     const limit = 10;
 
     const workspaces = await Database.from('workspaces')
+      .where({ author_id: auth.user?.id })
       .orderBy('updated_at', 'desc')
       .paginate(page, limit);
 

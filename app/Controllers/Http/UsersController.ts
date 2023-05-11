@@ -68,7 +68,6 @@ export default class UsersController {
       password,
     });
 
-    console.log('password: ', password);
     session.flash({
       message: 'User created successfully!',
       status: 'success',
