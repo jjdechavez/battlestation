@@ -55,12 +55,8 @@ export default class AuthController {
       await auth.attempt(email, password);
     } catch {
       session.flash({
-        errors: {
-          message: 'Email or Password invalid',
-        },
-        fields: {
-          email,
-        },
+        email,
+        error: 'Email or Password invalid',
       });
       return response.redirect().back();
     }

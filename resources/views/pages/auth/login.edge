@@ -7,9 +7,9 @@
     <div class="text-center">
       <h1 class="block text-2xl font-bold text-gray-800 mb-3">Login</h1>
 
-      @if (flashMessages.has('errors.message'))
+      @if (flashMessages.has('error'))
         @!alert.error({
-          message:  flashMessages.get('errors.message') 
+          message: flashMessages.get('error')
         })
       @endif
     </div>
@@ -24,7 +24,8 @@
           @!component('components/form/text-field', {
             label: 'Email address',
             name: 'email',
-            type: 'email'
+            type: 'email',
+            flashMessages: flashMessages
           })
 
 
