@@ -1,34 +1,39 @@
+@set('id', id ?? '')
+@set('name', name ?? '')
+@set('createdAt', createdAt ?? '')
+@set('isActive', isActive ?? false)
+
 <tr>
   <td class="whitespace-nowrap px-4 py-3 font-bold text-gray-900">
-    {{ project.name }}
+    {{ name }}
   </td>
-  <td class="whitespace-nowrap px-4 py-3 text-gray-900">
-    {{ project.created_at }}
+  <td class="whitespace-nowrap px-4 py-3 text-gray-700">
+    {{ createdAt }}
   </td>
   <td class="whitespace-nowrap px-4 py-3 text-gray-500">
     <select
       name="isActive"
       class="border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
-      hx-post="{{ route('git-projects.update', { id: project.id }, { qs: { _method: 'PATCH' } }) }}"
+      hx-post="{{ route('git-projects.update', { id: id }, { qs: { _method: 'PATCH' } }) }}"
     >
-      <option value="true" {{ project.is_active ? 'selected' : '' }}>
+      <option value="true" {{ isActive ? 'selected' : '' }}>
         Active
       </option>
-      <option value="false" {{ !project.is_active ? 'selected' : '' }}>
+      <option value="false" {{ !isActive ? 'selected' : '' }}>
         Inactive
       </option>
     </select>
   </td>
   <td class="whitespace-nowrap px-4 py-3 text-gray-700 flex justify-start">
     <a
-      href="{{ route('/dashboard/git-projects/:id', { id: project.id }) }}"
+      href="{{ route('/dashboard/git-projects/:id', { id: id }) }}"
       class="decoration-2 hover:underline text-indigo-700 font-medium mr-2"
     >
       View
     </a>
     <button
       type="button"
-      hx-delete="{{ route('git-projects.destroy', { id: project.id }, { qs: { _method: 'DELETE' } }) }}"
+      hx-delete="{{ route('git-projects.destroy', { id: id }, { qs: { _method: 'DELETE' } }) }}"
       class="decoration-2 hover:underline text-indigo-700 font-medium"
     >
       Delete
