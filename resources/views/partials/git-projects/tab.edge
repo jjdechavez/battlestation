@@ -9,7 +9,7 @@
       hx-target="closest nav"
       hx-swap="outerHTML"
       hx-push-url="{{ route('git-projects.show', { id }, { qs: { tab } }) }}"
-      class="-mb-px border-b p-4 cursor-pointer {{ currentTab === tab ? 'text-indigo-600 border-current' : 'hover:text-indigo-500 border-transparent' }}"
+      class="-mb-px border-b p-4 cursor-pointer {{ currentTab === tab ? 'text-indigo-600 border-current' : 'text-gray-500 hover:text-gray-600 border-transparent hover:border-gray-300' }}"
     >
       {{ capitalCase(tab) }}
     </a>
