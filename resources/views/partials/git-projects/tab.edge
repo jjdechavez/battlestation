@@ -1,0 +1,17 @@
+@set('id', request.param('id') ?? '')
+@set('currentTab', tab ?? request.qs().tab)
+@set('tabs', ['platforms', 'tickets', 'commits'])
+
+<nav class="flex border-b border-gray-200 text-sm font-medium">
+  @each(tab in tabs)
+    <a
+      hx-get="{{ route('git-projects.tabs', { id }, { qs: { tab } }) }}"
+      hx-target="closest nav"
+      hx-swap="outerHTML"
+      hx-push-url="{{ route('git-projects.show', { id }, { qs: { tab } }) }}"
+      class="-mb-px border-b p-4 cursor-pointer {{ currentTab === tab ? 'text-indigo-600 border-current' : 'hover:text-indigo-500 border-transparent' }}"
+    >
+      {{ capitalCase(tab) }}
+    </a>
+  @end
+</nav>

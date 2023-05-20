@@ -74,4 +74,9 @@ export default class GitProjectsController {
 
     return response.ok(null);
   }
+
+  public async tabs({ request, view }: HttpContextContract) {
+    const tab = request.qs().tab;
+    return view.render('partials/git-projects/tab', { tab });
+  }
 }

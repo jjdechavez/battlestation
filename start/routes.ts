@@ -110,6 +110,7 @@ Route.group(() => {
     Route.get('/:id', 'GitProjectsController.show').as('show');
     Route.patch('/:id', 'GitProjectsController.update').as('update');
     Route.delete('/:id', 'GitProjectsController.destroy').as('destroy');
+    Route.get('/:id/tabs', 'GitProjectsController.tabs').as('tabs');
   }).prefix('git-projects').as('git-projects');
 })
   .prefix('dashboard')
