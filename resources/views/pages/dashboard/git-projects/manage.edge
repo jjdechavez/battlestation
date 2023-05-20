@@ -47,8 +47,8 @@
           @!component('partials/git-projects/table_row_project', {
             id: project.id,
             name: project.name,
-            createdAt:  project.created_at.toLocaleString('default', { year: 'numeric', month: 'long', day: 'numeric', }),
-            isActive: project.is_active
+            created_at: project.created_at.toLocaleString('default', { year: 'numeric', month: 'long', day: 'numeric', }),
+            is_active: project.is_active
           })
         @end
       </tbody>

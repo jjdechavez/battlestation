@@ -61,12 +61,10 @@ export default class GitProjectsController {
     await project.merge(payload).save();
 
     return view.render('partials/git-projects/table_row_project', {
-      project: {
-        id: project.id,
-        name: project.name,
-        is_active: project.isActive,
-        created_at: project.createdAt.toFormat('DD'),
-      }
+      id: project.id,
+      name: project.name,
+      is_active: project.isActive,
+      created_at: project.createdAt.toFormat('DD'),
     });
   }
 
