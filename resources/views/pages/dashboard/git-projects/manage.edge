@@ -45,10 +45,10 @@
       <tbody class="divide-y divide-gray-200" hx-confirm="Are you sure?" hx-target="closest tr" hx-swap="outerHTML">
         @each(project in projects)
           <tr>
-            <td class="whitespace-nowrap px-4 py-3 font-bold text-gray-900">
+            <td class="whitespace-nowrap px-4 py-3 font-medium text-gray-900">
               {{ project.name }}
             </td>
-            <td class="whitespace-nowrap px-4 py-3 text-gray-900">
+            <td class="whitespace-nowrap px-4 py-3 text-gray-700">
               {{ project.created_at.toLocaleString('default', { year: 'numeric', month: 'long', day: 'numeric', }) }}
             </td>
             <td class="whitespace-nowrap px-4 py-3 text-gray-500">
