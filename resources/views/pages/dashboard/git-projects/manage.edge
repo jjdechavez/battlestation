@@ -42,7 +42,7 @@
         </tr>
       </thead>
 
-      <tbody class="divide-y divide-gray-200" hx-confirm="Are you sure?" hx-target="closest tr" hx-swap="outerHTML swap:1s">
+      <tbody class="divide-y divide-gray-200" hx-confirm="Are you sure?" hx-target="closest tr" hx-swap="outerHTML">
         @each(project in projects)
           <tr>
             <td class="whitespace-nowrap px-4 py-3 font-bold text-gray-900">
@@ -52,23 +52,18 @@
               {{ project.created_at.toLocaleString('default', { year: 'numeric', month: 'long', day: 'numeric', }) }}
             </td>
             <td class="whitespace-nowrap px-4 py-3 text-gray-500">
-              @component('components/form/base', {
-                action: route('git-projects.update', { id: project.id }, { qs: { _method: 'PATCH' } }),
-                method: "POST"
-              })
-                <select
-                  name="isActive"
-                  class="border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
-                  onchange="this.parentElement.submit()"
-                >
-                  <option value="true" {{ project.is_active ? 'selected' : '' }}>
-                    Active
-                  </option>
-                  <option value="false" {{ !project.is_active ? 'selected' : '' }}>
-                    Inactive
-                  </option>
-                </select>
-              @end
+              <select
+                name="isActive"
+                class="border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
+                hx-post="{{ route('git-projects.update', { id: project.id }, { qs: { _method: 'PATCH' } }) }}"
+              >
+                <option value="true" {{ project.is_active ? 'selected' : '' }}>
+                  Active
+                </option>
+                <option value="false" {{ !project.is_active ? 'selected' : '' }}>
+                  Inactive
+                </option>
+              </select>
             </td>
             <td class="whitespace-nowrap px-4 py-3 text-gray-700 flex justify-start">
               <a

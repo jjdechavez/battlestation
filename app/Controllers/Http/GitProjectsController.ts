@@ -49,7 +49,7 @@ export default class GitProjectsController {
 
   public async edit({}: HttpContextContract) {}
 
-  public async update({ request, params, response }: HttpContextContract) {
+  public async update({ request, params, view }: HttpContextContract) {
     const project = await GitProject.findOrFail(params.id);
 
     const projectSchema = schema.create({
@@ -60,7 +60,14 @@ export default class GitProjectsController {
 
     await project.merge(payload).save();
 
-    return response.redirect().back();
+    return view.render('partials/git-projects/table_row_project', {
+      project: {
+        id: project.id,
+        name: project.name,
+        is_active: project.isActive,
+        created_at: project.createdAt.toFormat('DD'),
+      }
+    });
   }
 
   public async destroy({ params, response }: HttpContextContract) {

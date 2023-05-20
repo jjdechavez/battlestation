@@ -1,0 +1,37 @@
+<tr>
+  <td class="whitespace-nowrap px-4 py-3 font-bold text-gray-900">
+    {{ project.name }}
+  </td>
+  <td class="whitespace-nowrap px-4 py-3 text-gray-900">
+    {{ project.created_at }}
+  </td>
+  <td class="whitespace-nowrap px-4 py-3 text-gray-500">
+    <select
+      name="isActive"
+      class="border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
+      hx-post="{{ route('git-projects.update', { id: project.id }, { qs: { _method: 'PATCH' } }) }}"
+    >
+      <option value="true" {{ project.is_active ? 'selected' : '' }}>
+        Active
+      </option>
+      <option value="false" {{ !project.is_active ? 'selected' : '' }}>
+        Inactive
+      </option>
+    </select>
+  </td>
+  <td class="whitespace-nowrap px-4 py-3 text-gray-700 flex justify-start">
+    <a
+      href="{{ route('/dashboard/git-projects/:id', { id: project.id }) }}"
+      class="decoration-2 hover:underline text-indigo-700 font-medium mr-2"
+    >
+      View
+    </a>
+    <button
+      type="button"
+      hx-delete="{{ route('git-projects.destroy', { id: project.id }, { qs: { _method: 'DELETE' } }) }}"
+      class="decoration-2 hover:underline text-indigo-700 font-medium"
+    >
+      Delete
+    </button>
+  </td>
+</tr>
