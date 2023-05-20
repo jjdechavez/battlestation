@@ -8,3 +8,8 @@ li.htmx-swapping {
   transition: opacity 1s ease-out;
   background: #FECACA;
 }
+
+tr.htmx-swapping td {
+  opacity: 0;
+  transition: opacity 1s ease-out;
+}

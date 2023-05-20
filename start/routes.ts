@@ -102,6 +102,15 @@ Route.group(() => {
   })
     .prefix('workspaces')
     .as('workspaces');
+
+  Route.group(() => {
+    Route.get('/', 'GitProjectsController.index').as('manage');
+    Route.get('/create', 'GitProjectsController.create').as('create');
+    Route.post('/', 'GitProjectsController.store').as('store');
+    Route.get('/:id', 'GitProjectsController.show').as('show');
+    Route.patch('/:id', 'GitProjectsController.update').as('update');
+    Route.delete('/:id', 'GitProjectsController.destroy').as('destroy');
+  }).prefix('git-projects').as('git-projects');
 })
   .prefix('dashboard')
   .middleware('auth');

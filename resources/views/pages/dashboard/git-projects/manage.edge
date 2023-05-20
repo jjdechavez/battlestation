@@ -1,0 +1,99 @@
+@layout('layouts/dashboard')
+
+@section('content')
+
+  <header class="mb-8 flex items-center justify-between">
+    <div>
+      <h1 class="text-2xl font-bold tracking-tight text-gray-900">Git Tracker</h1>
+      <p class="text-sm text-gray-700 mt-1">A list of all the projects in your account.</p>
+    </div>
+    <a
+      class="inline-block rounded border border-indigo-600 bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring active:text-indigo-500"
+      href="{{ route('/dashboard/git-projects/create') }}"
+    >
+      Add project
+    </a>
+  </header>
+
+  <div class="border border-gray-300 rounded-lg bg-white shadow-sm">
+    <table class="min-w-full divide-y divide-gray-200 text-sm">
+      <thead class="bg-gray-100">
+        <tr>
+          <th
+            class="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-900"
+          >
+            Name
+          </th>
+          <th
+            class="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-900"
+          >
+            Created At
+          </th>
+          <th
+            class="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-900"
+          >
+            Status
+          </th>
+          <th
+            class="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-900"
+          >
+            Action
+          </th>
+        </tr>
+      </thead>
+
+      <tbody class="divide-y divide-gray-200" hx-confirm="Are you sure?" hx-target="closest tr" hx-swap="outerHTML swap:1s">
+        @each(project in projects)
+          <tr>
+            <td class="whitespace-nowrap px-4 py-3 font-bold text-gray-900">
+              {{ project.name }}
+            </td>
+            <td class="whitespace-nowrap px-4 py-3 text-gray-900">
+              {{ project.created_at.toLocaleString('default', { year: 'numeric', month: 'long', day: 'numeric', }) }}
+            </td>
+            <td class="whitespace-nowrap px-4 py-3 text-gray-500">
+              @component('components/form/base', {
+                action: route('git-projects.update', { id: project.id }, { qs: { _method: 'PATCH' } }),
+                method: "POST"
+              })
+                <select
+                  name="isActive"
+                  class="border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5"
+                  onchange="this.parentElement.submit()"
+                >
+                  <option value="true" {{ project.is_active ? 'selected' : '' }}>
+                    Active
+                  </option>
+                  <option value="false" {{ !project.is_active ? 'selected' : '' }}>
+                    Inactive
+                  </option>
+                </select>
+              @end
+            </td>
+            <td class="whitespace-nowrap px-4 py-3 text-gray-700 flex justify-start">
+              <a
+                href="{{ route('/dashboard/git-projects/:id', { id: project.id }) }}"
+                class="decoration-2 hover:underline text-indigo-700 font-medium mr-2"
+              >
+                View
+              </a>
+              <button
+                type="button"
+                hx-delete="{{ route('git-projects.destroy', { id: project.id }, { qs: { _method: 'DELETE' } }) }}"
+                class="decoration-2 hover:underline text-indigo-700 font-medium"
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+        @end
+      </tbody>
+
+    </table>
+  </div>
+
+  @!pagination.base({
+    pagination: projects
+  })
+
+@endsection
