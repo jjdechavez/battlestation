@@ -1,6 +1,7 @@
 @set('id', request.param('id') ?? '')
 @set('currentTab', tab ?? request.qs().tab)
-@set('tabs', ['platforms', 'tickets', 'commits'])
+@set('tabs', ['ticket', 'platform', 'commit'])
+@set('content', content ?? [])
 
 <section id="tabs">
   <nav class="flex border-b border-gray-200 text-sm font-medium">
@@ -12,23 +13,94 @@
         hx-push-url="{{ route('git-projects.show', { id }, { qs: { tab } }) }}"
         class="-mb-px border-b p-4 cursor-pointer {{ currentTab === tab ? 'text-indigo-600 border-current' : 'text-gray-500 hover:text-gray-600 border-transparent hover:border-gray-300' }}"
       >
-        {{ capitalCase(tab) }}
+        {{ pluralize(capitalCase(tab)) }}
       </a>
     @end
   </nav>
 
-  @if(currentTab === 'platforms')
-    @!component('partials/git-projects/empty_tab', { type: "platform" })
+
+  @if(request.matchesRoute('/dashboard/git-projects/:id/platforms/create'))
+
+    @modal.custom({ returnTo: route('git-projects.show', { id }, { qs: { tab: currentTab } }) })
+      @!component('partials/git-projects/platform_form', {
+        id,
+        tab: currentTab,
+        returnTo: route('git-projects.show', { id }, { qs: { tab: currentTab } })
+      })
+    @end
+
   @end
 
 
-  @if(currentTab === 'tickets')
-    @!component('partials/git-projects/empty_tab', { type: "ticket" })
+  @if(currentTab === 'ticket')
+    @!component('partials/git-projects/empty_tab', { type: "ticket", id })
   @end
 
 
-  @if(currentTab === 'commits')
-    @!component('partials/git-projects/empty_tab', { type: "commit" })
+  @if(currentTab === 'platform')
+    @if (content.length)
+
+      <div class="mt-5 py-12 px-12 bg-gray-50">
+        <div class="border border-gray-300 rounded-lg bg-white shadow-sm">
+          <table class="min-w-full divide-y divide-gray-200 text-sm">
+            <thead class="bg-gray-100">
+              <tr>
+                <th
+                  class="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-900"
+                >
+                  Alias
+                </th>
+                <th class="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-900">
+                  Name
+                </th>
+                <th class="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-900">
+                  Created At
+                </th>
+                <th class="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-900">
+                  Action
+                </th>
+              </tr>
+            </thead>
+
+            <tbody class="divide-y divide-gray-200">
+              @each(platform in content)
+                <tr>
+                  <td class="whitespace-nowrap px-4 py-3 font-bold text-gray-900">
+                    {{ platform.alias }}
+                  </td>
+                  <td class="whitespace-nowrap px-4 py-3 text-gray-700">
+                    {{ platform.name }}
+                  </td>
+                  <td class="whitespace-nowrap px-4 py-3 text-gray-700">
+                    {{ platform.createdAt.toFormat('DD') }}
+                  </td>
+                  <td class="whitespace-nowrap px-4 py-3 text-gray-700 flex justify-start">
+                    <button
+                      type="button"
+                      hx-delete="{{ route('git-projects.destroy', { id: id }, { qs: { _method: 'DELETE' } }) }}"
+                      hx-confirm="Are you sure?"
+                      hx-target="closest tr" hx-swap="outerHTML"
+                      class="decoration-2 hover:underline text-indigo-700 font-medium"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              @end
+            </tbody>
+
+          </table>
+        </div>
+      </div>
+
+    @else
+      @!component('partials/git-projects/empty_tab', { type: "platform", id })
+    @end
+  @end
+
+
+  @if(currentTab === 'commit')
+    @!component('partials/git-projects/empty_tab', { type: "commit", id })
   @end
 
 </section>

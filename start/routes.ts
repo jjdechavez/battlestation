@@ -111,6 +111,9 @@ Route.group(() => {
     Route.patch('/:id', 'GitProjectsController.update').as('update');
     Route.delete('/:id', 'GitProjectsController.destroy').as('destroy');
     Route.get('/:id/tabs', 'GitProjectsController.tabs').as('tabs');
+
+    Route.get('/:id/platforms/create', 'GitPlatformsController.create').as('platforms.create');
+    Route.post('/:id/platforms', 'GitPlatformsController.store').as('platforms.store');
   }).prefix('git-projects').as('git-projects');
 })
   .prefix('dashboard')

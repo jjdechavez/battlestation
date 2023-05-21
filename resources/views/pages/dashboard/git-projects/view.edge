@@ -1,7 +1,5 @@
 @layout('layouts/dashboard')
 
-@set('qs', request.qs())
-
 @section('content')
 
     @if (flashMessages.get('status') === 'success')
@@ -34,21 +32,7 @@
         </div>
       </header>
 
-      @modal.base()
-        @if(qs.tab === 'platforms')
-          @include('partials/git-projects/platform_form')
-        @end
-
-        @if(qs.tab === 'tickets')
-          <h1>Tickets</h1>
-        @end
-
-        @if(qs.tab === 'commits')
-          <h1>commits</h1>
-        @end
-      @end
-
-      @!component('partials/git-projects/tab', { tab: qs.tab })
+      @include('partials/git-projects/tab')
 
     </section>
 

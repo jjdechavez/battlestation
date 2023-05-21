@@ -1,5 +1,5 @@
 @form.base({
-  action: route('workspaces.sections.store', { id: project.id }),
+  action: route('git-projects.platforms.store', { id }, { qs: { tab } }),
   method: "POST"
 })
   <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
@@ -11,11 +11,11 @@
             New Platform
           </h3>
 
-          <button type="button" @click="modal = false" class="p-1.5">
+          <a href="{{ returnTo }}" class="p-1.5">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 hover:cursor-pointer">
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
-          </button>
+          </a>
         </header>
 
         <div class="mt-2">
@@ -35,8 +35,8 @@
           })
 
           @!component('components/form/text-field', {
-            label: 'Title',
-            name: 'title',
+            label: 'Name',
+            name: 'name',
             required: true,
             value: '',
             flashMessages: flashMessages
@@ -57,14 +57,13 @@
       classes: "inline-flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
     })
 
-    <button
-      type="button"
-      @click="modal = false"
+    <a
+      href="{{ returnTo }}"
       :disabled="loading"
       :class="loading ? 'cursor-not-allowed bg-gray-100 border-gray-200' : 'bg-white border-gray-300 '"
       class="mt-3 inline-flex w-full justify-center rounded-md border px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
     >
       Cancel
-    </button>
+    </a>
   </div>
 @end
