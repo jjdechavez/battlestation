@@ -5,8 +5,6 @@ import GitPlatform from 'App/Models/GitPlatform'
 import GitProject from 'App/Models/GitProject'
 
 export default class GitPlatformsController {
-  public async index({}: HttpContextContract) {}
-
   public async create({ view, params }: HttpContextContract) {
     const project = await GitProject.findOrFail(params.id)
     return view.render(`pages/dashboard/git-projects/view`, { project })
@@ -36,11 +34,14 @@ export default class GitPlatformsController {
     return view.render('partials/git-projects/tab')
   }
 
-  public async show({}: HttpContextContract) {}
-
   public async edit({}: HttpContextContract) {}
 
   public async update({}: HttpContextContract) {}
 
-  public async destroy({}: HttpContextContract) {}
+  public async destroy({ params, response }: HttpContextContract) {
+    const platform = await GitPlatform.findOrFail(params.platformId)
+    await platform.delete()
+
+    return response.ok(null)
+  }
 }

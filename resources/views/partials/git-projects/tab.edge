@@ -77,7 +77,7 @@
                   <td class="whitespace-nowrap px-4 py-3 text-gray-700 flex justify-start">
                     <button
                       type="button"
-                      hx-delete="{{ route('git-projects.destroy', { id: id }, { qs: { _method: 'DELETE' } }) }}"
+                      hx-delete="{{ route('git-projects.platforms.destroy', { id: id, platformId: platform.id }, { qs: { _method: 'DELETE' } }) }}"
                       hx-confirm="Are you sure?"
                       hx-target="closest tr" hx-swap="outerHTML"
                       class="decoration-2 hover:underline text-indigo-700 font-medium"
