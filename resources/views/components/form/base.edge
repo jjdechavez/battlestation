@@ -1,6 +1,16 @@
 <form
-  action="{{action}}"
-  method="{{method}}"
+  @if(htmx)
+    hx-post="{{action}}"
+    hx-swap="outerHtml"
+    @if(htmxTarget)
+      hx-target="{{ htmxTarget }}"
+    @else
+      hx-target="this"
+    @end
+  @else
+    action="{{action}}"
+    method="{{method}}"
+  @end
   x-data="{ loading: false }"
   @submit-event="loading = true"
   @if(classNames)

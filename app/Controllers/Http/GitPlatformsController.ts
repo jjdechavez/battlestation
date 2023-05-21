@@ -16,7 +16,13 @@ export default class GitPlatformsController {
       name: schema.string([ rules.minLength(2) ])
     })
 
-    const payload = await request.validate({ schema: platformSchema })
+    const payload = await request.validate({
+      schema: platformSchema,
+      messages: {
+        'alias.unique': 'Alias is existed',
+        'name.minLength': 'Name length must have greater than 2 characters'
+      }
+    })
     await GitPlatform.create({
       ...payload,
       projectId: params.id,
