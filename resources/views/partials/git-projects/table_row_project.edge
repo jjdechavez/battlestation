@@ -26,7 +26,7 @@
   </td>
   <td class="whitespace-nowrap px-4 py-3 text-gray-700 flex justify-start">
     <a
-      href="{{ route('/dashboard/git-projects/:id', { id: id }, { qs: { tab: 'platforms' } }) }}"
+      href="{{ route('git-projects.show', { id: id }, { qs: { tab: 'platforms' } }) }}"
       class="decoration-2 hover:underline text-indigo-700 font-medium mr-2"
     >
       View
@@ -34,6 +34,8 @@
     <button
       type="button"
       hx-delete="{{ route('git-projects.destroy', { id: id }, { qs: { _method: 'DELETE' } }) }}"
+      hx-confirm="Are you sure?"
+      hx-target="closest tr" hx-swap="outerHTML"
       class="decoration-2 hover:underline text-indigo-700 font-medium"
     >
       Delete

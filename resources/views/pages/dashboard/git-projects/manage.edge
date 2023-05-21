@@ -42,7 +42,7 @@
         </tr>
       </thead>
 
-      <tbody class="divide-y divide-gray-200" hx-confirm="Are you sure?" hx-target="closest tr" hx-swap="outerHTML">
+      <tbody class="divide-y divide-gray-200">
         @each(project in projects)
           @!component('partials/git-projects/table_row_project', {
             id: project.id,

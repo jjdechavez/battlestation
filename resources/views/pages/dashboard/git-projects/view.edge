@@ -1,5 +1,7 @@
 @layout('layouts/dashboard')
 
+@set('qs', request.qs())
+
 @section('content')
 
     @if (flashMessages.get('status') === 'success')
@@ -11,12 +13,14 @@
     <section x-data="{ modal: false }">
       <header class="mb-8 flex items-center justify-between">
         <div>
-          <h1 class="text-2xl font-bold tracking-tight text-gray-900">
-            {{ project.name }}
+          <hgroup class="flex items-center gap-2">
+            <h1 class="text-2xl font-bold tracking-tight text-gray-900">
+              {{ project.name }}
+            </h1>
             <span class="{{ project.isActive ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }} whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-bold">
               {{ project.isActive ? 'Active' : 'Inactive' }}
             </span>
-          </h1>
+          </hgroup>
           <p class="text-sm text-gray-700 mt-1">Keep in track with your project.</p>
         </div>
 
@@ -27,20 +31,24 @@
           >
           Redirect to git tracker
           </a>
-          <button
-            class="inline-block rounded border border-indigo-600 bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring active:text-indigo-500"
-            @click="modal = true"
-          >
-            Add platform
-          </button>
         </div>
       </header>
 
       @modal.base()
-        @include('partials/git-projects/platform_form')
+        @if(qs.tab === 'platforms')
+          @include('partials/git-projects/platform_form')
+        @end
+
+        @if(qs.tab === 'tickets')
+          <h1>Tickets</h1>
+        @end
+
+        @if(qs.tab === 'commits')
+          <h1>commits</h1>
+        @end
       @end
 
-      @include('partials/git-projects/tab')
+      @!component('partials/git-projects/tab', { tab: qs.tab })
 
     </section>
 
