@@ -53,7 +53,7 @@
               <td colspan="3">
                 <button
                   class="mt-3 inline-block rounded border border-indigo-600 bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring active:text-indigo-500"
-                  hx-get="{{ route('git-projects.platforms.create', { id }, { qs: { tab: currentTab, status: 'add' } }) }}"
+                  hx-get="{{ route('git-projects.platforms.create', { id }, { qs: { status: 'add' } }) }}"
                   hx-target="closest tr"
                   hx-swap="outerHTML"
                 >

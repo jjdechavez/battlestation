@@ -12,7 +12,7 @@ export default class GitPlatformsController {
     return view.render(`partials/git-projects/table_row_platform_form`, {
       project,
       id: project.id,
-      tab: qs.tab,
+      tab: 'platform',
       status: qs.status
     })
   }
@@ -63,14 +63,12 @@ export default class GitPlatformsController {
     const platform = await GitPlatform.findOrFail(params.platformId)
 
     const platformSchema = schema.create({
-      alias: schema.string([ rules.unique({ table: 'git_platforms', column: 'alias' }) ]),
       name: schema.string([ rules.minLength(2) ])
     })
 
     const payload = await request.validate({
       schema: platformSchema,
       messages: {
-        'alias.unique': 'Alias is existed',
         'name.minLength': 'Name length must have greater than 2 characters'
       }
     })
@@ -95,19 +93,36 @@ export default class GitPlatformsController {
 
   public async show({ view, params }: HttpContextContract) {
     const platform = await GitPlatform.findOrFail(params.platformId)
-    return view.render('partials/git-projects/table_row_platform_form', { platform })
+    return view.render('partials/git-projects/table_row_platform', { platform, id: params.id })
   }
 
   public async alias({ view, request, params }: HttpContextContract) {
     const body = request.only(['alias'])
-    const tab = request.qs().tab
-    const platform = await GitPlatform.findBy('alias', body.alias)
+    const qs = request.qs()
+    const status: 'add' | 'edit' = qs.status
+
+    let platform: GitPlatform | null = null
+    if (status === 'add') {
+      platform = await GitPlatform.findBy('alias', body.alias)
+    } else if (status === 'edit') {
+      const currentPlatform = await GitPlatform.find(qs.platformId)
+
+      if (currentPlatform) {
+        if (currentPlatform.alias === body.alias) {
+          platform = null
+        } else {
+          platform = await GitPlatform.findBy('alias', body.alias)
+        }
+      }
+    }
 
     return view.render('partials/git-projects/platform_alias_form', {
       exist: !!platform,
       alias: body.alias,
-      tab,
+      tab: 'platform',
       id: params.id,
+      platformId: qs.platformId,
+      status,
     })
   }
 }

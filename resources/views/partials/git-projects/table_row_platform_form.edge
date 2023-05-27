@@ -6,7 +6,12 @@
     <td hx-target="this" hx-swap="outerHTML" class="whitespace-nowrap px-4 py-3 font-medium text-gray-900">
       <input
         type="text" name="alias"
-        hx-post="{{ route('git-projects.platforms.alias', { id }, { qs: { tab } }) }}"
+        @if(status === 'add')
+          hx-post="{{ route('git-projects.platforms.alias', { id }, { qs: { status } }) }}"
+        @end
+        @if(status === 'edit')
+          hx-post="{{ route('git-projects.platforms.alias', { id }, { qs: { status, platformId: platform.id } }) }}"
+        @end
         class="focus:border-indigo-500 focus:ring-indigo-500 border-gray-300 bg-white py-3 px-4 block w-full rounded-md text-sm read-only:bg-slate-50 read-only:text-slate-500 read-only:border-slate-200 read-only:shadow-none"
         value={{ alias }}
       >
@@ -24,7 +29,12 @@
         type="button"
         hx-target="closest tr" hx-swap="outerHTML"
         class="decoration-2 hover:underline text-indigo-700 font-medium mr-4"
-        hx-get="{{ route('git-projects.platforms.create', { id }, { qs: { tab, status: 'idle' } }) }}"
+        @if(status === 'add')
+          hx-get="{{ route('git-projects.platforms.create', { id }, { qs: { tab, status: 'idle' } }) }}"
+        @end
+        @if(status === 'edit')
+          hx-get="{{ route('git-projects.platforms.show', { id, platformId: platform.id }, { qs: { status: 'idle' } }) }}"
+        @end
         hx-target="closest tr"
         hx-swap="outerHTML"
       >
