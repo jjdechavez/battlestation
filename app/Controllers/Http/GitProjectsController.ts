@@ -90,6 +90,6 @@ export default class GitProjectsController {
     } else if (tab === 'ticket') {
       content = await GitTicket.query().where('projectId', params.id)
     }
-    return view.render('partials/git-projects/tab', { tab, content: content })
+    return view.render('partials/git-projects/tab', { tab, content: content ?? [] })
   }
 }
