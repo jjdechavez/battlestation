@@ -28,7 +28,6 @@
     @if (content.length)
 
       <div class="mt-5 py-4 px-4 bg-gray-50">
-
         <table class="min-w-full divide-y divide-gray-200 text-sm">
           <thead>
             <tr>
@@ -48,25 +47,7 @@
 
           <tbody class="divide-y divide-gray-200">
             @each(platform in content)
-              <tr>
-                <td class="whitespace-nowrap px-4 py-3 font-medium text-gray-900">
-                  {{ platform.alias }}
-                </td>
-                <td class="whitespace-nowrap px-4 py-3 text-gray-700">
-                  {{ platform.name }}
-                </td>
-                <td class="whitespace-nowrap px-4 py-3 text-gray-700 flex justify-start">
-                  <button
-                    type="button"
-                    hx-delete="{{ route('git-projects.platforms.destroy', { id: id, platformId: platform.id }, { qs: { _method: 'DELETE' } }) }}"
-                    hx-confirm="Are you sure?"
-                    hx-target="closest tr" hx-swap="outerHTML"
-                    class="decoration-2 hover:underline text-indigo-700 font-medium"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
+              @!component('partials/git-projects/table_row_platform', { id, platform })
             @end
             <tr>
               <td colspan="3">
