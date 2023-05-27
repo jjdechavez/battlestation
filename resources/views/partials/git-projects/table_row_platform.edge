@@ -8,6 +8,16 @@
   <td class="whitespace-nowrap px-4 py-3 text-gray-700 flex justify-start">
     <button
       type="button"
+      hx-get="{{ route('git-projects.platforms.edit', { id: id, platformId: platform.id }) }}"
+      hx-target="closest tr"
+      hx-swap="outerHTML"
+      class="mr-4 vdecoration-2 hover:underline text-indigo-700 font-medium"
+    >
+      Edit
+    </button>
+
+    <button
+      type="button"
       hx-delete="{{ route('git-projects.platforms.destroy', { id: id, platformId: platform.id }, { qs: { _method: 'DELETE' } }) }}"
       hx-confirm="Are you sure?"
       hx-target="closest tr"

@@ -1,18 +1,23 @@
-@if(status === 'add')
+@set('alias', platform?.alias ?? '')
+@set('name', platform?.name ?? '')
+
+@if(['add', 'edit'].includes(status))
   <tr>
     <td hx-target="this" hx-swap="outerHTML" class="whitespace-nowrap px-4 py-3 font-medium text-gray-900">
       <input
         type="text" name="alias"
         hx-post="{{ route('git-projects.platforms.alias', { id }, { qs: { tab } }) }}"
         class="focus:border-indigo-500 focus:ring-indigo-500 border-gray-300 bg-white py-3 px-4 block w-full rounded-md text-sm read-only:bg-slate-50 read-only:text-slate-500 read-only:border-slate-200 read-only:shadow-none"
-      />
+        value={{ alias }}
+      >
     </td>
     <td class="whitespace-nowrap px-4 py-3 text-gray-700">
       <input
         type="text"
         name="name"
         class="focus:border-indigo-500 focus:ring-indigo-500 border-gray-300 bg-white py-3 px-4 block w-full rounded-md text-sm read-only:bg-slate-50 read-only:text-slate-500 read-only:border-slate-200 read-only:shadow-none"
-      />
+        value={{ name }}
+      >
     </td>
     <td class="whitespace-nowrap px-4 py-3 text-gray-700">
       <button
@@ -27,7 +32,12 @@
       </button>
       <button
         type="button"
-        hx-post="{{ route('git-projects.platforms.store', { id }, { qs: { tab } }) }}"
+        @if(status === 'add')
+          hx-post="{{ route('git-projects.platforms.store', { id }) }}"
+        @end
+        @if(status === 'edit')
+          hx-patch="{{ route('git-projects.platforms.update', { id, platformId: platform.id }) }}"
+        @end
         hx-swap="outerHTML"
         hx-target="closest tr"
         hx-include="closest tr"

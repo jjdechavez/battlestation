@@ -116,6 +116,8 @@ Route.group(() => {
     Route.post('/:id/platforms', 'GitPlatformsController.store').as('platforms.store');
     Route.delete('/:id/platforms/:platformId', 'GitPlatformsController.destroy').as('platforms.destroy');
     Route.get('/:id/platforms/:platformId', 'GitPlatformsController.show').as('platforms.show');
+    Route.get('/:id/platforms/:platformId/edit', 'GitPlatformsController.edit').as('platforms.edit');
+    Route.patch('/:id/platforms/:platformId', 'GitPlatformsController.update').as('platforms.update');
     Route.post('/:id/platforms/alias', 'GitPlatformsController.alias').as('platforms.alias');
   }).prefix('git-projects').as('git-projects');
 })

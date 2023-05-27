@@ -40,8 +40,7 @@ export default class GitPlatformsController {
       status: 'success',
     })
 
-    const qs = request.qs()
-    const path = Route.makeUrl('git-projects.show', { id: params.id }, { qs })
+    const path = Route.makeUrl('git-projects.show', { id: params.id }, { qs: { tab: 'platform' } })
     response.header('HX-Push-Url', path)
 
     return view.render('partials/git-projects/table_row_platform', {
@@ -51,9 +50,41 @@ export default class GitPlatformsController {
     })
   }
 
-  public async edit({}: HttpContextContract) {}
+  public async edit({ params, view }: HttpContextContract) {
+    const platform = await GitPlatform.findOrFail(params.platformId)
+    return view.render('partials/git-projects/table_row_platform_form', {
+      id: params.id,
+      platform,
+      status: 'edit'
+    })
+  }
 
-  public async update({}: HttpContextContract) {}
+  public async update({ request, params, view, response }: HttpContextContract) {
+    const platform = await GitPlatform.findOrFail(params.platformId)
+
+    const platformSchema = schema.create({
+      alias: schema.string([ rules.unique({ table: 'git_platforms', column: 'alias' }) ]),
+      name: schema.string([ rules.minLength(2) ])
+    })
+
+    const payload = await request.validate({
+      schema: platformSchema,
+      messages: {
+        'alias.unique': 'Alias is existed',
+        'name.minLength': 'Name length must have greater than 2 characters'
+      }
+    })
+
+    await platform.merge(payload).save()
+
+    const path = Route.makeUrl('git-projects.show', { id: params.id }, { qs: { tab: 'platform' } })
+    response.header('HX-Push-Url', path)
+
+    return view.render('partials/git-projects/table_row_platform', {
+      platform,
+      id: params.id
+    })
+  }
 
   public async destroy({ params, response }: HttpContextContract) {
     const platform = await GitPlatform.findOrFail(params.platformId)
