@@ -3,6 +3,7 @@ import { schema, rules } from '@ioc:Adonis/Core/Validator';
 import Database from '@ioc:Adonis/Lucid/Database';
 import GitPlatform from 'App/Models/GitPlatform';
 import GitProject from 'App/Models/GitProject';
+import GitTicket from 'App/Models/GitTicket';
 
 export default class GitProjectsController {
   readonly VIEW_PATH = 'pages/dashboard/git-projects';
@@ -86,6 +87,8 @@ export default class GitProjectsController {
     let content: unknown
     if (tab === 'platform') {
       content = await GitPlatform.query().where('projectId', params.id)
+    } else if (tab === 'ticket') {
+      content = await GitTicket.query().where('projectId', params.id)
     }
     return view.render('partials/git-projects/tab', { tab, content: content })
   }

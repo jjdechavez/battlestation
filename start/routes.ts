@@ -119,6 +119,8 @@ Route.group(() => {
     Route.get('/:id/platforms/:platformId/edit', 'GitPlatformsController.edit').as('platforms.edit');
     Route.patch('/:id/platforms/:platformId', 'GitPlatformsController.update').as('platforms.update');
     Route.post('/:id/platforms/alias', 'GitPlatformsController.alias').as('platforms.alias');
+
+    Route.get('/:id/tickets/create', 'GitTicketsController.create').as('tickets.create');
   }).prefix('git-projects').as('git-projects');
 })
   .prefix('dashboard')
