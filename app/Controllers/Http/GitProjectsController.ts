@@ -1,9 +1,8 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema, rules } from '@ioc:Adonis/Core/Validator';
 import Database from '@ioc:Adonis/Lucid/Database';
-import GitPlatform from 'App/Models/GitPlatform';
 import GitProject from 'App/Models/GitProject';
-import GitTicket from 'App/Models/GitTicket';
+import GitProjectService, { GitProjectTab } from 'App/Services/GitProjectService';
 
 export default class GitProjectsController {
   readonly VIEW_PATH = 'pages/dashboard/git-projects';
@@ -45,11 +44,8 @@ export default class GitProjectsController {
   }
 
   public async show({ params, view, request }: HttpContextContract) {
-    const tab: 'platform' | 'ticket' | 'commit' = request.qs().tab
-    let content: unknown
-    if (tab === 'platform') {
-      content = await GitPlatform.query().where('projectId', params.id)
-    }
+    const tab: GitProjectTab = request.qs().tab;
+    const content = await GitProjectService.getContentByTab({ projectId: params.id, tab });
     const project = await GitProject.findOrFail(params.id);
     return view.render(`${this.VIEW_PATH}/view`, { project, content });
   }
@@ -83,13 +79,8 @@ export default class GitProjectsController {
   }
 
   public async tabs({ request, view, params }: HttpContextContract) {
-    const tab: 'platform' | 'ticket' | 'commit' = request.qs().tab
-    let content: unknown
-    if (tab === 'platform') {
-      content = await GitPlatform.query().where('projectId', params.id)
-    } else if (tab === 'ticket') {
-      content = await GitTicket.query().where('projectId', params.id)
-    }
-    return view.render('partials/git-projects/tab', { tab, content: content ?? [] })
+    const tab: GitProjectTab = request.qs().tab;
+    const content = await GitProjectService.getContentByTab({ projectId: params.id, tab });
+    return view.render('partials/git-projects/tab', { tab, content })
   }
 }
