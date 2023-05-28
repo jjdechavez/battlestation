@@ -33,10 +33,14 @@
           </tr>
         </thead>
 
-        <tbody class="divide-y divide-gray-200">
+        <tbody
+          hx-get="{{ route('git-projects.tabs', { id }, { qs: { tab: 'ticket' } }) }}"
+          hx-trigger="newTicket from:body"
+          class="divide-y divide-gray-200"
+        >
           @if (content.length)
-            @each(platform in content)
-              @!component('partials/git-projects/table_row_platform', { id, platform })
+            @each(ticket in content)
+              @!component('partials/git-projects/table_row_ticket', { id, ticket })
             @end
             <tr>
               <td colspan="3">

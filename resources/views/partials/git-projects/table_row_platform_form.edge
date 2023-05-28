@@ -5,7 +5,8 @@
   <tr>
     <td hx-target="this" hx-swap="outerHTML" class="whitespace-nowrap px-4 py-3 font-medium text-gray-900">
       <input
-        type="text" name="alias"
+        type="text"
+        name="alias"
         @if(status === 'add')
           hx-post="{{ route('git-projects.platforms.alias', { id }, { qs: { status } }) }}"
         @end
@@ -27,7 +28,8 @@
     <td class="whitespace-nowrap px-4 py-3 text-gray-700">
       <button
         type="button"
-        hx-target="closest tr" hx-swap="outerHTML"
+        hx-target="closest tr"
+        hx-swap="outerHTML"
         class="decoration-2 hover:underline text-indigo-700 font-medium mr-4"
         @if(status === 'add')
           hx-get="{{ route('git-projects.platforms.create', { id }, { qs: { tab, status: 'idle' } }) }}"

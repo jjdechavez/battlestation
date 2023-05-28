@@ -121,6 +121,7 @@ Route.group(() => {
     Route.post('/:id/platforms/alias', 'GitPlatformsController.alias').as('platforms.alias');
 
     Route.get('/:id/tickets/create', 'GitTicketsController.create').as('tickets.create');
+    Route.post('/:id/tickets', 'GitTicketsController.store').as('tickets.store');
   }).prefix('git-projects').as('git-projects');
 })
   .prefix('dashboard')
