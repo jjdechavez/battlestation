@@ -68,6 +68,7 @@ export default class GitPlatformsController {
     const platform = await GitPlatform.findOrFail(params.platformId)
 
     const platformSchema = schema.create({
+      alias: schema.string(),
       name: schema.string([ rules.minLength(2) ])
     })
 
