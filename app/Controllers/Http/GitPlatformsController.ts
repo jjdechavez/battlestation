@@ -3,8 +3,18 @@ import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import Route from '@ioc:Adonis/Core/Route'
 import GitPlatform from 'App/Models/GitPlatform'
 import GitProject from 'App/Models/GitProject'
+import GitProjectService from 'App/Services/GitProjectService'
 
 export default class GitPlatformsController {
+  public async index({ view, params }: HttpContextContract) {
+    const content = await GitProjectService.getContentByTab({ projectId: params.id, tab: 'platform' });
+
+    return view.render(`partials/git-projects/table_body_platform`, {
+      id: params.id,
+      content
+    })
+  }
+
   public async create({ view, params, request }: HttpContextContract) {
     const qs = request.qs()
     const project = await GitProject.findOrFail(params.id)
@@ -17,7 +27,7 @@ export default class GitPlatformsController {
     })
   }
 
-  public async store({ request, params, session, response, view }: HttpContextContract) {
+  public async store({ request, params, session, response }: HttpContextContract) {
     const platformSchema = schema.create({
       alias: schema.string([ rules.unique({ table: 'git_platforms', column: 'alias' }) ]),
       name: schema.string([ rules.minLength(2) ])
@@ -30,7 +40,8 @@ export default class GitPlatformsController {
         'name.minLength': 'Name length must have greater than 2 characters'
       }
     })
-    const platform = await GitPlatform.create({
+
+    await GitPlatform.create({
       ...payload,
       projectId: params.id,
     })
@@ -40,14 +51,8 @@ export default class GitPlatformsController {
       status: 'success',
     })
 
-    const path = Route.makeUrl('git-projects.show', { id: params.id }, { qs: { tab: 'platform' } })
-    response.header('HX-Push-Url', path)
-
-    return view.render('partials/git-projects/table_row_platform', {
-      platform,
-      id: params.id,
-      status: 'success'
-    })
+    response.header('HX-Trigger', 'newPlatform')
+    return response.status(201)
   }
 
   public async edit({ params, view }: HttpContextContract) {
