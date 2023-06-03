@@ -32,9 +32,7 @@ Route.group(() => {
   Route.post('/register', 'AuthController.register').as('register');
   Route.post('/login', 'AuthController.login').as('login');
   Route.get('/logout', 'AuthController.logout').as('logout');
-})
-  .prefix('auth')
-  .as('auth');
+}).prefix('auth').as('auth');
 
 Route.group(() => {
   Route.get('/', async ({ view, auth }) => {
@@ -47,7 +45,7 @@ Route.group(() => {
     await user.load('role');
 
     return view.render('pages/dashboard/index', { user: user.toJSON() });
-  });
+  }).as('dashboard');
 
   Route.group(() => {
     Route.get('/', 'UsersController.manage').as('manage');
@@ -58,9 +56,7 @@ Route.group(() => {
     Route.patch('/:id', 'UsersController.update').as('update');
     Route.patch('/:id/role', 'UsersController.role').as('role');
     Route.delete('/:id', 'UsersController.destroy').as('destroy');
-  })
-    .prefix('users')
-    .as('users');
+  }).prefix('users').as('users');
 
   Route.group(() => {
     Route.get('/', 'WorkspacesController.index').as('manage');
@@ -69,39 +65,16 @@ Route.group(() => {
     Route.get('/:id', 'WorkspacesController.show').as('view');
     Route.post('/:id/drag', 'WorkspacesController.drag').as('drag');
 
-    Route.post('/:id/sections', 'WorkspaceSectionsController.store').as(
-      'sections.store'
-    );
-
-    Route.post('/:id/tasks', 'WorkspaceTasksController.store').as(
-      'tasks.store'
-    );
-    Route.get('/:id/tasks/:taskId', 'WorkspaceTasksController.show').as(
-      'tasks.show'
-    );
-    Route.get('/:id/tasks/:taskId/detail', 'WorkspaceTasksController.detail').as(
-      'tasks.detail'
-    );
-    Route.get('/:id/tasks/:taskId/edit', 'WorkspaceTasksController.edit').as(
-      'tasks.edit'
-    );
-    Route.patch('/:id/tasks/:taskId', 'WorkspaceTasksController.update').as(
-      'tasks.update'
-    );
-    Route.delete('/:id/tasks/:taskId', 'WorkspaceTasksController.destroy').as(
-      'tasks.destroy'
-    );
-    Route.post(
-      '/:id/sections/:sectionId/position',
-      'WorkspaceTasksController.position'
-    ).as('tasks.position');
-    Route.post(
-      '/:id/sections/:sectionId/drag',
-      'WorkspaceTasksController.drag'
-    ).as('tasks.drag');
-  })
-    .prefix('workspaces')
-    .as('workspaces');
+    Route.post('/:id/sections', 'WorkspaceSectionsController.store').as('sections.store');
+    Route.post('/:id/tasks', 'WorkspaceTasksController.store').as('tasks.store');
+    Route.get('/:id/tasks/:taskId', 'WorkspaceTasksController.show').as('tasks.show');
+    Route.get('/:id/tasks/:taskId/detail', 'WorkspaceTasksController.detail').as('tasks.detail');
+    Route.get('/:id/tasks/:taskId/edit', 'WorkspaceTasksController.edit').as('tasks.edit');
+    Route.patch('/:id/tasks/:taskId', 'WorkspaceTasksController.update').as('tasks.update');
+    Route.delete('/:id/tasks/:taskId', 'WorkspaceTasksController.destroy').as('tasks.destroy');
+    Route.post('/:id/sections/:sectionId/position', 'WorkspaceTasksController.position').as('tasks.position');
+    Route.post('/:id/sections/:sectionId/drag', 'WorkspaceTasksController.drag').as('tasks.drag');
+  }).prefix('workspaces').as('workspaces');
 
   Route.group(() => {
     Route.get('/', 'GitProjectsController.index').as('manage');

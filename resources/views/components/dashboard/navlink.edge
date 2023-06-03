@@ -1,6 +1,6 @@
-@set('isActive', request.url() === href)
+@set('isActive', request.matchesRoute(active))
 
-<a 
+<a
   href="{{ route(href) }}"
   class="flex items-center p-2 rounded-md group {{ isActive ? 'bg-gray-900 transtion duration-150 ease-in-out' : 'hover:bg-gray-700 hover:text-white' }}"
 >
