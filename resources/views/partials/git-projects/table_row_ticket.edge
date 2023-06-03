@@ -5,6 +5,9 @@
   <td class="whitespace-nowrap px-4 py-3 text-gray-700 flex justify-start">
     <button
       type="button"
+      hx-get="{{ route('git-projects.tickets.edit', { id: id, ticketId: ticket.id }) }}"
+      hx-target="closest tr"
+      hx-swap="outerHTML"
       class="mr-4 vdecoration-2 hover:underline text-indigo-700 font-medium"
     >
       Edit
