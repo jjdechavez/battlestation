@@ -1,6 +1,6 @@
 @set('id', request.param('id') ?? '')
 @set('currentTab', tab ?? request.qs().tab)
-@set('tabs', ['ticket', 'platform', 'commit'])
+@set('tabs', ['platform', 'ticket', 'commit'])
 @set('content', content ?? [])
 
 <section id="tabs">
@@ -17,32 +17,6 @@
       </a>
     @end
   </nav>
-
-
-  @if(currentTab === 'ticket')
-    <div class="mt-5 py-4 px-4 bg-gray-50">
-      <table class="min-w-full divide-y divide-gray-200 text-sm">
-        <thead>
-          <tr>
-            <th class="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-900">
-              Name
-            </th>
-            <th class="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-900">
-              Action
-            </th>
-          </tr>
-        </thead>
-
-        <tbody
-          hx-get="{{ route('git-projects.tickets.manage', { id }) }}"
-          hx-trigger="newTicket from:body"
-          class="divide-y divide-gray-200"
-        >
-          @!component('partials/git-projects/table_body_ticket', { id, content })
-        </tbody>
-      </table>
-    </div>
-  @end
 
 
   @if(currentTab === 'platform')
@@ -70,6 +44,32 @@
           class="divide-y divide-gray-200"
         >
           @!component('partials/git-projects/table_body_platform', { id, content })
+        </tbody>
+      </table>
+    </div>
+  @end
+
+
+  @if(currentTab === 'ticket')
+    <div class="mt-5 py-4 px-4 bg-gray-50">
+      <table class="min-w-full divide-y divide-gray-200 text-sm">
+        <thead>
+          <tr>
+            <th class="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-900">
+              Name
+            </th>
+            <th class="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-900">
+              Action
+            </th>
+          </tr>
+        </thead>
+
+        <tbody
+          hx-get="{{ route('git-projects.tickets.manage', { id }) }}"
+          hx-trigger="newTicket from:body"
+          class="divide-y divide-gray-200"
+        >
+          @!component('partials/git-projects/table_body_ticket', { id, content })
         </tbody>
       </table>
     </div>
