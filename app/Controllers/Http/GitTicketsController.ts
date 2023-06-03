@@ -23,4 +23,12 @@ export default class GitTicketsController {
     response.header('HX-Trigger', 'newTicket')
     return response.status(201)
   }
+
+  public async destroy({ params, response }: HttpContextContract) {
+    const ticket = await GitTicket.findOrFail(params.ticketId)
+    await ticket.delete();
+
+    response.header('HX-Trigger', 'newTicket')
+    return response.status(204)
+  }
 }

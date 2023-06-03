@@ -12,6 +12,10 @@
 
     <button
       type="button"
+      hx-delete="{{ route('git-projects.tickets.destroy', { id: id, ticketId: ticket.id }, { qs: { _method: 'DELETE' } }) }}"
+      hx-confirm="Are you sure?"
+      hx-target="closest tr"
+      hx-swap="outerHTML"
       class="decoration-2 hover:underline text-indigo-700 font-medium"
     >
       Delete

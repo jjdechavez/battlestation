@@ -97,6 +97,7 @@ Route.group(() => {
     Route.get('/:id/tickets', 'GitTicketsController.index').as('tickets.manage');
     Route.get('/:id/tickets/create', 'GitTicketsController.create').as('tickets.create');
     Route.post('/:id/tickets', 'GitTicketsController.store').as('tickets.store');
+    Route.delete('/:id/tickets/:ticketId', 'GitTicketsController.destroy').as('tickets.destroy');
   }).prefix('git-projects').as('git-projects');
 })
   .prefix('dashboard')
