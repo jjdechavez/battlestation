@@ -120,6 +120,7 @@ Route.group(() => {
     Route.patch('/:id/platforms/:platformId', 'GitPlatformsController.update').as('platforms.update');
     Route.post('/:id/platforms/alias', 'GitPlatformsController.alias').as('platforms.alias');
 
+    Route.get('/:id/tickets', 'GitTicketsController.index').as('tickets.manage');
     Route.get('/:id/tickets/create', 'GitTicketsController.create').as('tickets.create');
     Route.post('/:id/tickets', 'GitTicketsController.store').as('tickets.store');
   }).prefix('git-projects').as('git-projects');

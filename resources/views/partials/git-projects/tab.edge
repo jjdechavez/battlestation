@@ -34,37 +34,11 @@
         </thead>
 
         <tbody
-          hx-get="{{ route('git-projects.tabs', { id }, { qs: { tab: 'ticket' } }) }}"
+          hx-get="{{ route('git-projects.tickets.manage', { id }) }}"
           hx-trigger="newTicket from:body"
           class="divide-y divide-gray-200"
         >
-          @if (content.length)
-            @each(ticket in content)
-              @!component('partials/git-projects/table_row_ticket', { id, ticket })
-            @end
-            <tr>
-              <td colspan="3">
-                <button
-                  class="mt-3 inline-block rounded border border-indigo-600 bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring active:text-indigo-500"
-                  hx-get="{{ route('git-projects.platforms.create', { id }, { qs: { status: 'add' } }) }}"
-                  hx-target="closest tr"
-                  hx-swap="outerHTML"
-                >
-                  Add ticket
-                </button>
-              </td>
-            </tr>
-          @else
-            <tr>
-              <td colspan="3">
-                @!component('partials/git-projects/empty_tab', {
-                  type: "ticket",
-                  id,
-                  createUrl: route('git-projects.tickets.create', { id })
-                })
-              </td>
-            </tr>
-          @end
+          @!component('partials/git-projects/table_body_ticket', { id, content })
         </tbody>
       </table>
     </div>
