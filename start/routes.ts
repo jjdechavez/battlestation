@@ -100,6 +100,9 @@ Route.group(() => {
     Route.delete('/:id/tickets/:ticketId', 'GitTicketsController.destroy').as('tickets.destroy');
     Route.get('/:id/tickets/:ticketId/edit', 'GitTicketsController.edit').as('tickets.edit');
     Route.patch('/:id/tickets/:ticketId', 'GitTicketsController.update').as('tickets.update');
+
+    Route.get('/:id/commits/create', 'GitCommitsController.create').as('commits.create');
+    Route.get('/:id/commits/platforms/:platformId', 'GitCommitsController.platform').as('commits.platform');
   }).prefix('git-projects').as('git-projects');
 })
   .prefix('dashboard')

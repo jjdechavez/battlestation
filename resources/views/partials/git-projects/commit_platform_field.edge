@@ -1,0 +1,67 @@
+<div id="h-platform">
+  <label for="platform" class="block mb-2 text-sm font-medium text-gray-900">
+    Platforms
+  </label>
+
+  <select
+    name="platform"
+    value=""
+    class="border border-gray-300 bg-gray-50 text-gray-700 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 disabled:bg-slate-50 disabled:text-gray-500 disabled:border-gray-200 disabled:shadow-none disabled:cursor-not-allowed"
+    @if(platformOptions.length === 0)
+      disabled
+    @end
+  >
+    <option value="">Select platform to add</option>
+    @each (platform in platformOptions)
+      <option
+        value="{{ platform.value }}"
+        hx-get="{{ route('git-projects.commits.platform', { id, platformId: platform.value }) }}"
+        hx-trigger="click"
+        hx-target="closest div#h-platform"
+        hx-include="[name='platform-data']"
+        onclick="platformClicked({{ platform.value }})"
+      >
+        {{ platform.label }}
+      </option>
+    @endeach
+  </select>
+
+  @if(currentPlatforms.length)
+    @each(platform in currentPlatforms)
+      <input type="hidden" name="platform-data" value="{{ platform.id }}">
+    @end
+  @end
+
+  <script>
+    function platformClicked(platformId) {
+      const inputElement = document.createElement('input')
+      inputElement.setAttribute('type', 'hidden')
+      inputElement.setAttribute('name', 'platform-data')
+      inputElement.setAttribute('value', platformId)
+
+      const platformSelectElement = document.querySelector("select[name='platform']")
+      if (platformSelectElement) {
+        platformSelectElement.after(inputElement)
+      }
+    }
+  </script>
+
+  @if(currentPlatforms.length)
+    <div class="mt-4">
+      @each(platform in currentPlatforms)
+        <span class="inline-flex items-center gap-x-0.5 px-2 py-1  rounded-md bg-blue-100 font-medium text-xs text-blue-600">
+          {{ platform.alias }}
+          <button type="button" class="relative rounded-sm w-3.5 h-3.5 -mr-1.5">
+            <span class="absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0" style="clip: rect(0, 0, 0, 0);">
+              Remove
+            </span>
+            <svg viewBox="0 0 14 14" class="stroke-gray-700 w-3.5 h-3.5">
+              <path d="M4 4l6 6m0-6l-6 6"></path>
+            </svg>
+            <span class="absolute -inset-1"></span>
+          </button>
+        </span>
+      @end
+    </div>
+  @end
+</div>

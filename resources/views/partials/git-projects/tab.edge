@@ -77,7 +77,12 @@
 
 
   @if(currentTab === 'commit')
-    @!component('partials/git-projects/empty_tab', { type: "commit", id })
+    @!component('partials/git-projects/empty_tab', {
+      type: "commit",
+      id,
+      createUrl: route('git-projects.commits.create', { id }),
+      redirect: true
+    })
   @end
 
 </section>
