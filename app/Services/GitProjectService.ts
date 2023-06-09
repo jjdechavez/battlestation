@@ -19,4 +19,37 @@ export default class GitProject {
 
     return content ?? []
   }
+
+  public static async getAvailablePlatforms(
+    { projectId, platformIds }: { projectId: string, platformIds: string [] }
+  ) {
+    const availablePlatforms = await GitPlatform
+      .query()
+      .where('projectId', projectId)
+      .andWhereNotIn('id', platformIds)
+      .select('id', 'alias', 'name')
+
+    return availablePlatforms
+  }
+
+  public static async getSelectedPlatforms(
+    { projectId, platformIds }: { projectId: string, platformIds: string [] }
+  ) {
+    const selectedPlatforms = await GitPlatform
+      .query()
+      .where('projectId', projectId)
+      .andWhereIn('id', platformIds)
+      .select('id', 'alias', 'name')
+
+    return selectedPlatforms
+  }
+
+  public static transformToPlatformOptions(platforms: GitPlatform[]) {
+    const platformOptions = platforms.map(platform => ({
+      value: platform.id,
+      label: `[${platform.alias}] ${platform.name}`
+    }))
+
+    return platformOptions
+  }
 }

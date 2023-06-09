@@ -15,9 +15,10 @@
     @each (platform in platformOptions)
       <option
         value="{{ platform.value }}"
-        hx-get="{{ route('git-projects.commits.platform', { id, platformId: platform.value }) }}"
+        hx-get="{{ route('git-projects.commits.appendPlatform', { id }) }}"
         hx-trigger="click"
         hx-target="closest div#h-platform"
+        hx-swap="outerHTML"
         hx-include="[name='platform-data']"
         onclick="platformClicked({{ platform.value }})"
       >
@@ -49,9 +50,16 @@
   @if(currentPlatforms.length)
     <div class="mt-4">
       @each(platform in currentPlatforms)
-        <span class="inline-flex items-center gap-x-0.5 px-2 py-1  rounded-md bg-blue-100 font-medium text-xs text-blue-600">
+        <span class="inline-flex items-center gap-x-0.5 px-2 py-1  rounded-md bg-indigo-100 font-medium text-xs text-indigo-600">
           {{ platform.alias }}
-          <button type="button" class="relative rounded-sm w-3.5 h-3.5 -mr-1.5">
+          <button
+            hx-delete="{{ route('git-projects.commits.removePlatform', { id, platformId: platform.id }) }}"
+            hx-trigger="click"
+            hx-include="[name='platform-data']"
+            hx-target="closest div#h-platform"
+            hx-swap="outerHTML"
+            class="relative rounded-sm w-3.5 h-3.5 -mr-1.5"
+          >
             <span class="absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0" style="clip: rect(0, 0, 0, 0);">
               Remove
             </span>

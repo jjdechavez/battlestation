@@ -1,6 +1,7 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import GitPlatform from 'App/Models/GitPlatform'
 import GitTicket from 'App/Models/GitTicket'
+import GitProjectService from 'App/Services/GitProjectService'
 
 export default class GitCommitsController {
   readonly PARTIAL_PATH = 'partials/git-projects'
@@ -34,35 +35,56 @@ export default class GitCommitsController {
     })
   }
 
-  public async platform({ params, request, view }: HttpContextContract) {
+  public async appendPlatform({ params, request, view }: HttpContextContract) {
     const qs = request.qs()
-    const addedPlatformId: string = params.platformId
     const currentPlatformIds: string | string[] = qs['platform-data']
-    console.log({ addedPlatformId , currentPlatformIds })
     const currentPlatformQuery = typeof currentPlatformIds === 'string'
       ? [currentPlatformIds]
       : currentPlatformIds
 
-    const availablePlatforms = await GitPlatform
-      .query()
-      .where('projectId', params.id)
-      .andWhereNotIn('id', currentPlatformQuery)
-      .select('id', 'alias', 'name')
+    const availablePlatforms = await GitProjectService.getAvailablePlatforms({
+      projectId: params.id,
+      platformIds: currentPlatformQuery
+    })
+    const platformOptions = GitProjectService.transformToPlatformOptions(availablePlatforms)
 
-    const platformOptions = availablePlatforms.map(platform => ({
-      value: platform.id,
-      label: `[${platform.alias}] ${platform.name}`
-    }))
-
-    const currentPlatforms = await GitPlatform
-      .query()
-      .where('projectId', params.id)
-      .andWhereIn('id', currentPlatformQuery)
-      .select('id', 'alias', 'name')
+    const currentPlatforms = await GitProjectService.getSelectedPlatforms({
+      projectId: params.id,
+      platformIds: currentPlatformQuery,
+    })
 
     return view.render(`${this.PARTIAL_PATH}/commit_platform_field`, {
       id: params.id,
       platformOptions,
+      currentPlatforms
+    })
+  }
+
+  public async removePlatform({ params, request, view }: HttpContextContract) {
+    const removePlatformId: string = params.platformId
+    const currentPlatformIds: string | string[] = request.only(['platform-data'])['platform-data']
+    let availablePlatformIds: string[] = []
+
+    if (Array.isArray(currentPlatformIds)) {
+      availablePlatformIds = currentPlatformIds.filter(platform => platform !== removePlatformId)
+    } else if (currentPlatformIds !== removePlatformId) {
+      availablePlatformIds = [currentPlatformIds]
+    }
+
+    const availablePlatforms = await GitProjectService.getAvailablePlatforms({
+      projectId: params.id,
+      platformIds: availablePlatformIds,
+    })
+    const availablePlatformOptions = GitProjectService.transformToPlatformOptions(availablePlatforms)
+
+    const currentPlatforms = await GitProjectService.getSelectedPlatforms({
+      projectId: params.id,
+      platformIds: availablePlatformIds,
+    })
+
+    return view.render(`${this.PARTIAL_PATH}/commit_platform_field`, {
+      id: params.id,
+      platformOptions: availablePlatformOptions,
       currentPlatforms
     })
   }

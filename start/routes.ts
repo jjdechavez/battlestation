@@ -102,7 +102,8 @@ Route.group(() => {
     Route.patch('/:id/tickets/:ticketId', 'GitTicketsController.update').as('tickets.update');
 
     Route.get('/:id/commits/create', 'GitCommitsController.create').as('commits.create');
-    Route.get('/:id/commits/platforms/:platformId', 'GitCommitsController.platform').as('commits.platform');
+    Route.get('/:id/commits/platforms', 'GitCommitsController.appendPlatform').as('commits.appendPlatform');
+    Route.delete('/:id/commits/platforms/:platformId', 'GitCommitsController.removePlatform').as('commits.removePlatform');
   }).prefix('git-projects').as('git-projects');
 })
   .prefix('dashboard')
