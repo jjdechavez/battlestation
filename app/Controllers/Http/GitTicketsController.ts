@@ -1,12 +1,14 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema } from '@ioc:Adonis/Core/Validator';
 import Database from '@ioc:Adonis/Lucid/Database';
-import GitCommit from 'App/Models/GitCommit';
+import GitPlatform from 'App/Models/GitPlatform';
 import GitTicket from 'App/Models/GitTicket'
 import GitProjectService from 'App/Services/GitProjectService';
+import { DateTime } from 'luxon';
 
 export default class GitTicketsController {
   readonly PARTIAL_PATH = 'partials/git-projects';
+  readonly PAGE_PATH = 'pages/dashboard/git-projects/tickets';
 
   public async index({ params, view }: HttpContextContract) {
     const content = await GitProjectService.getContentByTab({ projectId: params.id, tab: 'ticket' });
@@ -67,8 +69,32 @@ export default class GitTicketsController {
     return view.render(`${this.PARTIAL_PATH}/table_row_ticket`, { id: params.id, ticket })
   }
 
-  public async show({ view, params }: HttpContextContract) {
+  public async show({ view, params, request }: HttpContextContract) {
     const ticket = await GitTicket.findOrFail(params.ticketId)
+    const qs = request.qs()
+
+    if (qs.redirect) {
+      await ticket.load('commits')
+      return view.render(`${this.PAGE_PATH}/view`, { id: params.id, ticket })
+    }
     return view.render(`${this.PARTIAL_PATH}/table_row_ticket`, { id: params.id, ticket })
+  }
+
+  public async createCommit({ view, params }: HttpContextContract) {
+    const platforms = await GitPlatform
+      .query()
+      .where('projectId', params.id)
+      .select('id', 'alias', 'name')
+
+    const platformOptions = GitProjectService.transformToPlatformOptions(platforms)
+    const currentDate = DateTime.now().toFormat('yyyy-MM-dd\'T\'HH:mm')
+
+    return view.render(`${this.PARTIAL_PATH}/table_row_commit_form`, {
+      id: params.id,
+      ticketId: params.ticketId,
+      platformOptions,
+      currentDate,
+      status: 'add'
+    })
   }
 }

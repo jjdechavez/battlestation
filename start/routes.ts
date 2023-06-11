@@ -101,6 +101,7 @@ Route.group(() => {
     Route.get('/:id/tickets/:ticketId/edit', 'GitTicketsController.edit').as('tickets.edit');
     Route.patch('/:id/tickets/:ticketId', 'GitTicketsController.update').as('tickets.update');
     Route.get('/:id/tickets/:ticketId', 'GitTicketsController.show').as('tickets.show');
+    Route.get('/:id/tickets/:ticketId/commits/create', 'GitTicketsController.createCommit').as('tickets.create.commits');
 
     Route.post('/:id/commits', 'GitCommitsController.store').as('commits.store');
     Route.get('/:id/commits/create', 'GitCommitsController.create').as('commits.create');

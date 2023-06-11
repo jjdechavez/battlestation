@@ -3,6 +3,12 @@
     {{ ticket.name }}
   </td>
   <td class="whitespace-nowrap px-4 py-3 text-gray-700 flex justify-start">
+    <a
+      href="{{ route('git-projects.tickets.show', { id, ticketId: ticket.id }, { qs: { redirect: true } }) }}"
+      class="mr-4 vdecoration-2 hover:underline text-indigo-700 font-medium"
+    >
+      View
+    </a>
     <button
       type="button"
       hx-get="{{ route('git-projects.tickets.edit', { id: id, ticketId: ticket.id }) }}"
