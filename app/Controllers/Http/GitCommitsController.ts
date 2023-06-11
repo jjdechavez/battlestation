@@ -1,7 +1,10 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import { schema, rules } from '@ioc:Adonis/Core/Validator'
+import Database from '@ioc:Adonis/Lucid/Database'
 import GitPlatform from 'App/Models/GitPlatform'
 import GitTicket from 'App/Models/GitTicket'
 import GitProjectService from 'App/Services/GitProjectService'
+import { DateTime } from 'luxon'
 
 export default class GitCommitsController {
   readonly PARTIAL_PATH = 'partials/git-projects'
@@ -23,16 +26,54 @@ export default class GitCommitsController {
       .where('projectId', params.id)
       .select('id', 'alias', 'name')
 
-    const platformOptions = platforms.map(platform => ({
-      value: platform.id,
-      label: `[${platform.alias}] ${platform.name}`
-    }))
+    const platformOptions = GitProjectService.transformToPlatformOptions(platforms)
+    const currentDate = DateTime.now().toFormat('yyyy-MM-dd\'T\'HH:mm')
 
     return view.render(`${this.PAGE_PATH}/create`, {
       id: params.id,
       ticketOptions,
-      platformOptions
+      platformOptions,
+      currentDate,
     })
+  }
+
+  public async store({ request, params, response } : HttpContextContract) {
+    const body = request.body()
+    if (typeof body['platform-data'] === 'string') {
+      body['platform-data'] = [body['platform-data']]
+    }
+    request.updateBody(body)
+    console.log({ body, projectId: params.id })
+
+    const commitSchema = schema.create({
+      ticket: schema.string([ rules.exists({ table: 'git_tickets', column: 'id' }) ]),
+      hashed: schema.string([ rules.minLength(6), rules.maxLength(6) ]),
+      title: schema.string([ rules.minLength(1) ]),
+      commitedAt: schema.date(),
+      'platform-data': schema.array.optional().members(schema.string())
+    })
+
+    const payload = await request.validate({ schema: commitSchema })
+    const trx = await Database.transaction()
+    const ticket = await GitTicket.find(payload.ticket, { client: trx })
+
+    if (ticket) {
+      if (payload['platform-data']) {
+        const platforms = await GitPlatform.findMany(payload['platform-data'])
+        GitTicket.$getRelation('platforms').boot()
+        GitTicket.$getRelation('platforms').setRelated(ticket, platforms)
+      }
+
+      await ticket.related('commits').create({
+        hashed: payload.hashed,
+        title: payload.title,
+        commitedAt: payload.commitedAt,
+        projectId: params.id,
+      })
+    }
+    await trx.commit()
+
+    return response.redirect().back()
   }
 
   public async appendPlatform({ params, request, view }: HttpContextContract) {

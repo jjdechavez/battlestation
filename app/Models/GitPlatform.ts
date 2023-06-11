@@ -27,7 +27,9 @@ export default class GitPlatform extends BaseModel {
 
   @manyToMany(() => GitTicket, {
     pivotTable: 'git_ticket_platforms',
-    pivotColumns: ['completedAt']
+    pivotColumns: ['completedAt'],
+    pivotForeignKey: 'platform_id',
+    pivotRelatedForeignKey: 'ticket_id',
   })
   public tickets: ManyToMany<typeof GitTicket>
 }

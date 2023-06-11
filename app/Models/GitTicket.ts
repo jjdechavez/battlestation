@@ -2,6 +2,7 @@ import { DateTime } from 'luxon'
 import { BaseModel, BelongsTo, belongsTo, column, ManyToMany, manyToMany } from '@ioc:Adonis/Lucid/Orm'
 import GitProject from './GitProject'
 import GitPlatform from './GitPlatform'
+import GitCommit from './GitCommit'
 
 export default class GitTicket extends BaseModel {
   @column({ isPrimary: true })
@@ -24,7 +25,17 @@ export default class GitTicket extends BaseModel {
 
   @manyToMany(() => GitPlatform, {
     pivotTable: 'git_ticket_platforms',
-    pivotColumns: ['completedAt']
+    pivotColumns: ['completedAt'],
+    pivotForeignKey: 'ticket_id',
+    pivotRelatedForeignKey: 'platform_id',
   })
   public platforms: ManyToMany<typeof GitPlatform>
+
+  @manyToMany(() => GitCommit, {
+    pivotTable: 'git_ticket_commits',
+    pivotForeignKey: 'ticket_id',
+    pivotRelatedForeignKey: 'commit_id',
+    pivotTimestamps: true,
+  })
+  public commits: ManyToMany<typeof GitCommit>
 }

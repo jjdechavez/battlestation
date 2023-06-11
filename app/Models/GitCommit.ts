@@ -30,6 +30,9 @@ export default class GitCommit extends BaseModel {
 
   @manyToMany(() => GitTicket, {
     pivotTable: 'git_ticket_commits',
+    pivotForeignKey: 'commit_id',
+    pivotRelatedForeignKey: 'ticket_id',
+    pivotTimestamps: true,
   })
   public tickets: ManyToMany<typeof GitTicket>
 }

@@ -1,7 +1,7 @@
 @set('id', request.param('id'))
 
 @component("components/form/base", {
-  action: method === 'PATCH' ? route('users.update', { id: user.id }, { qs: { _method: 'PATCH' } }) : route('git-projects.store'),
+  action: method === 'PATCH' ? route('users.update', { id: user.id }, { qs: { _method: 'PATCH' } }) : route('git-projects.commits.store', { id }),
   method: "POST"
 })
 
@@ -58,6 +58,26 @@
       value: '',
       flashMessages: flashMessages
     })
+
+
+    @!component('components/form/text-field', {
+      label: 'Title',
+      name: 'title',
+      required: true,
+      value: '',
+      flashMessages: flashMessages
+    })
+
+
+    @!component('components/form/datetime-local-field', {
+      label: 'Commited At',
+      name: 'commitedAt',
+      required: true,
+      value: '',
+      flashMessages: flashMessages,
+      max: currentDate,
+    })
+
 
   </section>
 
