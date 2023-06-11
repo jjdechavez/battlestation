@@ -30,6 +30,7 @@ export default class GitPlatform extends BaseModel {
     pivotColumns: ['completedAt'],
     pivotForeignKey: 'platform_id',
     pivotRelatedForeignKey: 'ticket_id',
+    pivotTimestamps: true,
   })
   public tickets: ManyToMany<typeof GitTicket>
 }

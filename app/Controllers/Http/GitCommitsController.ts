@@ -60,8 +60,8 @@ export default class GitCommitsController {
     if (ticket) {
       if (payload['platform-data']) {
         const platforms = await GitPlatform.findMany(payload['platform-data'])
-        GitTicket.$getRelation('platforms').boot()
-        GitTicket.$getRelation('platforms').setRelated(ticket, platforms)
+        const platformIds = platforms.map(platform => platform.id)
+        await ticket.related('platforms').attach(platformIds)
       }
 
       await ticket.related('commits').create({
