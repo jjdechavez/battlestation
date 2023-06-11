@@ -1,0 +1,30 @@
+@set('commits', content ?? [])
+
+@if(commits.length)
+  @each(commit in commits)
+    @!component('partials/git-projects/table_row_commit', { id, commit })
+  @end
+  <tr>
+    <td colspan="3">
+      <button
+        class="mt-3 inline-block rounded border border-indigo-600 bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring active:text-indigo-500"
+        hx-get="{{ route('git-projects.platforms.create', { id }, { qs: { status: 'add' } }) }}"
+        hx-target="closest tr"
+        hx-swap="outerHTML"
+      >
+        Add platform
+      </button>
+    </td>
+  </tr>
+@else
+  <tr>
+    <td colspan="3">
+      @!component('partials/git-projects/empty_tab', {
+        type: "commit",
+        id,
+        createUrl: route('git-projects.commits.create', { id }),
+        redirect: true
+      })
+    </td>
+  </tr>
+@end
