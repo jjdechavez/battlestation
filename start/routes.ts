@@ -100,6 +100,7 @@ Route.group(() => {
     Route.delete('/:id/tickets/:ticketId', 'GitTicketsController.destroy').as('tickets.destroy');
     Route.get('/:id/tickets/:ticketId/edit', 'GitTicketsController.edit').as('tickets.edit');
     Route.patch('/:id/tickets/:ticketId', 'GitTicketsController.update').as('tickets.update');
+    Route.get('/:id/tickets/:ticketId', 'GitTicketsController.show').as('tickets.show');
 
     Route.post('/:id/commits', 'GitCommitsController.store').as('commits.store');
     Route.get('/:id/commits/create', 'GitCommitsController.create').as('commits.create');

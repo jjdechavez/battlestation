@@ -43,7 +43,6 @@ export default class GitCommitsController {
       body['platform-data'] = [body['platform-data']]
     }
     request.updateBody(body)
-    console.log({ body, projectId: params.id })
 
     const commitSchema = schema.create({
       ticket: schema.string([ rules.exists({ table: 'git_tickets', column: 'id' }) ]),

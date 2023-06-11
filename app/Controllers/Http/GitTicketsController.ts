@@ -51,4 +51,9 @@ export default class GitTicketsController {
 
     return view.render(`${this.PARTIAL_PATH}/table_row_ticket`, { id: params.id, ticket })
   }
+
+  public async show({ view, params }: HttpContextContract) {
+    const ticket = await GitTicket.findOrFail(params.ticketId)
+    return view.render(`${this.PARTIAL_PATH}/table_row_ticket`, { id: params.id, ticket })
+  }
 }

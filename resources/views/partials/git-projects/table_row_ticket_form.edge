@@ -13,6 +13,9 @@
   <td class="whitespace-nowrap px-4 py-3 text-gray-700">
     <button
       type="button"
+      hx-get="{{ route('git-projects.tickets.show', { id, ticketId: ticket.id }) }}"
+      hx-swap="outerHTML"
+      hx-target="closest tr"
       class="decoration-2 hover:underline text-indigo-700 font-medium mr-4"
     >
       Cancel
