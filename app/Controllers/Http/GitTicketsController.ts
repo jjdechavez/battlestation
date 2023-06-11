@@ -11,8 +11,12 @@ export default class GitTicketsController {
     return view.render(`${this.PARTIAL_PATH}/table_body_ticket`, { id: params.id, content })
   }
 
-  public async create({ view, params }: HttpContextContract) {
-    return view.render(`${this.PARTIAL_PATH}/table_row_ticket_form`, { id: params.id })
+  public async create({ view, params, request }: HttpContextContract) {
+    const qs = request.qs()
+    return view.render(`${this.PARTIAL_PATH}/table_row_ticket_form`, {
+      id: params.id,
+      status: qs.status
+    })
   }
 
   public async store({ request, params, response }: HttpContextContract) {
