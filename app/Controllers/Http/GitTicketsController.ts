@@ -1,5 +1,7 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema } from '@ioc:Adonis/Core/Validator';
+import Database from '@ioc:Adonis/Lucid/Database';
+import GitCommit from 'App/Models/GitCommit';
 import GitTicket from 'App/Models/GitTicket'
 import GitProjectService from 'App/Services/GitProjectService';
 
@@ -32,8 +34,17 @@ export default class GitTicketsController {
   }
 
   public async destroy({ params, response }: HttpContextContract) {
-    const ticket = await GitTicket.findOrFail(params.ticketId)
-    await ticket.delete();
+    const trx = await Database.transaction()
+    const ticket = await GitTicket.findOrFail(params.ticketId, { client: trx })
+    await ticket.related('platforms').detach()
+
+    await ticket.load('commits')
+    await ticket.related('commits').detach()
+    await Promise.all(ticket.commits.map(async (commit) => await commit.delete()))
+
+    await ticket.delete()
+
+    await trx.commit()
 
     response.header('HX-Trigger', 'newTicket')
     return response.status(204)
