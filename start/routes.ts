@@ -102,11 +102,15 @@ Route.group(() => {
     Route.patch('/:id/tickets/:ticketId', 'GitTicketsController.update').as('tickets.update');
     Route.get('/:id/tickets/:ticketId', 'GitTicketsController.show').as('tickets.show');
     Route.get('/:id/tickets/:ticketId/commits/create', 'GitTicketsController.createCommit').as('tickets.create.commits');
+    Route.post('/:id/tickets/:ticketId/commits', 'GitTicketsController.storeCommit').as('tickets.store.commits');
+    Route.get('/:id/tickets/:ticketId/commits', 'GitTicketsController.commits').as('tickets.manage.commits');
 
+    Route.get('/:id/commits', 'GitCommitsController.index').as('commits.manage');
     Route.post('/:id/commits', 'GitCommitsController.store').as('commits.store');
     Route.get('/:id/commits/create', 'GitCommitsController.create').as('commits.create');
     Route.get('/:id/commits/platforms', 'GitCommitsController.appendPlatform').as('commits.appendPlatform');
     Route.delete('/:id/commits/platforms/:platformId', 'GitCommitsController.removePlatform').as('commits.removePlatform');
+    Route.delete('/:id/commits/:commitId', 'GitCommitsController.destroy').as('commits.destroy');
   }).prefix('git-projects').as('git-projects');
 })
   .prefix('dashboard')

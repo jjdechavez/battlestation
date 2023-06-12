@@ -1,6 +1,7 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import Database from '@ioc:Adonis/Lucid/Database'
+import GitCommit from 'App/Models/GitCommit'
 import GitPlatform from 'App/Models/GitPlatform'
 import GitTicket from 'App/Models/GitTicket'
 import GitProjectService from 'App/Services/GitProjectService'
@@ -9,6 +10,15 @@ import { DateTime } from 'luxon'
 export default class GitCommitsController {
   readonly PARTIAL_PATH = 'partials/git-projects'
   readonly PAGE_PATH = 'pages/dashboard/git-projects/commits'
+
+  public async index({ view, params }: HttpContextContract) {
+    const content = await GitProjectService.getContentByTab({ projectId: params.id, tab: 'commit' });
+
+    return view.render(`partials/git-projects/table_body_commit`, {
+      id: params.id,
+      content
+    })
+  }
 
   public async create({ view, params }: HttpContextContract) {
     const tickets = await GitTicket
@@ -72,7 +82,8 @@ export default class GitCommitsController {
     }
     await trx.commit()
 
-    return response.redirect().back()
+    response.header('HX-Trigger', 'newCommit')
+    return response.status(201)
   }
 
   public async appendPlatform({ params, request, view }: HttpContextContract) {
@@ -127,5 +138,13 @@ export default class GitCommitsController {
       platformOptions: availablePlatformOptions,
       currentPlatforms
     })
+  }
+
+  public async destroy({ response, params }: HttpContextContract) {
+    const commit = await GitCommit.findOrFail(params.commitId)
+    await commit.delete()
+
+    response.header('HX-Trigger', 'newCommit')
+    return response.status(201)
   }
 }

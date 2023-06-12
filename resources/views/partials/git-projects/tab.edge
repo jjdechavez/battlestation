@@ -82,10 +82,16 @@
         <thead>
           <tr>
             <th class="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-900">
-              Title
+              Platform
             </th>
             <th class="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-900">
-              CommitedAt
+              Hashed
+            </th>
+            <th class="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-900">
+              Commited At
+            </th>
+            <th class="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-900">
+              Title
             </th>
             <th class="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-900">
               Action
@@ -94,8 +100,8 @@
         </thead>
 
         <tbody
-          hx-get="{{ route('git-projects.tickets.manage', { id }) }}"
-          hx-trigger="newTicket from:body"
+          hx-get="{{ route('git-projects.commits.manage', { id }) }}"
+          hx-trigger="newCommit from:body"
           class="divide-y divide-gray-200"
         >
           @!component('partials/git-projects/table_body_commit', { id, content })

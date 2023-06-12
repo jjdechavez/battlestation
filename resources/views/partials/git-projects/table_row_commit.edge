@@ -8,7 +8,7 @@
   <td class="whitespace-nowrap px-4 py-3 text-gray-700">
     {{ commit.commitedAt.toFormat('DD') }}
   </td>
-  <td class="whitespace-nowrap px-4 py-3 text-gray-700">
+  <td class="whitespace-nowrap px-4 py-3 text-gray-700 truncate max-w-[10px] table-cell">
     {{ commit.title }}
   </td>
   <td class="whitespace-nowrap px-4 py-3 text-gray-700 flex justify-start">
@@ -26,9 +26,7 @@
 
     <button
       type="button"
-      {{--
-      hx-delete="{{ route('git-projects.platforms.destroy', { id: id, platformId: platform.id }, { qs: { _method: 'DELETE' } }) }}"
-      --}}
+      hx-delete="{{ route('git-projects.commits.destroy', { id: id, commitId: commit.id }, { qs: { _method: 'DELETE' } }) }}"
       hx-confirm="Are you sure?"
       hx-target="closest tr"
       hx-swap="outerHTML"
@@ -44,7 +42,7 @@
     <td colspan="3">
       <button
         class="mt-3 inline-block rounded border border-indigo-600 bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring active:text-indigo-500"
-        hx-get="{{ route('git-projects.platforms.create', { id }, { qs: { tab, status: 'add' } }) }}"
+        hx-get="{{ route('git-projects.tickets.create.commits', { id, ticketId }, { qs: { tab, status: 'add' } }) }}"
         hx-target="closest tr"
         hx-swap="outerHTML"
       >

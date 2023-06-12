@@ -1,5 +1,5 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import { schema } from '@ioc:Adonis/Core/Validator';
+import { schema, rules } from '@ioc:Adonis/Core/Validator';
 import Database from '@ioc:Adonis/Lucid/Database';
 import GitPlatform from 'App/Models/GitPlatform';
 import GitTicket from 'App/Models/GitTicket'
@@ -95,6 +95,52 @@ export default class GitTicketsController {
       platformOptions,
       currentDate,
       status: 'add'
+    })
+  }
+
+  public async storeCommit({ request, params, response } : HttpContextContract) {
+    const commitSchema = schema.create({
+      hashed: schema.string([ rules.minLength(6), rules.maxLength(6) ]),
+      title: schema.string([ rules.minLength(1) ]),
+      commitedAt: schema.date(),
+      platform: schema.string([ rules.exists({ table: 'git_platforms', column: 'id' })])
+    })
+
+    const payload = await request.validate({ schema: commitSchema })
+    console.log(payload)
+    const trx = await Database.transaction()
+    const ticket = await GitTicket.find(params.ticketId, { client: trx })
+
+    if (ticket) {
+      if (payload.platform) {
+        const platform = await GitPlatform.findOrFail(payload.platform)
+        console.log(platform)
+        if (platform) {
+          await ticket.related('platforms').attach([platform.id])
+        }
+      }
+
+      await ticket.related('commits').create({
+        hashed: payload.hashed,
+        title: payload.title,
+        commitedAt: payload.commitedAt,
+        projectId: params.id,
+      })
+    }
+    // await trx.commit()
+
+    response.header('HX-Trigger', 'newCommit')
+    return response.status(201)
+  }
+
+  public async commits({ view, params }: HttpContextContract) {
+    const ticket = await GitTicket.findOrFail(params.ticketId)
+    await ticket.load('commits')
+    return view.render(`${this.PARTIAL_PATH}/table_body_commit`, {
+      id: params.id,
+      ticketId: params.ticketId,
+      ticket,
+      content: ticket.commits
     })
   }
 }

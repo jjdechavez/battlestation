@@ -1,5 +1,7 @@
 @layout('layouts/dashboard')
 
+@set('ticketId', ticket?.id ?? request.params('ticketId'))
+
 @section('content')
 
 
@@ -48,11 +50,15 @@
         </thead>
 
         <tbody
-          hx-get="{{ route('git-projects.tickets.manage', { id }) }}"
+          hx-get="{{ route('git-projects.tickets.manage.commits', { id, ticketId: ticket.id }) }}"
           hx-trigger="newCommit from:body"
           class="divide-y divide-gray-200"
         >
-          @!component('partials/git-projects/table_body_commit', { id, content, ticketId: ticket.id })
+          @!component('partials/git-projects/table_body_commit', {
+            id,
+            content: ticket.commits,
+            ticketId,
+          })
         </tbody>
       </table>
     </div>

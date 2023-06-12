@@ -63,10 +63,10 @@
       <button
         type="button"
         @if(status === 'add')
-          hx-post="{{ route('git-projects.commits.store', { id }) }}"
+          hx-post="{{ route('git-projects.tickets.store.commits', { id, ticketId }) }}"
         @end
         @if(status === 'edit')
-          hx-patch="{{ route('git-projects.tickets.update', { id, ticketId: ticket.id }) }}"
+          hx-patch="{{ route('git-projects.tickets.update', { id, ticketId }) }}"
         @end
         hx-swap="outerHTML"
         hx-target="closest tr"
@@ -84,7 +84,7 @@
     <td colspan="3">
       <button
         class="mt-3 inline-block rounded border border-indigo-600 bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring active:text-indigo-500"
-        hx-get="{{ route('git-projects.tickets.create.commits', { id }, { qs: { tab, status: 'add' } }) }}"
+        hx-get="{{ route('git-projects.tickets.create.commits', { id, ticketId }, { qs: { status: 'add' } }) }}"
         hx-target="closest tr"
         hx-swap="outerHTML"
       >
