@@ -71,7 +71,7 @@
           hx-post="{{ route('git-projects.tickets.store.commits', { id, ticketId }) }}"
         @end
         @if(status === 'edit')
-          hx-patch="{{ route('git-projects.tickets.update', { id, ticketId }) }}"
+          hx-patch="{{ route('git-projects.tickets.update.commits', { id, ticketId, commitId: commit.id }) }}"
         @end
         hx-swap="outerHTML"
         hx-target="closest tr"

@@ -128,7 +128,6 @@ export default class GitTicketsController {
     };
 
     if (payload.platform) {
-      const platform = await GitPlatform.findOrFail(payload.platform)
       Object.assign(commitPayload, { platformId: platform.id })
     }
 
@@ -173,7 +172,7 @@ export default class GitTicketsController {
       platformIds: currentPlatformIds,
     })
     if (commit.platform) {
-      platforms.push(commit.platform)
+      platforms.unshift(commit.platform)
     }
 
     const platformOptions = GitProjectService.transformToPlatformOptions(platforms)
@@ -197,6 +196,38 @@ export default class GitTicketsController {
         ticketId: commit.ticketId,
       },
       status: 'edit',
+    })
+  }
+
+  public async updateCommit({ params, request, view }: HttpContextContract) {
+    const trx = await Database.transaction()
+    const commit = await GitCommit.findOrFail(params.commitId, { client: trx })
+
+    const commitSchema = schema.create({
+      hashed: schema.string([ rules.minLength(6), rules.maxLength(6) ]),
+      title: schema.string([ rules.minLength(1) ]),
+      commitedAt: schema.date(),
+      platform: schema.string.optional([ rules.exists({ table: 'git_platforms', column: 'id' })])
+    })
+
+    const payload = await request.validate({ schema: commitSchema })
+
+    await commit.merge({
+      hashed: payload.hashed,
+      title: payload.title,
+      commitedAt: payload.commitedAt,
+      platformId: payload.platform,
+    }).save()
+    await trx.commit()
+
+    if (payload.platform) {
+      await commit.load('platform')
+    }
+
+    return view.render(`${this.PARTIAL_PATH}/table_row_commit`, {
+      id: params.id,
+      ticketId: params.ticketId,
+      commit,
     })
   }
 }
