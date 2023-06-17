@@ -1,6 +1,8 @@
 <tr>
   <td class="whitespace-nowrap px-4 py-3 font-medium text-gray-900">
-    {{ commit.platform }}
+    <abbr title="{{ commit.platform.name }}">
+      {{ commit.platform.alias }}
+    </abbr>
   </td>
   <td class="whitespace-nowrap px-4 py-3 text-gray-700">
     {{ commit.hashed }}

@@ -74,16 +74,28 @@ export default class GitTicketsController {
     const qs = request.qs()
 
     if (qs.redirect) {
-      await ticket.load('commits')
+      await ticket.load('commits', (commitsQuery) => {
+        commitsQuery.preload('platform')
+      })
       return view.render(`${this.PAGE_PATH}/view`, { id: params.id, ticket })
     }
     return view.render(`${this.PARTIAL_PATH}/table_row_ticket`, { id: params.id, ticket })
   }
 
   public async createCommit({ view, params }: HttpContextContract) {
+    const ticket = await GitTicket
+      .query()
+      .where('id', params.ticketId)
+      .preload('commits', (commitsQuery) => {
+        commitsQuery.select('platformId')
+      })
+      .first()
+    const currentPlatformIds = ticket?.commits.map(commit => commit.platformId) ?? []
+
     const platforms = await GitPlatform
       .query()
       .where('projectId', params.id)
+      .whereNotIn('id', currentPlatformIds)
       .select('id', 'alias', 'name')
 
     const platformOptions = GitProjectService.transformToPlatformOptions(platforms)
@@ -103,31 +115,27 @@ export default class GitTicketsController {
       hashed: schema.string([ rules.minLength(6), rules.maxLength(6) ]),
       title: schema.string([ rules.minLength(1) ]),
       commitedAt: schema.date(),
-      platform: schema.string([ rules.exists({ table: 'git_platforms', column: 'id' })])
+      platform: schema.string.optional([ rules.exists({ table: 'git_platforms', column: 'id' })])
     })
 
     const payload = await request.validate({ schema: commitSchema })
-    console.log(payload)
     const trx = await Database.transaction()
-    const ticket = await GitTicket.find(params.ticketId, { client: trx })
+    const ticket = await GitTicket.findOrFail(params.ticketId, { client: trx })
 
-    if (ticket) {
-      if (payload.platform) {
-        const platform = await GitPlatform.findOrFail(payload.platform)
-        console.log(platform)
-        if (platform) {
-          await ticket.related('platforms').attach([platform.id])
-        }
-      }
+    const commitPayload = {
+      hashed: payload.hashed,
+      title: payload.title,
+      commitedAt: payload.commitedAt,
+      projectId: params.id,
+    };
 
-      await ticket.related('commits').create({
-        hashed: payload.hashed,
-        title: payload.title,
-        commitedAt: payload.commitedAt,
-        projectId: params.id,
-      })
+    if (payload.platform) {
+      const platform = await GitPlatform.findOrFail(payload.platform)
+      Object.assign(commitPayload, { platformId: platform.id })
     }
-    // await trx.commit()
+
+    await ticket.related('commits').create(commitPayload)
+    await trx.commit()
 
     response.header('HX-Trigger', 'newCommit')
     return response.status(201)
@@ -135,7 +143,9 @@ export default class GitTicketsController {
 
   public async commits({ view, params }: HttpContextContract) {
     const ticket = await GitTicket.findOrFail(params.ticketId)
-    await ticket.load('commits')
+    await ticket.load('commits', (commitsQuery) => {
+      commitsQuery.preload('platform')
+    })
     return view.render(`${this.PARTIAL_PATH}/table_body_commit`, {
       id: params.id,
       ticketId: params.ticketId,
