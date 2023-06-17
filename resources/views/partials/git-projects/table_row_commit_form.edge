@@ -49,7 +49,7 @@
       <button
         type="button"
         @if(status === 'add')
-          hx-get="{{ route('git-projects.tickets.create', { id }, { qs: { status: 'idle' } }) }}"
+          hx-get="{{ route('git-projects.tickets.create.commits', { id, ticketId }, { qs: { status: 'idle' } }) }}"
         @end
         @if(status === 'edit')
           hx-get="{{ route('git-projects.tickets.show', { id, ticketId: ticket.id }) }}"

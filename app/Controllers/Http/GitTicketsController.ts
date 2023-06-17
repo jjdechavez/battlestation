@@ -38,10 +38,8 @@ export default class GitTicketsController {
   public async destroy({ params, response }: HttpContextContract) {
     const trx = await Database.transaction()
     const ticket = await GitTicket.findOrFail(params.ticketId, { client: trx })
-    await ticket.related('platforms').detach()
 
     await ticket.load('commits')
-    await ticket.related('commits').detach()
     await Promise.all(ticket.commits.map(async (commit) => await commit.delete()))
 
     await ticket.delete()
@@ -82,7 +80,15 @@ export default class GitTicketsController {
     return view.render(`${this.PARTIAL_PATH}/table_row_ticket`, { id: params.id, ticket })
   }
 
-  public async createCommit({ view, params }: HttpContextContract) {
+  public async createCommit({ view, params, request }: HttpContextContract) {
+    if (request.qs().status === 'idle') {
+      return view.render(`${this.PARTIAL_PATH}/table_row_commit_form`, {
+        id: params.id,
+        ticketId: params.ticketId,
+        status: 'idle'
+      })
+    }
+
     const ticket = await GitTicket
       .query()
       .where('id', params.ticketId)
