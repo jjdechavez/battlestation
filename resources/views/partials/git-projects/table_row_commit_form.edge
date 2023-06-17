@@ -57,7 +57,7 @@
           hx-get="{{ route('git-projects.tickets.create.commits', { id, ticketId }, { qs: { status: 'idle' } }) }}"
         @end
         @if(status === 'edit')
-          hx-get="{{ route('git-projects.tickets.show', { id, ticketId }) }}"
+          hx-get="{{ route('git-projects.tickets.show.commits', { id, ticketId, commitId: commit.id }) }}"
         @end
         hx-swap="outerHTML"
         hx-target="closest tr"

@@ -152,6 +152,17 @@ export default class GitTicketsController {
     })
   }
 
+  public async showCommit({ params, view }: HttpContextContract) {
+    const commit = await GitCommit.findOrFail(params.commitId)
+    await commit.load('platform')
+
+    return view.render(`${this.PARTIAL_PATH}/table_row_commit`, {
+      id: params.id,
+      ticketId: params.ticketId,
+      commit,
+    })
+  }
+
   public async editCommit({ params, view }: HttpContextContract) {
     const commit = await GitCommit.findOrFail(params.commitId)
     await commit.load('platform')
