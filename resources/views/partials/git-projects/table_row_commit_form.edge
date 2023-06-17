@@ -1,5 +1,5 @@
 @set('id', request.param('id') ?? '')
-@set('platform', commit?.platform ?? '')
+@set('platformId', commit?.platformId ?? '')
 @set('hashed', commit?.hashed ?? '')
 @set('title', commit?.title ?? '')
 @set('commitedAt', commit?.commitedAt ?? '')
@@ -16,7 +16,12 @@
       >
         <option value="">Select platform to assign</option>
         @each(platform in platformOptions)
-          <option value="{{ platform.value }}">{{ platform.label }}</option>
+          <option
+            value="{{ platform.value }}"
+            {{ platform.value === platformId ? 'selected' : '' }}
+          >
+            {{ platform.label }}
+          </option>
         @end
       </select>
     </td>
@@ -52,7 +57,7 @@
           hx-get="{{ route('git-projects.tickets.create.commits', { id, ticketId }, { qs: { status: 'idle' } }) }}"
         @end
         @if(status === 'edit')
-          hx-get="{{ route('git-projects.tickets.show', { id, ticketId: ticket.id }) }}"
+          hx-get="{{ route('git-projects.tickets.show', { id, ticketId }) }}"
         @end
         hx-swap="outerHTML"
         hx-target="closest tr"

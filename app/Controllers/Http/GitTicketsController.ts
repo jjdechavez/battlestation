@@ -1,6 +1,7 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema, rules } from '@ioc:Adonis/Core/Validator';
 import Database from '@ioc:Adonis/Lucid/Database';
+import GitCommit from 'App/Models/GitCommit';
 import GitPlatform from 'App/Models/GitPlatform';
 import GitTicket from 'App/Models/GitTicket'
 import GitProjectService from 'App/Services/GitProjectService';
@@ -89,20 +90,11 @@ export default class GitTicketsController {
       })
     }
 
-    const ticket = await GitTicket
-      .query()
-      .where('id', params.ticketId)
-      .preload('commits', (commitsQuery) => {
-        commitsQuery.select('platformId')
-      })
-      .first()
-    const currentPlatformIds = ticket?.commits.map(commit => commit.platformId) ?? []
-
-    const platforms = await GitPlatform
-      .query()
-      .where('projectId', params.id)
-      .whereNotIn('id', currentPlatformIds)
-      .select('id', 'alias', 'name')
+    const currentPlatformIds = await GitProjectService.getTicketCurrentPlatformIds(params.ticketId)
+    const platforms = await GitProjectService.getAvailablePlatforms({
+      projectId: params.id,
+      platformIds: currentPlatformIds,
+    })
 
     const platformOptions = GitProjectService.transformToPlatformOptions(platforms)
     const currentDate = DateTime.now().toFormat('yyyy-MM-dd\'T\'HH:mm')
@@ -112,7 +104,7 @@ export default class GitTicketsController {
       ticketId: params.ticketId,
       platformOptions,
       currentDate,
-      status: 'add'
+      status: 'add',
     })
   }
 
@@ -157,6 +149,43 @@ export default class GitTicketsController {
       ticketId: params.ticketId,
       ticket,
       content: ticket.commits
+    })
+  }
+
+  public async editCommit({ params, view }: HttpContextContract) {
+    const commit = await GitCommit.findOrFail(params.commitId)
+    await commit.load('platform')
+
+    const currentPlatformIds = await GitProjectService.getTicketCurrentPlatformIds(params.ticketId)
+    const platforms = await GitProjectService.getAvailablePlatforms({
+      projectId: params.id,
+      platformIds: currentPlatformIds,
+    })
+    if (commit.platform) {
+      platforms.push(commit.platform)
+    }
+
+    const platformOptions = GitProjectService.transformToPlatformOptions(platforms)
+    const currentDate = DateTime.now().toFormat('yyyy-MM-dd\'T\'HH:mm')
+
+    return view.render(`${this.PARTIAL_PATH}/table_row_commit_form`, {
+      id: params.id,
+      ticketId: params.ticketId,
+      platformOptions,
+      currentDate,
+      commit: {
+        id: commit.id,
+        projectId: commit.id,
+        hashed: commit.hashed,
+        title: commit.title,
+        commitedAt: commit.commitedAt.toFormat('yyyy-MM-dd\'T\'HH:mm'),
+        createdAt: commit.createdAt,
+        updatedAt: commit.updatedAt,
+        platformId: commit.platformId,
+        completedAt: commit.completedAt,
+        ticketId: commit.ticketId,
+      },
+      status: 'edit',
     })
   }
 }

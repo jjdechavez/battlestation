@@ -52,4 +52,16 @@ export default class GitProject {
 
     return platformOptions
   }
+
+  public static async getTicketCurrentPlatformIds(ticketId: string) {
+    const ticket = await GitTicket
+      .query()
+      .where('id', ticketId)
+      .preload('commits', (commitsQuery) => {
+        commitsQuery.select('platformId')
+      })
+      .first()
+    const currentPlatformIds = ticket?.commits.map(commit => commit.platformId) ?? []
+    return currentPlatformIds
+  }
 }
