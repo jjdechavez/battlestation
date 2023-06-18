@@ -247,7 +247,15 @@ export default class GitTicketsController {
         commitsQuery.preload('platform')
       })
 
-    return view.render(`${this.PAGE_PATH}/tracks`, {
+    if (request.headers()['hx-request']) {
+      return view.render(`${this.PARTIAL_PATH}/hx_tickets_tracks`, {
+        id: params.id,
+        project,
+        tickets,
+      })
+    }
+
+    return view.render(`${this.PAGE_PATH}/tickets/tracks`, {
       id: params.id,
       project,
       tickets,
