@@ -22,13 +22,20 @@
           <p class="text-sm text-gray-700 mt-1">Keep in track with your project.</p>
         </div>
 
-        <div>
+        <div class="flex">
           <a
             class="text-indigo-600 bg-gray-50 hover:bg-gray-100 border border-gray-200 focus:ring-4 focus:outline-none focus:ring-gray-100 font-medium rounded text-sm px-5 py-2.5 text-center inline-block mr-2"
             href="{{ route('/dashboard/git-projects') }}"
           >
           Redirect to git tracker
           </a>
+
+          <div
+            hx-get="{{ route('git-projects.tabs.ticket', { id }, { qs: { status: 'active' } }) }}"
+            hx-trigger="openTicketTab from:body"
+            hx-swap="outerHTML"
+          >
+          </div>
         </div>
       </header>
 

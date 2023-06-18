@@ -2,14 +2,14 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import { schema, rules } from '@ioc:Adonis/Core/Validator';
 import Database from '@ioc:Adonis/Lucid/Database';
 import GitCommit from 'App/Models/GitCommit';
-import GitPlatform from 'App/Models/GitPlatform';
+import GitProject from 'App/Models/GitProject';
 import GitTicket from 'App/Models/GitTicket'
 import GitProjectService from 'App/Services/GitProjectService';
 import { DateTime } from 'luxon';
 
 export default class GitTicketsController {
   readonly PARTIAL_PATH = 'partials/git-projects';
-  readonly PAGE_PATH = 'pages/dashboard/git-projects/tickets';
+  readonly PAGE_PATH = 'pages/dashboard/git-projects';
 
   public async index({ params, view }: HttpContextContract) {
     const content = await GitProjectService.getContentByTab({ projectId: params.id, tab: 'ticket' });
@@ -76,7 +76,7 @@ export default class GitTicketsController {
       await ticket.load('commits', (commitsQuery) => {
         commitsQuery.preload('platform')
       })
-      return view.render(`${this.PAGE_PATH}/view`, { id: params.id, ticket })
+      return view.render(`${this.PAGE_PATH}/tickets/view`, { id: params.id, ticket })
     }
     return view.render(`${this.PARTIAL_PATH}/table_row_ticket`, { id: params.id, ticket })
   }
@@ -128,7 +128,7 @@ export default class GitTicketsController {
     };
 
     if (payload.platform) {
-      Object.assign(commitPayload, { platformId: platform.id })
+      Object.assign(commitPayload, { platformId: payload.platform })
     }
 
     await ticket.related('commits').create(commitPayload)
@@ -229,5 +229,37 @@ export default class GitTicketsController {
       ticketId: params.ticketId,
       commit,
     })
+  }
+
+  public async trackTickets({ request, view, params }: HttpContextContract) {
+    const qs = request.qs()
+    if (typeof qs.ticketIds === 'string') {
+      qs.ticketIds = [qs.ticketIds]
+    }
+    request.updateQs(qs)
+
+    const project = await GitProject.findOrFail(params.id)
+    const ticketIds: string[] = qs.ticketIds
+    const tickets = await GitTicket
+      .query()
+      .whereIn('id', ticketIds)
+      .preload('commits', (commitsQuery) => {
+        commitsQuery.preload('platform')
+      })
+
+    return view.render(`${this.PAGE_PATH}/tracks`, {
+      id: params.id,
+      project,
+      tickets,
+    })
+  }
+
+  public completeCommits({ request }: HttpContextContract) {
+    const body = request.body()
+    if (typeof body.commitIds === 'string') {
+      body.commitIds = [body.commitIds]
+    }
+    request.updateBody(body)
+    console.log(body)
   }
 }

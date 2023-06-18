@@ -47,7 +47,7 @@ export default class GitProjectsController {
     const tab: GitProjectTab = request.qs().tab;
     const content = await GitProjectService.getContentByTab({ projectId: params.id, tab });
     const project = await GitProject.findOrFail(params.id);
-    return view.render(`${this.VIEW_PATH}/view`, { project, content });
+    return view.render(`${this.VIEW_PATH}/view`, { id: params.id, project, content });
   }
 
   public async edit({}: HttpContextContract) {}
@@ -78,9 +78,22 @@ export default class GitProjectsController {
     return response.ok(null);
   }
 
-  public async tabs({ request, view, params }: HttpContextContract) {
+  public async tabs({ request, view, params, response }: HttpContextContract) {
     const tab: GitProjectTab = request.qs().tab;
     const content = await GitProjectService.getContentByTab({ projectId: params.id, tab });
+    if (tab === 'ticket') {
+      response.header('HX-Trigger', 'openTicketTab')
+    } else {
+      response.header('HX-Trigger', 'closeTicketTab')
+    }
     return view.render('partials/git-projects/tab', { tab, content })
+  }
+
+  public ticketTab({ view, params, request }: HttpContextContract) {
+    const qs = request.qs()
+    return view.render('partials/git-projects/ticket_tab', {
+      id: params.id,
+      status: qs.status,
+    })
   }
 }

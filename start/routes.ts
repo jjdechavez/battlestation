@@ -84,6 +84,7 @@ Route.group(() => {
     Route.patch('/:id', 'GitProjectsController.update').as('update');
     Route.delete('/:id', 'GitProjectsController.destroy').as('destroy');
     Route.get('/:id/tabs', 'GitProjectsController.tabs').as('tabs');
+    Route.get('/:id/tabs/ticket', 'GitProjectsController.ticketTab').as('tabs.ticket');
 
     Route.get('/:id/platforms', 'GitPlatformsController.index').as('platforms.manage');
     Route.get('/:id/platforms/create', 'GitPlatformsController.create').as('platforms.create');
@@ -96,6 +97,8 @@ Route.group(() => {
 
     Route.get('/:id/tickets', 'GitTicketsController.index').as('tickets.manage');
     Route.get('/:id/tickets/create', 'GitTicketsController.create').as('tickets.create');
+    Route.get('/:id/tickets/tracks', 'GitTicketsController.trackTickets').as('tickets.track');
+    Route.put('/:id/tickets/tracks', 'GitTicketsController.completeCommits').as('tickets.complete.commits');
     Route.post('/:id/tickets', 'GitTicketsController.store').as('tickets.store');
     Route.delete('/:id/tickets/:ticketId', 'GitTicketsController.destroy').as('tickets.destroy');
     Route.get('/:id/tickets/:ticketId/edit', 'GitTicketsController.edit').as('tickets.edit');

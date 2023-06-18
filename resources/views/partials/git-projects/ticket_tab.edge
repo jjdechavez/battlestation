@@ -1,0 +1,23 @@
+@if(status === 'inactive')
+  <div
+    hx-get="{{ route('git-projects.tabs.ticket', { id }, { qs: { status: 'active' } }) }}"
+    hx-trigger="openTicketTab from:body"
+    hx-swap="outerHTML"
+  ></div>
+@end
+
+@if(status === 'active')
+  <div
+    hx-get="{{ route('git-projects.tabs.ticket', { id }, { qs: { status: 'inactive' } }) }}"
+    hx-trigger="closeTicketTab from:body"
+    hx-swap="outerHTML"
+  >
+    <a
+      class="inline-block rounded border border-indigo-600 bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring active:text-indigo-500"
+      hx-get="{{ route('git-projects.tickets.track', { id }) }}"
+      hx-include="#track-tickets"
+    >
+      Track tickets
+    </a>
+  </div>
+@end
