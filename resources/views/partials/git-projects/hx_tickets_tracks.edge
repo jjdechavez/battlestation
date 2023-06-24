@@ -56,13 +56,16 @@
             <th class="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-900">
               Title
             </th>
+            <th class="whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-900">
+              Completed At
+            </th>
           </tr>
         </thead>
 
         <tbody class="divide-y">
           @each(ticket in tickets)
             <tr>
-              <th colspan="5" class="text-gray-900 font-semibold text-sm text-left py-2 pl-1 sm:pl-3 pr-3 bg-gray-100">{{ ticket.name }}</th>
+              <th colspan="6" class="text-gray-900 font-semibold text-sm text-left py-2 pl-1 sm:pl-3 pr-3 bg-gray-100">{{ ticket.name }}</th>
             </tr>
             @each(commit in ticket.commits)
               <tr>
@@ -83,10 +86,13 @@
                   {{ commit.hashed }}
                 </td>
                 <td class="whitespace-nowrap px-4 py-3 text-gray-700">
-                  {{ commit.commitedAt.toFormat('DD') }}
+                  {{ commit.commitedAt.toFormat('DD t') }}
                 </td>
                 <td class="whitespace-nowrap px-4 py-3 text-gray-700 truncate max-w-[10px] table-cell">
                   {{ commit.title }}
+                </td>
+                <td class="whitespace-nowrap px-4 py-3 text-gray-700 truncate max-w-[10px] table-cell">
+                  {{ commit.completedAt ? commit.completedAt : '-' }}
                 </td>
               </tr>
             @end
@@ -95,4 +101,5 @@
       </table>
     </form>
   </div>
+
 </section>
