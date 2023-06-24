@@ -248,26 +248,46 @@ export default class GitTicketsController {
       })
 
     if (request.headers()['hx-request']) {
-      return view.render(`${this.PARTIAL_PATH}/hx_tickets_tracks`, {
-        id: params.id,
-        project,
-        tickets,
-      })
+      if (qs.type === 'trigger') {
+        return view.render(`${this.PARTIAL_PATH}/table_row_track_commit`, {
+          id: params.id,
+          project,
+          tickets,
+          ticketIds,
+        })
+      } else {
+        return view.render(`${this.PARTIAL_PATH}/hx_tickets_tracks`, {
+          id: params.id,
+          project,
+          tickets,
+          ticketIds,
+        })
+      }
     }
 
     return view.render(`${this.PAGE_PATH}/tickets/tracks`, {
       id: params.id,
       project,
       tickets,
+      ticketIds,
     })
   }
 
-  public completeCommits({ request }: HttpContextContract) {
+  public async completeCommits({ request, response }: HttpContextContract) {
     const body = request.body()
     if (typeof body.commitIds === 'string') {
       body.commitIds = [body.commitIds]
     }
     request.updateBody(body)
-    console.log(body)
+
+    const commitIds: string[] = body.commitIds
+
+    await GitCommit
+      .query()
+      .whereIn('id', commitIds)
+      .update({ completedAt: new Date() })
+
+    response.header('HX-Trigger', 'completedCommits')
+    return response.status(201)
   }
 }

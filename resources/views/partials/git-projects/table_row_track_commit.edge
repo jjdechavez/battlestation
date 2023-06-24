@@ -1,0 +1,34 @@
+@each(ticket in tickets)
+  <tr>
+    <th colspan="6" class="text-gray-900 font-semibold text-sm text-left py-2 pl-1 sm:pl-3 pr-3 bg-gray-100">{{ ticket.name }}</th>
+  </tr>
+  @each(commit in ticket.commits)
+    <tr>
+      <td class="px-7 sm:px-6 relative sm:w-12">
+        <input
+          type="checkbox"
+          name="commitIds"
+          value="{{ commit.id }}"
+          class="text-indigo-600 border-gray-300 w-4 h-4 -mt-2 top-2/4 left-4 absolute"
+        >
+      </td>
+      <td class="whitespace-nowrap px-4 py-3 font-medium text-gray-900">
+        <abbr title="{{ commit.platform.name }}">
+          {{ commit.platform.alias }}
+        </abbr>
+      </td>
+      <td class="whitespace-nowrap px-4 py-3 text-gray-700">
+        {{ commit.hashed }}
+      </td>
+      <td class="whitespace-nowrap px-4 py-3 text-gray-700">
+        {{ commit.commitedAt.toFormat('DD t') }}
+      </td>
+      <td class="whitespace-nowrap px-4 py-3 text-gray-700 truncate max-w-[10px] table-cell">
+        {{ commit.title }}
+      </td>
+      <td class="whitespace-nowrap px-4 py-3 text-gray-700 truncate max-w-[10px] table-cell">
+        {{ commit.completedAt ? commit.completedAt.toFormat('DD t') : '-' }}
+      </td>
+    </tr>
+  @end
+@end

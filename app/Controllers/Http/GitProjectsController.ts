@@ -43,10 +43,13 @@ export default class GitProjectsController {
     return response.redirect().toPath(`/dashboard/git-projects/${project.id}`);
   }
 
-  public async show({ params, view, request }: HttpContextContract) {
+  public async show({ params, view, request, response }: HttpContextContract) {
     const tab: GitProjectTab = request.qs().tab;
     const content = await GitProjectService.getContentByTab({ projectId: params.id, tab });
     const project = await GitProject.findOrFail(params.id);
+    if (tab === 'ticket') {
+      response.header('HX-Trigger', 'openTicketTab')
+    }
     return view.render(`${this.VIEW_PATH}/view`, { id: params.id, project, content });
   }
 
