@@ -13,6 +13,9 @@
   <td class="whitespace-nowrap px-4 py-3 text-gray-700 truncate max-w-[10px] table-cell">
     {{ commit.title }}
   </td>
+  <td class="whitespace-nowrap px-4 py-3 text-gray-700 truncate max-w-[10px] table-cell">
+    {{ commit.completedAt ? commit.completedAt.toFormat('DD t') : '-' }}
+  </td>
   <td class="whitespace-nowrap px-4 py-3 text-gray-700 flex justify-start">
     <button
       type="button"
